@@ -23,3 +23,65 @@
 hs_err_pid*
 replay_pid*
 /.metadata/
+
+
+# Compiled class files
+target/
+*.class
+
+# Logs
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# VSCode
+.vscode/
+
+# IntelliJ IDEA
+*.iml
+.idea/
+out/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Maven
+/logs/
+/target/
+/dependency-reduced-pom.xml
+buildNumber.properties
+release.properties
+
+# Java wrappers and environment
+.env
+*.jar
+*.war
+*.ear
+
+# Others
+*.swp
+*~
+
+# Test result files
+surefire-reports/
