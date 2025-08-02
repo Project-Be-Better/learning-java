@@ -1,6 +1,6 @@
 package com.reference;
 
-import java.util.Locale;
+import java.awt.*;
 
 class Test1 {
     void runTest1() {
@@ -87,6 +87,91 @@ class Test6Strings {
         System.out.println("Check if empty: " + " ".isBlank());
         System.out.println("Trim: " + "     a  ".trim());
 
+        String a = "Java";
+        String b = "Java";
+        String c = new String("Java");
+        System.out.println(a == b); // true
+        System.out.println(a == c); // false
+        System.out.println(a.equals(c)); // true
+
+    }
+
+    public String reverseString(String inputString) {
+        String str = new StringBuilder(inputString).reverse().toString();
+        return str;
+    };
+}
+
+class TestPoint {
+
+    void runTestPoint() {
+        int age = 21;
+        Point point = new Point(10, 29);
+        System.out.println("Point: " + point);
+
+    }
+}
+
+class TestPassByBalue {
+    void update(int x) {
+        x = 10;
+    }
+
+    static void increment(NewCounter c) {
+        c.value++;
+    }
+
+    static void reassign(Book b) {
+        b = new Book("New Title");
+    }
+
+    static void mutate(Book b) {
+        b.title = "Updated Title";
+    }
+
+    static void changeArray(int[] arr) {
+        arr[0] = 99;
+    }
+
+    void run() {
+        System.out.println("Test Pass By Value");
+        int a = 5;
+        update(a);
+        System.out.println(a); // What is the output 5
+
+        System.out.println("Counter increment");
+        NewCounter newCounter = new NewCounter();
+        increment(newCounter);
+        System.out.println("Counter value is " + newCounter.value); // 1
+
+        System.out.println("Rook title reference");
+        Book book = new Book("Original Title");
+        reassign(book);
+        System.out.println("title after reassigning: " + book.title); // Original TItle
+
+        mutate(book);
+        System.out.println("title after mutating: " + book.title); // Updated title
+
+        int[] nums = { 1, 2, 3 };
+        changeArray(nums);
+        System.out.println(nums[0]); // Yes, {99,2,3}
+
+        int x = 10;
+        x += 5;
+        System.out.println(x);
+
+    }
+}
+
+class NewCounter {
+    int value = 0;
+}
+
+class Book {
+    String title;
+
+    Book(String t) {
+        title = t;
     }
 }
 
@@ -117,6 +202,15 @@ public class Main {
 
         Test6Strings test6 = new Test6Strings();
         test6.runTest6();
+
+        String reverseString = test6.reverseString("hello");
+        System.out.println("Reversed string: " + reverseString);
+
+        TestPoint testPoint = new TestPoint();
+        testPoint.runTestPoint();
+
+        TestPassByBalue testPassByBalue = new TestPassByBalue();
+        testPassByBalue.run();
 
     }
 }
