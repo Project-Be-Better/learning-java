@@ -29,10 +29,20 @@
 17. [Java Packages](#java-packages)
 18. [Java Access Modifiers](#java-access-modifiers)
 
+### Strings
+
+19. [Working with Strings](#working-with-strings)
+20. [How Strings are Stored - String Pool](#how-strings-are-stored---string-pool)
+21. [Strings are Immutable](#strings-are-immutable)
+22. [String Literal vs String Object](#string-literal-vs-string-object)
+23. [Comparing Strings with ==](#comparing-strings-with-==)
+24. [Comparing Strings with .equals()](#comparing-strings-with-equals)
+25. [Useful String Static Methods](#useful-string-static-methods)
+
 ### Practice and Assessment
 
-19. [Practice Problems](#practice-problems)
-20. [Code Reference](#code-reference-combined-usage-of-all-loops)
+26. [Practice Problems](#practice-problems)
+27. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
@@ -2019,7 +2029,1382 @@ public class WrapperPitfalls {
 }
 ```
 
-# Java Packages
+# Working with Strings
+
+## What are Strings?
+
+Strings in Java represent sequences of characters. They are one of the most commonly used data types and are essential for text processing, user interaction, and data manipulation.
+
+### String Basics
+
+```java
+public class StringBasics {
+    public static void main(String[] args) {
+        // Different ways to create strings
+        String str1 = "Hello World";           // String literal
+        String str2 = new String("Hello");     // String object
+        String str3 = new String();            // Empty string
+        String str4 = "";                      // Empty string literal
+
+        // String properties
+        System.out.println("String: " + str1);
+        System.out.println("Length: " + str1.length());
+        System.out.println("Is empty: " + str1.isEmpty());
+        System.out.println("Is blank: " + str1.isBlank()); // Java 11+
+
+        // Character access
+        System.out.println("First character: " + str1.charAt(0));
+        System.out.println("Last character: " + str1.charAt(str1.length() - 1));
+    }
+}
+```
+
+### Common String Operations
+
+```java
+public class StringOperations {
+    public static void main(String[] args) {
+        String text = "Java Programming";
+
+        // Case operations
+        System.out.println("Original: " + text);
+        System.out.println("Uppercase: " + text.toUpperCase());
+        System.out.println("Lowercase: " + text.toLowerCase());
+
+        // Substring operations
+        System.out.println("Substring (0,4): " + text.substring(0, 4)); // "Java"
+        System.out.println("Substring (5): " + text.substring(5));       // "Programming"
+
+        // Search operations
+        System.out.println("Index of 'a': " + text.indexOf('a'));        // 1
+        System.out.println("Last index of 'a': " + text.lastIndexOf('a')); // 3
+        System.out.println("Contains 'gram': " + text.contains("gram"));  // true
+        System.out.println("Starts with 'Java': " + text.startsWith("Java")); // true
+        System.out.println("Ends with 'ing': " + text.endsWith("ing"));   // true
+
+        // Trimming and replacing
+        String messy = "  Hello World  ";
+        System.out.println("Trimmed: '" + messy.trim() + "'");
+        System.out.println("Replace 'a' with '@': " + text.replace('a', '@'));
+        System.out.println("Replace 'Java' with 'Python': " + text.replace("Java", "Python"));
+    }
+}
+```
+
+### String Concatenation
+
+```java
+public class StringConcatenation {
+    public static void main(String[] args) {
+        String firstName = "John";
+        String lastName = "Doe";
+        int age = 30;
+
+        // Method 1: Using + operator
+        String message1 = "Hello, " + firstName + " " + lastName + "! You are " + age + " years old.";
+        System.out.println("Method 1: " + message1);
+
+        // Method 2: Using concat() method
+        String message2 = "Hello, ".concat(firstName).concat(" ").concat(lastName);
+        System.out.println("Method 2: " + message2);
+
+        // Method 3: Using StringBuilder (efficient for multiple operations)
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hello, ")
+          .append(firstName)
+          .append(" ")
+          .append(lastName)
+          .append("! You are ")
+          .append(age)
+          .append(" years old.");
+        String message3 = sb.toString();
+        System.out.println("Method 3: " + message3);
+
+        // Method 4: Using String.format()
+        String message4 = String.format("Hello, %s %s! You are %d years old.",
+                                       firstName, lastName, age);
+        System.out.println("Method 4: " + message4);
+
+        // Method 5: Using printf-style formatting
+        System.out.printf("Method 5: Hello, %s %s! You are %d years old.%n",
+                         firstName, lastName, age);
+    }
+}
+```
+
+### Practical String Examples
+
+```java
+public class PracticalStringExamples {
+    public static void main(String[] args) {
+        // Email validation (basic)
+        String email = "user@example.com";
+        boolean isValidEmail = email.contains("@") && email.contains(".");
+        System.out.println("Email valid: " + isValidEmail);
+
+        // Parsing CSV data
+        String csvLine = "John,Doe,30,Engineer";
+        String[] parts = csvLine.split(",");
+        System.out.println("Name: " + parts[0] + " " + parts[1]);
+        System.out.println("Age: " + parts[2]);
+        System.out.println("Job: " + parts[3]);
+
+        // Creating initials
+        String fullName = "John Michael Doe";
+        String[] names = fullName.split(" ");
+        StringBuilder initials = new StringBuilder();
+        for (String name : names) {
+            initials.append(name.charAt(0)).append(".");
+        }
+        System.out.println("Initials: " + initials.toString());
+
+        // Word count
+        String sentence = "This is a sample sentence for word counting";
+        String[] words = sentence.split("\\s+"); // Split by whitespace
+        System.out.println("Word count: " + words.length);
+
+        // Palindrome check
+        String word = "racecar";
+        String reversed = new StringBuilder(word).reverse().toString();
+        boolean isPalindrome = word.equals(reversed);
+        System.out.println(word + " is palindrome: " + isPalindrome);
+    }
+}
+```
+
+# How Strings are Stored - String Pool
+
+## Understanding the String Pool
+
+The String Pool (String Constant Pool) is a special memory area in the JVM where string literals are stored. It's designed to optimize memory usage by reusing identical string objects.
+
+### String Pool Mechanics
+
+```java
+public class StringPoolDemo {
+    public static void main(String[] args) {
+        // String literals go to the pool
+        String str1 = "Hello";
+        String str2 = "Hello";
+        String str3 = "Hello";
+
+        // All three references point to the same object in the pool
+        System.out.println("str1 == str2: " + (str1 == str2)); // true
+        System.out.println("str2 == str3: " + (str2 == str3)); // true
+        System.out.println("str1 == str3: " + (str1 == str3)); // true
+
+        // Memory addresses are the same
+        System.out.println("str1 identity: " + System.identityHashCode(str1));
+        System.out.println("str2 identity: " + System.identityHashCode(str2));
+        System.out.println("str3 identity: " + System.identityHashCode(str3));
+
+        // String objects created with 'new' bypass the pool initially
+        String str4 = new String("Hello");
+        System.out.println("str1 == str4: " + (str1 == str4)); // false
+        System.out.println("str1.equals(str4): " + str1.equals(str4)); // true
+
+        System.out.println("str1 identity: " + System.identityHashCode(str1));
+        System.out.println("str4 identity: " + System.identityHashCode(str4));
+    }
+}
+```
+
+### String Interning
+
+```java
+public class StringInterning {
+    public static void main(String[] args) {
+        // Creating strings outside the pool
+        String str1 = new String("Java");
+        String str2 = new String("Java");
+
+        System.out.println("Before interning:");
+        System.out.println("str1 == str2: " + (str1 == str2)); // false
+        System.out.println("str1 identity: " + System.identityHashCode(str1));
+        System.out.println("str2 identity: " + System.identityHashCode(str2));
+
+        // Manually interning strings
+        String str3 = str1.intern(); // Returns reference from pool
+        String str4 = str2.intern(); // Returns same reference from pool
+
+        System.out.println("\nAfter interning:");
+        System.out.println("str3 == str4: " + (str3 == str4)); // true
+        System.out.println("str3 identity: " + System.identityHashCode(str3));
+        System.out.println("str4 identity: " + System.identityHashCode(str4));
+
+        // Comparing with literal
+        String literal = "Java";
+        System.out.println("str3 == literal: " + (str3 == literal)); // true
+
+        // Demonstrating pool behavior with concatenation
+        String a = "Hello";
+        String b = "World";
+        String c = "HelloWorld";
+        String d = a + b; // Runtime concatenation - not pooled
+        String e = "Hello" + "World"; // Compile-time concatenation - pooled
+
+        System.out.println("\nConcatenation examples:");
+        System.out.println("c == d: " + (c == d)); // false
+        System.out.println("c == e: " + (c == e)); // true
+        System.out.println("d.intern() == c: " + (d.intern() == c)); // true
+    }
+}
+```
+
+### Memory Implications
+
+```java
+public class StringMemoryDemo {
+    public static void main(String[] args) {
+        // Memory efficient - only one "Hello" object in pool
+        String[] literals = new String[1000];
+        for (int i = 0; i < literals.length; i++) {
+            literals[i] = "Hello"; // All reference same object
+        }
+
+        // Memory inefficient - 1000 different "Hello" objects
+        String[] objects = new String[1000];
+        for (int i = 0; i < objects.length; i++) {
+            objects[i] = new String("Hello"); // Each creates new object
+        }
+
+        // Verify they're different
+        System.out.println("literals[0] == literals[999]: " +
+                          (literals[0] == literals[999])); // true
+        System.out.println("objects[0] == objects[999]: " +
+                          (objects[0] == objects[999])); // false
+
+        // But content is the same
+        System.out.println("objects[0].equals(objects[999]): " +
+                          objects[0].equals(objects[999])); // true
+    }
+}
+```
+
+### Pool Location and Garbage Collection
+
+```java
+public class StringPoolGC {
+    public static void main(String[] args) {
+        // Before Java 7: String pool was in PermGen (limited size)
+        // Java 7+: String pool moved to heap (can be garbage collected)
+
+        System.out.println("String pool demonstration:");
+
+        // These go to the pool automatically
+        String s1 = "PooledString1";
+        String s2 = "PooledString2";
+
+        // This creates heap object, then can be interned
+        String s3 = new String("HeapString").intern();
+
+        // Pool statistics (JVM specific, may not work on all JVMs)
+        try {
+            // This is implementation specific
+            long poolSize = getStringPoolSize(); // Hypothetical method
+            System.out.println("Estimated pool size: " + poolSize);
+        } catch (Exception e) {
+            System.out.println("Pool size information not available");
+        }
+
+        // Demonstration of pool behavior
+        demonstratePoolBehavior();
+    }
+
+    private static void demonstratePoolBehavior() {
+        String base = "Dynamic";
+        String suffix = "String";
+
+        // Runtime concatenation - not automatically pooled
+        String dynamic = base + suffix;
+
+        // Literal - automatically pooled
+        String literal = "DynamicString";
+
+        System.out.println("dynamic == literal: " + (dynamic == literal)); // false
+        System.out.println("dynamic.intern() == literal: " +
+                          (dynamic.intern() == literal)); // true
+    }
+
+    private static long getStringPoolSize() {
+        // This is a placeholder - actual implementation would be JVM specific
+        // You could use JVM flags like -XX:+PrintStringTableStatistics
+        return -1; // Not implemented
+    }
+}
+```
+
+# Strings are Immutable
+
+## Understanding String Immutability
+
+In Java, strings are immutable, meaning once a String object is created, its content cannot be changed. Any operation that appears to modify a string actually creates a new string object.
+
+### Demonstrating Immutability
+
+```java
+public class StringImmutability {
+    public static void main(String[] args) {
+        String original = "Hello";
+        String reference = original;
+
+        System.out.println("Original string: " + original);
+        System.out.println("Reference: " + reference);
+        System.out.println("Same object? " + (original == reference)); // true
+        System.out.println("Identity hash: " + System.identityHashCode(original));
+
+        // "Modifying" the string - actually creates new object
+        original = original + " World";
+
+        System.out.println("\nAfter 'modification':");
+        System.out.println("Original: " + original);
+        System.out.println("Reference: " + reference); // Still "Hello"
+        System.out.println("Same object? " + (original == reference)); // false
+        System.out.println("Original identity: " + System.identityHashCode(original));
+        System.out.println("Reference identity: " + System.identityHashCode(reference));
+    }
+}
+```
+
+### Why Strings are Immutable
+
+```java
+public class WhyImmutable {
+    public static void main(String[] args) {
+        // 1. Security reasons
+        String fileName = "/etc/passwd";
+        processFile(fileName);
+        // fileName cannot be changed by the method
+        System.out.println("File name after method call: " + fileName);
+
+        // 2. Thread safety
+        String sharedString = "Thread Safe";
+        // Multiple threads can safely read this without synchronization
+
+        // 3. Hashcode caching
+        String key = "CacheKey";
+        int hash1 = key.hashCode();
+        // Hashcode is cached and won't change
+        int hash2 = key.hashCode();
+        System.out.println("Hash codes are same: " + (hash1 == hash2));
+
+        // 4. String pool efficiency
+        String s1 = "Pooled";
+        String s2 = "Pooled";
+        // Safe to share the same object because it can't be modified
+        System.out.println("Sharing same object: " + (s1 == s2));
+    }
+
+    private static void processFile(String fileName) {
+        // Even if we try to "modify" fileName here,
+        // the original reference remains unchanged
+        fileName = fileName + ".backup";
+        System.out.println("Inside method: " + fileName);
+    }
+}
+```
+
+### Performance Implications
+
+```java
+public class ImmutabilityPerformance {
+    public static void main(String[] args) {
+        // Inefficient string concatenation
+        demonstrateInefficient();
+
+        // Efficient alternatives
+        demonstrateEfficient();
+    }
+
+    private static void demonstrateInefficient() {
+        long startTime = System.nanoTime();
+
+        String result = "";
+        for (int i = 0; i < 1000; i++) {
+            result += "a"; // Creates new string object each time
+        }
+
+        long endTime = System.nanoTime();
+        System.out.println("Inefficient concatenation took: " +
+                          (endTime - startTime) / 1_000_000 + " ms");
+        System.out.println("Result length: " + result.length());
+    }
+
+    private static void demonstrateEfficient() {
+        long startTime = System.nanoTime();
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 1000; i++) {
+            sb.append("a"); // Modifies internal buffer
+        }
+        String result = sb.toString();
+
+        long endTime = System.nanoTime();
+        System.out.println("Efficient StringBuilder took: " +
+                          (endTime - startTime) / 1_000_000 + " ms");
+        System.out.println("Result length: " + result.length());
+    }
+}
+```
+
+### Working with Immutable Strings
+
+```java
+public class WorkingWithImmutableStrings {
+    public static void main(String[] args) {
+        // Pattern 1: Method chaining with reassignment
+        String text = "  Hello World  ";
+        text = text.trim().toLowerCase().replace(" ", "_");
+        System.out.println("Processed text: " + text);
+
+        // Pattern 2: Creating modified versions
+        String original = "Java Programming";
+        String uppercase = original.toUpperCase();
+        String replaced = original.replace("Java", "Python");
+
+        System.out.println("Original: " + original);
+        System.out.println("Uppercase: " + uppercase);
+        System.out.println("Replaced: " + replaced);
+
+        // Pattern 3: Building strings efficiently
+        String[] words = {"Java", "is", "awesome"};
+        String sentence = buildSentence(words);
+        System.out.println("Built sentence: " + sentence);
+
+        // Pattern 4: Conditional string building
+        String message = createMessage("John", true, 5);
+        System.out.println("Message: " + message);
+    }
+
+    private static String buildSentence(String[] words) {
+        if (words.length == 0) return "";
+        if (words.length == 1) return words[0];
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            sb.append(words[i]);
+            if (i < words.length - 1) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+
+    private static String createMessage(String name, boolean isVip, int itemCount) {
+        StringBuilder message = new StringBuilder();
+
+        message.append("Hello, ");
+        if (isVip) {
+            message.append("VIP ");
+        }
+        message.append(name);
+        message.append("! You have ");
+        message.append(itemCount);
+        message.append(" item");
+        if (itemCount != 1) {
+            message.append("s");
+        }
+        message.append(" in your cart.");
+
+        return message.toString();
+    }
+}
+```
+
+### StringBuilder vs StringBuffer
+
+```java
+public class StringBuilderVsBuffer {
+    public static void main(String[] args) {
+        // StringBuilder - Not thread-safe, faster
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hello");
+        sb.append(" ");
+        sb.append("World");
+        System.out.println("StringBuilder result: " + sb.toString());
+
+        // StringBuffer - Thread-safe, slower due to synchronization
+        StringBuffer sbf = new StringBuffer();
+        sbf.append("Hello");
+        sbf.append(" ");
+        sbf.append("World");
+        System.out.println("StringBuffer result: " + sbf.toString());
+
+        // Performance comparison
+        comparePerformance();
+    }
+
+    private static void comparePerformance() {
+        int iterations = 10000;
+
+        // StringBuilder performance
+        long start = System.nanoTime();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < iterations; i++) {
+            sb.append("test");
+        }
+        String sbResult = sb.toString();
+        long sbTime = System.nanoTime() - start;
+
+        // StringBuffer performance
+        start = System.nanoTime();
+        StringBuffer sbf = new StringBuffer();
+        for (int i = 0; i < iterations; i++) {
+            sbf.append("test");
+        }
+        String sbfResult = sbf.toString();
+        long sbfTime = System.nanoTime() - start;
+
+        System.out.println("StringBuilder time: " + sbTime / 1_000_000 + " ms");
+        System.out.println("StringBuffer time: " + sbfTime / 1_000_000 + " ms");
+        System.out.println("Results equal: " + sbResult.equals(sbfResult));
+    }
+}
+```
+
+# String Literal vs String Object
+
+## Understanding the Difference
+
+String literals and String objects behave differently in terms of memory allocation and object creation.
+
+### Basic Differences
+
+```java
+public class StringLiteralVsObject {
+    public static void main(String[] args) {
+        // String literals - stored in string pool
+        String literal1 = "Hello";
+        String literal2 = "Hello";
+
+        // String objects - stored in heap
+        String object1 = new String("Hello");
+        String object2 = new String("Hello");
+
+        // Reference equality (==) checks memory address
+        System.out.println("Literals:");
+        System.out.println("literal1 == literal2: " + (literal1 == literal2)); // true
+
+        System.out.println("\nObjects:");
+        System.out.println("object1 == object2: " + (object1 == object2)); // false
+
+        System.out.println("\nLiteral vs Object:");
+        System.out.println("literal1 == object1: " + (literal1 == object1)); // false
+
+        // Content equality (.equals()) checks actual content
+        System.out.println("\nContent equality:");
+        System.out.println("literal1.equals(literal2): " + literal1.equals(literal2)); // true
+        System.out.println("object1.equals(object2): " + object1.equals(object2)); // true
+        System.out.println("literal1.equals(object1): " + literal1.equals(object1)); // true
+
+        // Memory addresses
+        System.out.println("\nMemory addresses:");
+        System.out.println("literal1: " + System.identityHashCode(literal1));
+        System.out.println("literal2: " + System.identityHashCode(literal2));
+        System.out.println("object1: " + System.identityHashCode(object1));
+        System.out.println("object2: " + System.identityHashCode(object2));
+    }
+}
+```
+
+### Memory Allocation Differences
+
+```java
+public class MemoryAllocation {
+    public static void main(String[] args) {
+        // Scenario 1: Only literals
+        String s1 = "Java";     // Creates one object in pool
+        String s2 = "Java";     // Reuses existing object
+        String s3 = "Java";     // Reuses existing object
+        // Total objects created: 1
+
+        System.out.println("All literals point to same object: " +
+                          (s1 == s2 && s2 == s3)); // true
+
+        // Scenario 2: Mix of literals and objects
+        String s4 = "Python";           // Creates object in pool
+        String s5 = new String("Python"); // Creates object in heap
+        String s6 = new String("Python"); // Creates another object in heap
+        // Total objects created: 3 (1 in pool, 2 in heap)
+
+        System.out.println("Literal vs objects: " + (s4 == s5)); // false
+        System.out.println("Object vs object: " + (s5 == s6)); // false
+
+        // Scenario 3: Interning objects
+        String s7 = s5.intern(); // Returns reference to pool object
+        System.out.println("Literal vs interned: " + (s4 == s7)); // true
+
+        // Memory usage demonstration
+        demonstrateMemoryUsage();
+    }
+
+    private static void demonstrateMemoryUsage() {
+        System.out.println("\nMemory usage demonstration:");
+
+        // Using literals - memory efficient
+        String[] literals = new String[1000];
+        for (int i = 0; i < literals.length; i++) {
+            literals[i] = "Shared"; // All reference same object
+        }
+
+        // Using new String() - memory wasteful
+        String[] objects = new String[1000];
+        for (int i = 0; i < objects.length; i++) {
+            objects[i] = new String("Individual"); // Each creates new object
+        }
+
+        System.out.println("Literals share memory: " +
+                          (literals[0] == literals[999])); // true
+        System.out.println("Objects don't share: " +
+                          (objects[0] == objects[999])); // false
+    }
+}
+```
+
+### When to Use Each
+
+```java
+public class WhenToUseEach {
+    public static void main(String[] args) {
+        // Use string literals for:
+
+        // 1. Constants and known values
+        final String API_VERSION = "v1.0";
+        final String ERROR_MESSAGE = "Invalid input";
+
+        // 2. Simple assignments
+        String greeting = "Hello";
+        String name = "World";
+
+        // 3. Comparisons with known values
+        String userInput = getUserInput();
+        if ("exit".equals(userInput)) {
+            System.out.println("Goodbye!");
+        }
+
+        // Use new String() for:
+
+        // 1. When you specifically need a new object
+        String original = "data";
+        String copy = new String(original); // Deliberate copy
+
+        // 2. When working with character arrays
+        char[] chars = {'H', 'e', 'l', 'l', 'o'};
+        String fromChars = new String(chars);
+
+        // 3. When creating from bytes
+        byte[] bytes = {72, 101, 108, 108, 111}; // "Hello" in ASCII
+        String fromBytes = new String(bytes);
+
+        System.out.println("From chars: " + fromChars);
+        System.out.println("From bytes: " + fromBytes);
+
+        // Common mistake to avoid
+        avoidCommonMistakes();
+    }
+
+    private static String getUserInput() {
+        // Simulated user input
+        return "exit";
+    }
+
+    private static void avoidCommonMistakes() {
+        // ❌ Unnecessary object creation
+        String inefficient = new String("Hello"); // Don't do this
+
+        // ✅ Use literal instead
+        String efficient = "Hello";
+
+        // ❌ Unnecessary interning
+        String s1 = new String("test").intern(); // Don't do this
+
+        // ✅ Use literal directly
+        String s2 = "test";
+
+        System.out.println("Both are equivalent: " + (s1 == s2)); // true
+
+        // Performance impact
+        long start = System.nanoTime();
+        for (int i = 0; i < 100000; i++) {
+            String waste = new String("waste"); // Creates 100,000 objects
+        }
+        long inefficientTime = System.nanoTime() - start;
+
+        start = System.nanoTime();
+        for (int i = 0; i < 100000; i++) {
+            String reuse = "reuse"; // Reuses same object
+        }
+        long efficientTime = System.nanoTime() - start;
+
+        System.out.println("Inefficient approach: " + inefficientTime / 1_000_000 + " ms");
+        System.out.println("Efficient approach: " + efficientTime / 1_000_000 + " ms");
+    }
+}
+```
+
+### Practical Examples
+
+```java
+public class PracticalExamples {
+    // Configuration constants - use literals
+    private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/mydb";
+    private static final String DEFAULT_ENCODING = "UTF-8";
+
+    public static void main(String[] args) {
+        // Example 1: Processing user input
+        String[] userInputs = {"hello", "HELLO", "Hello"};
+        String targetWord = "hello"; // Literal for comparison
+
+        for (String input : userInputs) {
+            if (targetWord.equals(input.toLowerCase())) {
+                System.out.println("Match found: " + input);
+            }
+        }
+
+        // Example 2: Building configuration
+        String config = buildConfiguration("production", 8080, true);
+        System.out.println("Config: " + config);
+
+        // Example 3: Password handling (security consideration)
+        handlePassword();
+    }
+
+    private static String buildConfiguration(String environment, int port, boolean sslEnabled) {
+        // Use StringBuilder for complex string building
+        StringBuilder config = new StringBuilder();
+        config.append("Environment: ").append(environment).append("\n");
+        config.append("Port: ").append(port).append("\n");
+        config.append("SSL: ").append(sslEnabled ? "enabled" : "disabled");
+
+        return config.toString();
+    }
+
+    private static void handlePassword() {
+        // For security, sometimes you want separate objects
+        // (though char[] is actually preferred for passwords)
+        String password1 = new String("secret123");
+        String password2 = new String("secret123");
+
+        // These are different objects (good for security)
+        System.out.println("Password objects are different: " + (password1 != password2));
+
+        // But content is same
+        System.out.println("Password content is same: " + password1.equals(password2));
+
+        // Note: In real applications, use char[] for passwords
+        // because strings are immutable and stay in memory longer
+    }
+}
+```
+
+# Comparing Strings with ==
+
+## Understanding Reference Equality
+
+The `==` operator in Java compares object references (memory addresses), not the actual content of strings. This can lead to unexpected results if not properly understood.
+
+### Basic == Behavior
+
+```java
+public class StringReferenceComparison {
+    public static void main(String[] args) {
+        // String literals - same reference
+        String str1 = "Hello";
+        String str2 = "Hello";
+        System.out.println("str1 == str2: " + (str1 == str2)); // true
+
+        // String objects - different references
+        String str3 = new String("Hello");
+        String str4 = new String("Hello");
+        System.out.println("str3 == str4: " + (str3 == str4)); // false
+
+        // Literal vs object - different references
+        System.out.println("str1 == str3: " + (str1 == str3)); // false
+
+        // All have same content
+        System.out.println("Content comparison:");
+        System.out.println("str1.equals(str2): " + str1.equals(str2)); // true
+        System.out.println("str3.equals(str4): " + str3.equals(str4)); // true
+        System.out.println("str1.equals(str3): " + str1.equals(str3)); // true
+
+        // Memory addresses
+        System.out.println("\nMemory addresses:");
+        System.out.println("str1: " + System.identityHashCode(str1));
+        System.out.println("str2: " + System.identityHashCode(str2));
+        System.out.println("str3: " + System.identityHashCode(str3));
+        System.out.println("str4: " + System.identityHashCode(str4));
+    }
+}
+```
+
+### Common Pitfalls with ==
+
+```java
+public class CommonPitfalls {
+    public static void main(String[] args) {
+        // Pitfall 1: Comparing user input
+        String userInput = new String("yes"); // Simulating user input
+
+        if (userInput == "yes") { // ❌ Wrong!
+            System.out.println("This won't print");
+        }
+
+        if (userInput.equals("yes")) { // ✅ Correct
+            System.out.println("This will print");
+        }
+
+        // Pitfall 2: String concatenation at runtime
+        String part1 = "Hel";
+        String part2 = "lo";
+        String combined = part1 + part2; // Runtime concatenation
+        String literal = "Hello";
+
+        System.out.println("combined == literal: " + (combined == literal)); // false
+        System.out.println("combined.equals(literal): " + combined.equals(literal)); // true
+
+        // Pitfall 3: Method return values
+        String methodResult = getString();
+        if (methodResult == "test") { // ❌ Dangerous!
+            System.out.println("This might not work as expected");
+        }
+
+        if ("test".equals(methodResult)) { // ✅ Safe approach
+            System.out.println("This is the correct way");
+        }
+
+        // Pitfall 4: Null safety
+        String nullString = null;
+        // if (nullString == "test") // This is false, but...
+        // if (nullString.equals("test")) // This throws NullPointerException!
+
+        if ("test".equals(nullString)) { // ✅ Null-safe
+            System.out.println("This won't throw NPE");
+        }
+    }
+
+    private static String getString() {
+        return new String("test"); // Returns new object
+    }
+}
+```
+
+### When == Actually Works
+
+```java
+public class WhenEqualsWorks {
+    public static void main(String[] args) {
+        // Case 1: Compile-time string concatenation
+        String s1 = "Hello" + "World"; // Compile-time concatenation
+        String s2 = "HelloWorld";      // Literal
+        System.out.println("Compile-time concatenation: " + (s1 == s2)); // true
+
+        // Case 2: Final variables
+        final String PART1 = "Hello";
+        final String PART2 = "World";
+        String s3 = PART1 + PART2; // Treated as compile-time constant
+        System.out.println("Final variable concatenation: " + (s3 == s2)); // true
+
+        // Case 3: String interning
+        String s4 = new String("HelloWorld").intern();
+        System.out.println("Interned string: " + (s4 == s2)); // true
+
+        // Case 4: Same string literal across methods
+        String methodString = getStringLiteral();
+        String localString = "SharedLiteral";
+        System.out.println("Cross-method literal: " + (methodString == localString)); // true
+
+        // Counter-example: Runtime concatenation
+        String part1 = getValue("Hello");
+        String part2 = getValue("World");
+        String runtime = part1 + part2;
+        System.out.println("Runtime concatenation: " + (runtime == s2)); // false
+    }
+
+    private static String getStringLiteral() {
+        return "SharedLiteral"; // Same literal as in main
+    }
+
+    private static String getValue(String value) {
+        return value; // Returns parameter, breaking compile-time optimization
+    }
+}
+```
+
+### Practical Implications
+
+```java
+public class PracticalImplications {
+    public static void main(String[] args) {
+        // Demonstration of why == is unreliable for strings
+        demonstrateUserInput();
+        demonstrateConfigurationComparison();
+        demonstrateCollectionBehavior();
+    }
+
+    private static void demonstrateUserInput() {
+        // Simulating various ways user input might be received
+        String[] inputs = {
+            "test",                    // Direct literal
+            new String("test"),        // New object
+            "te" + "st",              // Compile-time concat (interned)
+            getString() + "",          // Runtime concat
+            "test".substring(0, 4),    // Method result
+            "  test  ".trim()          // Processed input
+        };
+
+        System.out.println("Comparing user inputs with ==:");
+        for (int i = 0; i < inputs.length; i++) {
+            for (int j = i + 1; j < inputs.length; j++) {
+                System.out.printf("inputs[%d] == inputs[%d]: %s%n",
+                                i, j, inputs[i] == inputs[j]);
+            }
+        }
+
+        System.out.println("\nAll have same content:");
+        for (String input : inputs) {
+            System.out.println("'" + input + "'.equals('test'): " +
+                             input.equals("test"));
+        }
+    }
+
+    private static void demonstrateConfigurationComparison() {
+        // Configuration values might come from different sources
+        String configFromFile = new String("production");    // Simulating file read
+        String configFromEnv = System.getProperty("env", "production"); // System property
+        String expectedConfig = "production";                // Literal
+
+        System.out.println("\nConfiguration comparison:");
+        System.out.println("configFromFile == expectedConfig: " +
+                          (configFromFile == expectedConfig)); // false
+        System.out.println("configFromEnv == expectedConfig: " +
+                          (configFromEnv == expectedConfig)); // might be false
+
+        // Correct way to compare
+        boolean isProduction = "production".equals(configFromFile) ||
+                              "production".equals(configFromEnv);
+        System.out.println("Is production environment: " + isProduction);
+    }
+
+    private static void demonstrateCollectionBehavior() {
+        // Collections and == behavior
+        java.util.List<String> list = java.util.Arrays.asList("item1", "item2", "item3");
+
+        String searchItem = new String("item2");
+
+        // Using == in stream operations (wrong)
+        boolean foundWithEquals = list.stream().anyMatch(item -> item == searchItem);
+        System.out.println("\nFound with ==: " + foundWithEquals); // false
+
+        // Using equals in stream operations (correct)
+        boolean foundWithEqualsMethod = list.stream().anyMatch(item -> item.equals(searchItem));
+        System.out.println("Found with equals(): " + foundWithEqualsMethod); // true
+
+        // Better: use equals with literal first (null-safe)
+        boolean foundSafely = list.stream().anyMatch("item2"::equals);
+        System.out.println("Found safely: " + foundSafely); // true
+    }
+
+    private static String getString() {
+        return "te";
+    }
+}
+```
+
+### Best Practices
+
+```java
+public class BestPractices {
+    public static void main(String[] args) {
+        String userInput = getUserInput();
+
+        // ❌ Don't use == for string comparison
+        if (userInput == "admin") {
+            System.out.println("This is unreliable");
+        }
+
+        // ✅ Use equals() method
+        if ("admin".equals(userInput)) {
+            System.out.println("This is reliable and null-safe");
+        }
+
+        // ✅ Alternative: use equals() on variable (but handle null)
+        if (userInput != null && userInput.equals("admin")) {
+            System.out.println("This works but requires null check");
+        }
+
+        // ✅ For ignore case comparison
+        if ("ADMIN".equalsIgnoreCase(userInput)) {
+            System.out.println("Case-insensitive comparison");
+        }
+
+        // ✅ For multiple options
+        if (isValidCommand(userInput)) {
+            System.out.println("Valid command entered");
+        }
+
+        // When to use ==
+        demonstrateValidUseOfEquals();
+    }
+
+    private static String getUserInput() {
+        // Simulating user input that creates new String object
+        return new String("admin");
+    }
+
+    private static boolean isValidCommand(String command) {
+        // Null-safe way to check multiple options
+        return "start".equals(command) ||
+               "stop".equals(command) ||
+               "restart".equals(command);
+    }
+
+    private static void demonstrateValidUseOfEquals() {
+        // Valid use of == : checking for same object reference
+        String cached = getCachedString();
+        String same = getCachedString();
+
+        if (cached == same) {
+            System.out.println("Same cached object - optimization working");
+        }
+
+        // Valid use of == : checking for specific object identity
+        String sentinel = "SENTINEL_VALUE";
+        if (processString() == sentinel) {
+            System.out.println("Returned sentinel object");
+        }
+    }
+
+    private static String getCachedString() {
+        // In real scenario, this might return cached objects
+        return "cached";
+    }
+
+    private static String processString() {
+        // Might return specific sentinel object for special cases
+        return "SENTINEL_VALUE";
+    }
+}
+```
+
+# Comparing Strings with .equals()
+
+## Understanding Content Equality
+
+The `.equals()` method compares the actual content of strings character by character, making it the correct way to compare strings in most scenarios.
+
+### Basic .equals() Usage
+
+```java
+public class StringEqualsBasics {
+    public static void main(String[] args) {
+        // Basic equals usage
+        String str1 = "Hello";
+        String str2 = "Hello";
+        String str3 = new String("Hello");
+        String str4 = "hello";
+
+        System.out.println("Basic equals() comparisons:");
+        System.out.println("str1.equals(str2): " + str1.equals(str2)); // true
+        System.out.println("str1.equals(str3): " + str1.equals(str3)); // true
+        System.out.println("str1.equals(str4): " + str1.equals(str4)); // false (case sensitive)
+
+        // Case-insensitive comparison
+        System.out.println("str1.equalsIgnoreCase(str4): " + str1.equalsIgnoreCase(str4)); // true
+
+        // Null safety demonstration
+        String nullString = null;
+        String nonNullString = "test";
+
+        // Safe way (literal first)
+        System.out.println("\"test\".equals(nullString): " + "test".equals(nullString)); // false
+
+        // Unsafe way (might throw NullPointerException)
+        try {
+            System.out.println("nullString.equals(\"test\"): " + nullString.equals("test"));
+        } catch (NullPointerException e) {
+            System.out.println("NullPointerException caught: " + e.getMessage());
+        }
+
+        // Using Objects.equals() for null safety
+        System.out.println("Objects.equals(nullString, \"test\"): " +
+                          java.util.Objects.equals(nullString, "test")); // false
+        System.out.println("Objects.equals(nullString, null): " +
+                          java.util.Objects.equals(nullString, null)); // true
+    }
+}
+```
+
+### Advanced equals() Usage
+
+```java
+public class AdvancedStringEquals {
+    public static void main(String[] args) {
+        // Working with different string sources
+        String literal = "programming";
+        String fromArray = new String(new char[]{'p','r','o','g','r','a','m','m','i','n','g'});
+        String fromBytes = new String(new byte[]{112,114,111,103,114,97,109,109,105,110,103});
+        String concatenated = "program" + "ming";
+        String built = new StringBuilder("program").append("ming").toString();
+
+        System.out.println("All equal despite different sources:");
+        System.out.println("literal.equals(fromArray): " + literal.equals(fromArray));
+        System.out.println("literal.equals(fromBytes): " + literal.equals(fromBytes));
+        System.out.println("literal.equals(concatenated): " + literal.equals(concatenated));
+        System.out.println("literal.equals(built): " + literal.equals(built));
+
+        // Unicode and special characters
+        String unicode1 = "café";
+        String unicode2 = "cafe\u0301"; // e with combining acute accent
+        System.out.println("\nUnicode comparison:");
+        System.out.println("unicode1: " + unicode1);
+        System.out.println("unicode2: " + unicode2);
+        System.out.println("unicode1.equals(unicode2): " + unicode1.equals(unicode2)); // false
+        System.out.println("Normalized comparison: " +
+                          normalize(unicode1).equals(normalize(unicode2))); // true
+
+        // Empty and whitespace strings
+        demonstrateEmptyAndWhitespace();
+    }
+
+    private static String normalize(String str) {
+        // Using Unicode normalization
+        return java.text.Normalizer.normalize(str, java.text.Normalizer.Form.NFC);
+    }
+
+    private static void demonstrateEmptyAndWhitespace() {
+        String empty1 = "";
+        String empty2 = new String();
+        String space = " ";
+        String tab = "\t";
+        String newline = "\n";
+        String whitespace = "   ";
+
+        System.out.println("\nEmpty and whitespace comparisons:");
+        System.out.println("empty1.equals(empty2): " + empty1.equals(empty2)); // true
+        System.out.println("empty1.equals(space): " + empty1.equals(space)); // false
+        System.out.println("space.equals(tab): " + space.equals(tab)); // false
+
+        // Trimmed comparisons
+        System.out.println("whitespace.trim().equals(empty1): " +
+                          whitespace.trim().equals(empty1)); // true
+    }
+}
+```
+
+### Practical String Comparison Scenarios
+
+```java
+public class PracticalStringComparisons {
+    public static void main(String[] args) {
+        // User authentication
+        authenticateUser("admin", "password123");
+        authenticateUser("ADMIN", "password123"); // Case sensitivity
+
+        // Command processing
+        processCommand("START");
+        processCommand("start");
+        processCommand("Start");
+
+        // File extension checking
+        String[] filenames = {"document.pdf", "image.PNG", "script.js", "data.CSV"};
+        for (String filename : filenames) {
+            System.out.println(filename + " is image: " + isImageFile(filename));
+        }
+
+        // Configuration validation
+        validateConfiguration();
+
+        // Search functionality
+        searchInText();
+    }
+
+    private static void authenticateUser(String username, String password) {
+        String validUsername = "admin";
+        String validPassword = "password123";
+
+        // Case-sensitive authentication
+        boolean isValid = validUsername.equals(username) && validPassword.equals(password);
+        System.out.println("User '" + username + "' authentication: " +
+                          (isValid ? "SUCCESS" : "FAILED"));
+    }
+
+    private static void processCommand(String command) {
+        if (command == null) {
+            System.out.println("Null command received");
+            return;
+        }
+
+        // Case-insensitive command processing
+        String cmd = command.toLowerCase();
+        switch (cmd) {
+            case "start":
+                System.out.println("Starting system...");
+                break;
+            case "stop":
+                System.out.println("Stopping system...");
+                break;
+            case "restart":
+                System.out.println("Restarting system...");
+                break;
+            default:
+                System.out.println("Unknown command: " + command);
+        }
+    }
+
+    private static boolean isImageFile(String filename) {
+        if (filename == null) return false;
+
+        String lowercaseFilename = filename.toLowerCase();
+        return lowercaseFilename.endsWith(".jpg") ||
+               lowercaseFilename.endsWith(".jpeg") ||
+               lowercaseFilename.endsWith(".png") ||
+               lowercaseFilename.endsWith(".gif") ||
+               lowercaseFilename.endsWith(".bmp");
+    }
+
+    private static void validateConfiguration() {
+        String[] environments = {"development", "staging", "production"};
+        String currentEnv = "PRODUCTION"; // Case mismatch
+
+        boolean isValidEnv = false;
+        for (String env : environments) {
+            if (env.equalsIgnoreCase(currentEnv)) {
+                isValidEnv = true;
+                break;
+            }
+        }
+
+        System.out.println("Environment '" + currentEnv + "' is valid: " + isValidEnv);
+    }
+
+    private static void searchInText() {
+        String text = "Java is a powerful programming language. Java developers are in high demand.";
+        String searchTerm = "java";
+
+        // Case-sensitive search
+        int caseSensitiveCount = countOccurrences(text, searchTerm);
+        System.out.println("Case-sensitive occurrences of '" + searchTerm + "': " + caseSensitiveCount);
+
+        // Case-insensitive search
+        int caseInsensitiveCount = countOccurrencesIgnoreCase(text, searchTerm);
+        System.out.println("Case-insensitive occurrences of '" + searchTerm + "': " + caseInsensitiveCount);
+    }
+
+    private static int countOccurrences(String text, String searchTerm) {
+        int count = 0;
+        int index = 0;
+        while ((index = text.indexOf(searchTerm, index)) != -1) {
+            count++;
+            index += searchTerm.length();
+        }
+        return count;
+    }
+
+    private static int countOccurrencesIgnoreCase(String text, String searchTerm) {
+        return countOccurrences(text.toLowerCase(), searchTerm.toLowerCase());
+    }
+}
+```
+
+### Custom String Comparison Utilities
+
+```java
+public class StringComparisonUtils {
+    public static void main(String[] args) {
+        // Testing custom comparison utilities
+        System.out.println("Custom comparison utilities:");
+
+        // Null-safe equals
+        System.out.println("nullSafeEquals(null, null): " + nullSafeEquals(null, null)); // true
+        System.out.println("nullSafeEquals(\"test\", null): " + nullSafeEquals("test", null)); // false
+        System.out.println("nullSafeEquals(\"test\", \"test\"): " + nullSafeEquals("test", "test")); // true
+
+        // Trimmed equals
+        System.out.println("trimmedEquals(\" hello \", \"hello\"): " +
+                          trimmedEquals(" hello ", "hello")); // true
+
+        // Multiple option check
+        System.out.println("isAnyOf(\"red\", \"red\", \"green\", \"blue\"): " +
+                          isAnyOf("red", "red", "green", "blue")); // true
+
+        // Fuzzy matching
+        System.out.println("fuzzyEquals(\"color\", \"colour\", 1): " +
+                          fuzzyEquals("color", "colour", 1)); // true
+    }
+
+    public static boolean nullSafeEquals(String str1, String str2) {
+        if (str1 == null && str2 == null) return true;
+        if (str1 == null || str2 == null) return false;
+        return str1.equals(str2);
+    }
+
+    public static boolean nullSafeEqualsIgnoreCase(String str1, String str2) {
+        if (str1 == null && str2 == null) return true;
+        if (str1 == null || str2 == null) return false;
+        return str1.equalsIgnoreCase(str2);
+    }
+
+    public static boolean trimmedEquals(String str1, String str2) {
+        if (str1 == null && str2 == null) return true;
+        if (str1 == null || str2 == null) return false;
+        return str1.trim().equals(str2.trim());
+    }
+
+    public static boolean isAnyOf(String target, String... options) {
+        if (target == null) return false;
+        for (String option : options) {
+            if (target.equals(option)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnyOfIgnoreCase(String target, String... options) {
+        if (target == null) return false;
+        for (String option : options) {
+            if (target.equalsIgnoreCase(option)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean fuzzyEquals(String str1, String str2, int maxDifferences) {
+        if (str1 == null && str2 == null) return true;
+        if (str1 == null || str2 == null) return false;
+
+        return calculateLevenshteinDistance(str1, str2) <= maxDifferences;
+    }
+
+    private static int calculateLevenshteinDistance(String str1, String str2) {
+        int[][] dp = new int[str1.length() + 1][str2.length() + 1];
+
+        for (int i = 0; i <= str1.length(); i++) {
+            dp[i][0] = i;
+        }
+
+        for (int j = 0; j <= str2.length(); j++) {
+            dp[0][j] = j;
+        }
+
+        for (int i = 1; i <= str1.length(); i++) {
+            for (int j = 1; j <= str2.length(); j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = 1 + Math.min(dp[i - 1][j],
+                                           Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
+                }
+            }
+        }
+
+        return dp[str1.length()][str2.length()];
+    }
+}
+```
+
+# Useful String Static Methods
 
 - **Namespace**: Groups related classes under a common name
 - **Directory Structure**: Packages correspond to folder structure
@@ -2317,6 +3702,218 @@ public class WrongAccess {
         AccessModifier modifier = new AccessModifier();
         // modifier.secret; // ❌ Cannot access private field
         // modifier.privateMethod(); // ❌ Cannot access private method
+    }
+}
+```
+
+# Useful String Static Methods
+
+## Overview of String Static Methods
+
+String class provides several useful static methods that help with string creation, formatting, and manipulation without needing a string instance.
+
+### String.valueOf() Methods
+
+```java
+public class StringValueOf {
+    public static void main(String[] args) {
+        // Converting primitives to strings
+        int number = 42;
+        double decimal = 3.14159;
+        boolean flag = true;
+        char character = 'A';
+
+        String numberStr = String.valueOf(number);
+        String decimalStr = String.valueOf(decimal);
+        String flagStr = String.valueOf(flag);
+        String charStr = String.valueOf(character);
+
+        System.out.println("Number as string: " + numberStr);
+        System.out.println("Decimal as string: " + decimalStr);
+        System.out.println("Boolean as string: " + flagStr);
+        System.out.println("Character as string: " + charStr);
+
+        // Converting arrays to strings
+        char[] charArray = {'H', 'e', 'l', 'l', 'o'};
+        String fromCharArray = String.valueOf(charArray);
+        System.out.println("From char array: " + fromCharArray);
+
+        // Subset of char array
+        char[] largeArray = {'A', 'B', 'C', 'D', 'E', 'F'};
+        String subset = String.valueOf(largeArray, 1, 3); // "BCD"
+        System.out.println("Subset: " + subset);
+
+        // Handling null objects
+        Object nullObject = null;
+        String nullStr = String.valueOf(nullObject); // Returns "null"
+        System.out.println("Null object: " + nullStr);
+    }
+}
+```
+
+### String.format() Method
+
+```java
+public class StringFormat {
+    public static void main(String[] args) {
+        // Basic formatting
+        String name = "Alice";
+        int age = 25;
+        double salary = 50000.75;
+
+        // Using placeholders
+        String message = String.format("Employee: %s, Age: %d, Salary: $%.2f",
+                                     name, age, salary);
+        System.out.println(message);
+
+        // Number formatting
+        int number = 1234567;
+        System.out.println("With commas: " + String.format("%,d", number));
+        System.out.println("Padded: " + String.format("%010d", number));
+        System.out.println("Hex: " + String.format("%x", number));
+        System.out.println("Octal: " + String.format("%o", number));
+
+        // Floating point formatting
+        double pi = Math.PI;
+        System.out.println("Pi (2 decimals): " + String.format("%.2f", pi));
+        System.out.println("Pi (scientific): " + String.format("%.2e", pi));
+
+        // String formatting
+        String text = "Hello";
+        System.out.println("Left aligned: '" + String.format("%-10s", text) + "'");
+        System.out.println("Right aligned: '" + String.format("%10s", text) + "'");
+
+        // Date formatting
+        java.util.Date now = new java.util.Date();
+        System.out.println("Date: " + String.format("%tF", now)); // ISO date
+        System.out.println("Time: " + String.format("%tT", now)); // ISO time
+    }
+}
+```
+
+### String.join() Method (Java 8+)
+
+```java
+import java.util.*;
+
+public class StringJoin {
+    public static void main(String[] args) {
+        // Basic joining with delimiter
+        String[] words = {"Java", "is", "awesome"};
+        String sentence = String.join(" ", words);
+        System.out.println("Sentence: " + sentence);
+
+        // Joining with different delimiters
+        String csvLine = String.join(",", words);
+        String pipeSeparated = String.join(" | ", words);
+        System.out.println("CSV: " + csvLine);
+        System.out.println("Pipe separated: " + pipeSeparated);
+
+        // Joining collections
+        List<String> fruits = Arrays.asList("apple", "banana", "cherry");
+        String fruitList = String.join(", ", fruits);
+        System.out.println("Fruits: " + fruitList);
+
+        // Joining with complex delimiters
+        String[] paths = {"home", "user", "documents", "file.txt"};
+        String filePath = String.join("/", paths);
+        System.out.println("File path: " + filePath);
+
+        // Creating SQL-like queries
+        List<String> columns = Arrays.asList("id", "name", "email", "age");
+        String selectQuery = "SELECT " + String.join(", ", columns) + " FROM users";
+        System.out.println("SQL Query: " + selectQuery);
+    }
+}
+```
+
+### Real-World Applications
+
+```java
+import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class RealWorldStringMethods {
+    public static void main(String[] args) {
+        // Log message formatting
+        generateLogMessages();
+
+        // Report generation
+        generateReport();
+
+        // Data export formatting
+        exportData();
+    }
+
+    private static void generateLogMessages() {
+        System.out.println("=== Log Messages ===");
+
+        String[] logLevels = {"INFO", "WARN", "ERROR"};
+        String[] messages = {
+            "Application started successfully",
+            "Memory usage is high",
+            "Database connection failed"
+        };
+
+        for (int i = 0; i < logLevels.length; i++) {
+            String timestamp = LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+            String logMessage = String.format("[%s] %s - %s",
+                                            logLevels[i], timestamp, messages[i]);
+            System.out.println(logMessage);
+        }
+    }
+
+    private static void generateReport() {
+        System.out.println("\n=== Sales Report ===");
+
+        Object[][] salesData = {
+            {"Q1", 150000, 12},
+            {"Q2", 175000, 15},
+            {"Q3", 200000, 18},
+            {"Q4", 180000, 16}
+        };
+
+        // Header
+        System.out.println(String.format("%-8s %12s %10s %12s",
+                                        "Quarter", "Revenue", "Deals", "Avg Deal"));
+        System.out.println(String.join("", Collections.nCopies(45, "-")));
+
+        // Data rows
+        for (Object[] row : salesData) {
+            double avgDeal = (Double) row[1] / (Integer) row[2];
+            System.out.println(String.format("%-8s $%,11.0f %10d $%,10.0f",
+                                            row[0], row[1], row[2], avgDeal));
+        }
+    }
+
+    private static void exportData() {
+        System.out.println("\n=== Data Export (CSV) ===");
+
+        String[] headers = {"ID", "Name", "Email", "Department", "Salary"};
+        Object[][] employees = {
+            {1, "John Doe", "john@company.com", "Engineering", 75000},
+            {2, "Jane Smith", "jane@company.com", "Marketing", 65000},
+            {3, "Bob Johnson", "bob@company.com", "Sales", 55000}
+        };
+
+        // CSV Header
+        System.out.println(String.join(",", headers));
+
+        // CSV Data
+        for (Object[] employee : employees) {
+            String[] stringRow = new String[employee.length];
+            for (int i = 0; i < employee.length; i++) {
+                stringRow[i] = String.valueOf(employee[i]);
+                // Escape commas in data
+                if (stringRow[i].contains(",")) {
+                    stringRow[i] = "\"" + stringRow[i] + "\"";
+                }
+            }
+            System.out.println(String.join(",", stringRow));
+        }
     }
 }
 ```

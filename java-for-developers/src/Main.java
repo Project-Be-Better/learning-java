@@ -2,6 +2,7 @@ import com.AccessModifiers.AccessModifier;
 import com.Basics.Chapter1ForLoops;
 import com.Basics.Chapter2If;
 import com.Basics.Chapter4AccessModifier;
+import com.Basics.Chapter7Enums;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,6 +21,9 @@ public class Main {
 
         // ! This cannot be accessed
         // System.out.println(accessModifier.secret);
+
+        Chapter7Enums chapter7Enums = new Chapter7Enums();
+        chapter7Enums.run();
 
     }
 }
