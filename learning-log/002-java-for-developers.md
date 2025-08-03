@@ -197,6 +197,314 @@ for (int i = names.length - 1; i >= 0; i--) {
 }
 ```
 
+# Java Packages
+
+## What are Packages?
+
+Packages in Java are namespaces that organize related classes and interfaces. They help avoid naming conflicts and provide better modularity and access control.
+
+### Key Concepts
+
+- **Namespace**: Groups related classes under a common name
+- **Directory Structure**: Packages correspond to folder structure
+- **Reverse Domain Naming**: Convention uses reverse domain names (e.g., `com.company.project`)
+
+### Package Declaration
+
+```java
+package com.AccessModifiers;
+
+public class AccessModifier {
+    // class content
+}
+```
+
+### Importing Packages
+
+```java
+// Import specific class
+import com.AccessModifiers.AccessModifier;
+
+// Import all classes from package (not recommended for production)
+import com.AccessModifiers.*;
+
+// Using fully qualified name (no import needed)
+com.AccessModifiers.AccessModifier modifier = new com.AccessModifiers.AccessModifier();
+```
+
+### Package Structure Example
+
+```
+src/
+├── com/
+│   ├── AccessModifiers/
+│   │   └── AccessModifier.java
+│   └── Basics/
+│       ├── Chapter4AccessModifier.java
+│       └── ExtendedAccessModifier.java
+└── Main.java
+```
+
+### Benefits of Packages
+
+1. **Namespace Management**: Avoid class name conflicts
+2. **Access Control**: Package-private visibility
+3. **Code Organization**: Logical grouping of related functionality
+4. **Easier Maintenance**: Modular structure
+
+# Java Access Modifiers
+
+## Overview
+
+Access modifiers control the visibility and accessibility of classes, methods, and variables in Java.
+
+## Types of Access Modifiers
+
+| Modifier    | Same Class | Same Package | Subclass (Different Package) | Different Package |
+| ----------- | ---------- | ------------ | ---------------------------- | ----------------- |
+| `private`   | ✅         | ❌           | ❌                           | ❌                |
+| `default`   | ✅         | ✅           | ❌                           | ❌                |
+| `protected` | ✅         | ✅           | ✅                           | ❌                |
+| `public`    | ✅         | ✅           | ✅                           | ✅                |
+
+## 1. `private` Access Modifier
+
+### Characteristics
+
+- Most restrictive access level
+- Accessible only within the same class
+- Not inherited by subclasses
+
+### Example
+
+```java
+public class AccessModifier {
+    private final int secret = 42;
+
+    private void privateMethod() {
+        System.out.println("This is private");
+    }
+
+    public void revealSecret() {
+        System.out.println("The secret is " + this.secret); // ✅ Accessible
+    }
+}
+```
+
+### Use Cases
+
+- Internal implementation details
+- Helper methods
+- Sensitive data that shouldn't be exposed
+
+## 2. `default` (Package-Private) Access Modifier
+
+### Characteristics
+
+- No keyword specified
+- Accessible within the same package only
+- Not accessible from different packages
+
+### Example
+
+```java
+package com.AccessModifiers;
+
+public class AccessModifier {
+    void defaultAccess() {
+        System.out.println("This has default access");
+    }
+}
+```
+
+```java
+package com.AccessModifiers;
+
+public class SamePackageClass {
+    public void testAccess() {
+        AccessModifier modifier = new AccessModifier();
+        modifier.defaultAccess(); // ✅ Accessible (same package)
+    }
+}
+```
+
+### Use Cases
+
+- Package-internal utilities
+- Classes meant for internal package use only
+
+## 3. `protected` Access Modifier
+
+### Characteristics
+
+- Accessible within the same package
+- Accessible to subclasses in different packages
+- Not accessible to non-subclasses in different packages
+
+### Example
+
+```java
+package com.AccessModifiers;
+
+public class AccessModifier {
+    protected void protectedAccess() {
+        System.out.println("This has protected access");
+    }
+}
+```
+
+```java
+package com.Basics;
+import com.AccessModifiers.AccessModifier;
+
+public class ExtendedAccessModifier extends AccessModifier {
+    void walk() {
+        this.protectedAccess(); // ✅ Accessible (inheritance)
+    }
+}
+```
+
+### Use Cases
+
+- Methods intended for subclasses
+- Framework extension points
+- Template method patterns
+
+## 4. `public` Access Modifier
+
+### Characteristics
+
+- Least restrictive access level
+- Accessible from anywhere
+- No access restrictions
+
+### Example
+
+```java
+package com.AccessModifiers;
+
+public class AccessModifier {
+    public void publicAccess() {
+        System.out.println("This is public");
+    }
+}
+```
+
+```java
+package com.Basics;
+import com.AccessModifiers.AccessModifier;
+
+public class Chapter4AccessModifier {
+    public void run() {
+        AccessModifier modifier = new AccessModifier();
+        modifier.publicAccess(); // ✅ Accessible (public)
+    }
+}
+```
+
+### Use Cases
+
+- Public API methods
+- Entry points (main methods)
+- Utility methods for general use
+
+## Access Modifier Best Practices
+
+### 1. Principle of Least Privilege
+
+- Start with the most restrictive access level
+- Only increase visibility when necessary
+
+### 2. Encapsulation
+
+```java
+public class BankAccount {
+    private double balance; // Hide internal state
+
+    public void deposit(double amount) { // Public interface
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+
+    public double getBalance() { // Controlled access
+        return balance;
+    }
+}
+```
+
+### 3. Common Patterns
+
+**Getters and Setters**
+
+```java
+public class Person {
+    private String name;
+    private int age;
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public int getAge() { return age; }
+    public void setAge(int age) {
+        if (age >= 0) this.age = age;
+    }
+}
+```
+
+**Factory Methods**
+
+```java
+public class DatabaseConnection {
+    private DatabaseConnection() {} // Private constructor
+
+    public static DatabaseConnection create(String url) { // Public factory
+        return new DatabaseConnection();
+    }
+}
+```
+
+## Common Access Modifier Mistakes
+
+### Mistake 1: Making Everything Public
+
+```java
+// ❌ Bad
+public class User {
+    public String password; // Exposed sensitive data
+    public void deleteAllData() {} // Dangerous public method
+}
+```
+
+```java
+// ✅ Good
+public class User {
+    private String password;
+
+    public boolean verifyPassword(String input) {
+        return password.equals(input);
+    }
+
+    private void deleteAllData() {} // Internal method
+}
+```
+
+### Mistake 2: Accessing Private Members from Different Classes
+
+```java
+// ❌ This won't compile
+package com.Basics;
+import com.AccessModifiers.AccessModifier;
+
+public class WrongAccess {
+    public void test() {
+        AccessModifier modifier = new AccessModifier();
+        // modifier.secret; // ❌ Cannot access private field
+        // modifier.privateMethod(); // ❌ Cannot access private method
+    }
+}
+```
+
 ## Practice Problems
 
 1. Print all even numbers from 1 to 100 using a `for` loop
@@ -204,6 +512,9 @@ for (int i = names.length - 1; i >= 0; i--) {
 3. Use a `while` loop to prompt for a password until it's correct
 4. Create a menu-based application using a `do-while` loop
 5. Use an enhanced `for` loop to print all elements of a string array
+6. Create a package structure with at least 3 different packages
+7. Implement a class with all four access modifiers and test accessibility
+8. Design a simple banking system using proper encapsulation
 
 ## Code Reference: Combined Usage of All Loops
 
@@ -241,5 +552,3 @@ public class Main {
     }
 }
 ```
-
-If you need this in a `.docx` or `.pdf` version, I can generate it as well. Let me know how you'd like to proceed.
