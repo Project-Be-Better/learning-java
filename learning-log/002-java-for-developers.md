@@ -24,39 +24,45 @@
 15. [Global and Local Variables](#global-and-local-variables)
 16. [Wrapper Classes](#wrapper-classes)
 
+### User Input
+
+17. [Taking User Input](#taking-user-input)
+18. [Scanner Class](#scanner-class)
+19. [Reading Different Data Types](#reading-different-data-types)
+
 ### Object-Oriented Programming
 
-17. [Java Packages](#java-packages)
-18. [Java Access Modifiers](#java-access-modifiers)
+20. [Java Packages](#java-packages)
+21. [Java Access Modifiers](#java-access-modifiers)
 
 ### Strings
 
-19. [Working with Strings](#working-with-strings)
-20. [How Strings are Stored - String Pool](#how-strings-are-stored---string-pool)
-21. [Strings are Immutable](#strings-are-immutable)
-22. [String Literal vs String Object](#string-literal-vs-string-object)
-23. [Comparing Strings with ==](#comparing-strings-with-==)
-24. [Comparing Strings with .equals()](#comparing-strings-with-equals)
-25. [Useful String Static Methods](#useful-string-static-methods)
+22. [Working with Strings](#working-with-strings)
+23. [How Strings are Stored - String Pool](#how-strings-are-stored---string-pool)
+24. [Strings are Immutable](#strings-are-immutable)
+25. [String Literal vs String Object](#string-literal-vs-string-object)
+26. [Comparing Strings with ==](#comparing-strings-with-==)
+27. [Comparing Strings with .equals()](#comparing-strings-with-equals)
+28. [Useful String Static Methods](#useful-string-static-methods)
 
 ### Dates
 
-26. [LocalDateTime](#localdatetime)
-27. [LocalDate and LocalTime](#localdate-and-localtime)
-28. [Creating Specific Dates](#creating-specific-dates)
-29. [Zone IDs](#zone-ids)
-30. [Other Date Classes](#other-date-classes)
+29. [LocalDateTime](#localdatetime)
+30. [LocalDate and LocalTime](#localdate-and-localtime)
+31. [Creating Specific Dates](#creating-specific-dates)
+32. [Zone IDs](#zone-ids)
+33. [Other Date Classes](#other-date-classes)
 
 ### Big Decimal
 
-31. [The Problem With Double](#the-problem-with-double)
-32. [BigDecimal](#bigdecimal)
-33. [Exploring BigDecimal Methods](#exploring-bigdecimal-methods)
+34. [The Problem With Double](#the-problem-with-double)
+35. [BigDecimal](#bigdecimal)
+36. [Exploring BigDecimal Methods](#exploring-bigdecimal-methods)
 
 ### Practice and Assessment
 
-34. [Practice Problems](#practice-problems)
-35. [Code Reference](#code-reference-combined-usage-of-all-loops)
+37. [Practice Problems](#practice-problems)
+38. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
@@ -1214,6 +1220,735 @@ public class BestPractices {
         final Path path = Paths.get(filename);
         final String content = readFile(path);
         // Process content...
+    }
+}
+```
+
+# Taking User Input
+
+## Introduction to User Input in Java
+
+Getting user input is essential for creating interactive Java applications. Java provides several ways to read user input, with the `Scanner` class being the most commonly used and beginner-friendly approach.
+
+### Why User Input Matters
+
+User input allows programs to:
+
+- Interact with users dynamically
+- Process real-time data
+- Create personalized experiences
+- Build interactive applications like calculators, games, and forms
+
+## Scanner Class
+
+The `Scanner` class is part of `java.util` package and provides methods to read different types of input from various sources, including keyboard input from the console.
+
+### Basic Scanner Setup
+
+```java
+import java.util.Scanner;
+
+public class BasicScanner {
+    public static void main(String[] args) {
+        // Create Scanner object to read from standard input (keyboard)
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Hello, " + name + "!"); // Hello, John! (if user enters "John")
+
+        // Good practice: close the scanner
+        scanner.close();
+    }
+}
+```
+
+### Scanner Constructor Options
+
+```java
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+
+public class ScannerSources {
+    public static void main(String[] args) {
+        // Reading from console (standard input)
+        Scanner consoleScanner = new Scanner(System.in);
+
+        // Reading from a string
+        String data = "John 25 Engineer";
+        Scanner stringScanner = new Scanner(data);
+        String name = stringScanner.next(); // "John"
+        int age = stringScanner.nextInt(); // 25
+        String profession = stringScanner.next(); // "Engineer"
+
+        System.out.println("Name: " + name + ", Age: " + age + ", Profession: " + profession);
+        // Name: John, Age: 25, Profession: Engineer
+
+        // Reading from a file
+        try {
+            Scanner fileScanner = new Scanner(new File("data.txt"));
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                System.out.println("File content: " + line);
+            }
+            fileScanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+        }
+
+        stringScanner.close();
+        consoleScanner.close();
+    }
+}
+```
+
+### Scanner Delimiter Customization
+
+```java
+import java.util.Scanner;
+
+public class ScannerDelimiters {
+    public static void main(String[] args) {
+        // Default delimiter is whitespace
+        String csvData = "apple,banana,orange,grape";
+        Scanner scanner = new Scanner(csvData);
+
+        // Change delimiter to comma
+        scanner.useDelimiter(",");
+
+        System.out.println("Fruits:");
+        while (scanner.hasNext()) {
+            String fruit = scanner.next();
+            System.out.println("- " + fruit); // - apple, - banana, - orange, - grape
+        }
+
+        scanner.close();
+
+        // Using regex as delimiter
+        String phoneData = "123-456-7890";
+        Scanner phoneScanner = new Scanner(phoneData);
+        phoneScanner.useDelimiter("-");
+
+        System.out.println("\nPhone number parts:");
+        while (phoneScanner.hasNext()) {
+            System.out.println(phoneScanner.next()); // 123, 456, 7890
+        }
+
+        phoneScanner.close();
+    }
+}
+```
+
+## Reading Different Data Types
+
+The Scanner class provides specific methods for reading different data types, each with proper error handling considerations.
+
+### String Input Methods
+
+```java
+import java.util.Scanner;
+
+public class StringInput {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // next() - reads until whitespace
+        System.out.print("Enter your first name: ");
+        String firstName = scanner.next(); // Stops at space, tab, or newline
+        System.out.println("First name: " + firstName); // "John" (if input is "John Doe")
+
+        // nextLine() - reads entire line including spaces
+        System.out.print("Enter your full name: ");
+        scanner.nextLine(); // Consume remaining newline from previous input
+        String fullName = scanner.nextLine(); // Reads until newline
+        System.out.println("Full name: " + fullName); // "John Doe Smith"
+
+        // Reading multiple words with next()
+        System.out.print("Enter three colors separated by spaces: ");
+        String color1 = scanner.next(); // "red"
+        String color2 = scanner.next(); // "blue"
+        String color3 = scanner.next(); // "green"
+        System.out.println("Colors: " + color1 + ", " + color2 + ", " + color3);
+        // Colors: red, blue, green
+
+        scanner.close();
+    }
+}
+```
+
+### Numeric Input Methods
+
+```java
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
+public class NumericInput {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Reading integers
+        System.out.print("Enter your age: ");
+        try {
+            int age = scanner.nextInt();
+            System.out.println("You are " + age + " years old"); // You are 25 years old
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid integer input");
+            scanner.nextLine(); // Clear invalid input
+        }
+
+        // Reading different numeric types
+        System.out.print("Enter a byte value (0-127): ");
+        byte byteValue = scanner.nextByte(); // 100
+        System.out.println("Byte value: " + byteValue); // Byte value: 100
+
+        System.out.print("Enter a short value: ");
+        short shortValue = scanner.nextShort(); // 32000
+        System.out.println("Short value: " + shortValue); // Short value: 32000
+
+        System.out.print("Enter a long value: ");
+        long longValue = scanner.nextLong(); // 1234567890L
+        System.out.println("Long value: " + longValue); // Long value: 1234567890
+
+        System.out.print("Enter a float value: ");
+        float floatValue = scanner.nextFloat(); // 3.14f
+        System.out.println("Float value: " + floatValue); // Float value: 3.14
+
+        System.out.print("Enter a double value: ");
+        double doubleValue = scanner.nextDouble(); // 3.14159
+        System.out.println("Double value: " + doubleValue); // Double value: 3.14159
+
+        scanner.close();
+    }
+}
+```
+
+### Boolean Input
+
+```java
+import java.util.Scanner;
+
+public class BooleanInput {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Reading boolean values
+        System.out.print("Are you a student? (true/false): ");
+        boolean isStudent = scanner.nextBoolean(); // true or false
+        System.out.println("Student status: " + isStudent); // Student status: true
+
+        // Custom boolean input handling
+        System.out.print("Do you like programming? (yes/no): ");
+        scanner.nextLine(); // Consume newline
+        String response = scanner.nextLine().toLowerCase();
+        boolean likesProgramming = response.equals("yes") || response.equals("y");
+        System.out.println("Likes programming: " + likesProgramming); // Likes programming: true
+
+        scanner.close();
+    }
+}
+```
+
+### Input Validation and Error Handling
+
+```java
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
+public class InputValidation {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Safe integer input with validation
+        int age = getValidInteger(scanner, "Enter your age (0-120): ", 0, 120);
+        System.out.println("Valid age entered: " + age); // Valid age entered: 25
+
+        // Safe double input
+        double salary = getValidDouble(scanner, "Enter your salary: ", 0.0, Double.MAX_VALUE);
+        System.out.println("Salary: $" + String.format("%.2f", salary)); // Salary: $50000.00
+
+        // Non-empty string input
+        String name = getNonEmptyString(scanner, "Enter your name: ");
+        System.out.println("Name: " + name); // Name: John Doe
+
+        scanner.close();
+    }
+
+    public static int getValidInteger(Scanner scanner, String prompt, int min, int max) {
+        int value;
+        while (true) {
+            System.out.print(prompt);
+            try {
+                value = scanner.nextInt();
+                if (value >= min && value <= max) {
+                    break;
+                } else {
+                    System.out.println("Please enter a value between " + min + " and " + max);
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.nextLine(); // Clear invalid input
+            }
+        }
+        return value;
+    }
+
+    public static double getValidDouble(Scanner scanner, String prompt, double min, double max) {
+        double value;
+        while (true) {
+            System.out.print(prompt);
+            try {
+                value = scanner.nextDouble();
+                if (value >= min && value <= max) {
+                    break;
+                } else {
+                    System.out.println("Please enter a value between " + min + " and " + max);
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Clear invalid input
+            }
+        }
+        return value;
+    }
+
+    public static String getNonEmptyString(Scanner scanner, String prompt) {
+        String value;
+        while (true) {
+            System.out.print(prompt);
+            value = scanner.nextLine().trim();
+            if (!value.isEmpty()) {
+                break;
+            } else {
+                System.out.println("Input cannot be empty. Please try again.");
+            }
+        }
+        return value;
+    }
+}
+```
+
+### Practical Applications
+
+#### 1. Simple Calculator
+
+```java
+import java.util.Scanner;
+
+public class SimpleCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("=== Simple Calculator ===");
+        System.out.print("Enter first number: ");
+        double num1 = scanner.nextDouble(); // 10.5
+
+        System.out.print("Enter operator (+, -, *, /): ");
+        char operator = scanner.next().charAt(0); // +
+
+        System.out.print("Enter second number: ");
+        double num2 = scanner.nextDouble(); // 5.2
+
+        double result = 0;
+        boolean validOperation = true;
+
+        switch (operator) {
+            case '+':
+                result = num1 + num2; // 15.7
+                break;
+            case '-':
+                result = num1 - num2; // 5.3
+                break;
+            case '*':
+                result = num1 * num2; // 54.6
+                break;
+            case '/':
+                if (num2 != 0) {
+                    result = num1 / num2; // 2.019...
+                } else {
+                    System.out.println("Error: Division by zero!");
+                    validOperation = false;
+                }
+                break;
+            default:
+                System.out.println("Invalid operator!");
+                validOperation = false;
+        }
+
+        if (validOperation) {
+            System.out.printf("Result: %.2f %c %.2f = %.2f%n", num1, operator, num2, result);
+            // Result: 10.50 + 5.20 = 15.70
+        }
+
+        scanner.close();
+    }
+}
+```
+
+#### 2. Student Grade Manager
+
+```java
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+public class StudentGradeManager {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Double> grades = new ArrayList<>();
+
+        System.out.println("=== Student Grade Manager ===");
+        System.out.print("Enter student name: ");
+        String studentName = scanner.nextLine(); // "Alice Johnson"
+
+        System.out.print("How many grades to enter? ");
+        int numGrades = scanner.nextInt(); // 4
+
+        for (int i = 1; i <= numGrades; i++) {
+            System.out.print("Enter grade " + i + " (0-100): ");
+            double grade = scanner.nextDouble(); // 85.5, 92.0, 78.5, 96.0
+
+            if (grade >= 0 && grade <= 100) {
+                grades.add(grade);
+            } else {
+                System.out.println("Invalid grade. Please enter a value between 0 and 100.");
+                i--; // Repeat this iteration
+            }
+        }
+
+        // Calculate statistics
+        double sum = 0;
+        double highest = grades.get(0);
+        double lowest = grades.get(0);
+
+        for (double grade : grades) {
+            sum += grade;
+            if (grade > highest) highest = grade;
+            if (grade < lowest) lowest = grade;
+        }
+
+        double average = sum / grades.size();
+
+        // Display results
+        System.out.println("\n=== Grade Report for " + studentName + " ===");
+        System.out.println("Grades entered: " + grades); // [85.5, 92.0, 78.5, 96.0]
+        System.out.printf("Average: %.2f%n", average); // Average: 88.00
+        System.out.println("Highest grade: " + highest); // Highest grade: 96.0
+        System.out.println("Lowest grade: " + lowest); // Lowest grade: 78.5
+        System.out.println("Letter grade: " + getLetterGrade(average)); // Letter grade: B+
+
+        scanner.close();
+    }
+
+    public static String getLetterGrade(double average) {
+        if (average >= 97) return "A+";
+        else if (average >= 93) return "A";
+        else if (average >= 90) return "A-";
+        else if (average >= 87) return "B+";
+        else if (average >= 83) return "B";
+        else if (average >= 80) return "B-";
+        else if (average >= 77) return "C+";
+        else if (average >= 73) return "C";
+        else if (average >= 70) return "C-";
+        else if (average >= 67) return "D+";
+        else if (average >= 65) return "D";
+        else return "F";
+    }
+}
+```
+
+#### 3. Interactive Menu System
+
+```java
+import java.util.Scanner;
+
+public class InteractiveMenu {
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        boolean running = true;
+
+        System.out.println("=== Restaurant Ordering System ===");
+
+        while (running) {
+            showMenu();
+            int choice = getValidChoice(); // User enters: 2
+
+            switch (choice) {
+                case 1:
+                    viewMenu();
+                    break;
+                case 2:
+                    placeOrder(); // This executes
+                    break;
+                case 3:
+                    checkOrderStatus();
+                    break;
+                case 4:
+                    System.out.println("Thank you for visiting!");
+                    running = false;
+                    break;
+            }
+        }
+
+        scanner.close();
+    }
+
+    private static void showMenu() {
+        System.out.println("\n--- Main Menu ---");
+        System.out.println("1. View Menu");
+        System.out.println("2. Place Order");
+        System.out.println("3. Check Order Status");
+        System.out.println("4. Exit");
+        System.out.print("Enter your choice (1-4): ");
+    }
+
+    private static int getValidChoice() {
+        while (true) {
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                if (choice >= 1 && choice <= 4) {
+                    return choice;
+                } else {
+                    System.out.print("Invalid choice. Please enter 1-4: ");
+                }
+            } catch (Exception e) {
+                System.out.print("Invalid input. Please enter a number (1-4): ");
+                scanner.nextLine(); // Clear invalid input
+            }
+        }
+    }
+
+    private static void viewMenu() {
+        System.out.println("\n--- Restaurant Menu ---");
+        System.out.println("1. Burger - $8.99");
+        System.out.println("2. Pizza - $12.99");
+        System.out.println("3. Pasta - $10.99");
+        System.out.println("4. Salad - $7.99");
+        System.out.println("5. Drink - $2.99");
+    }
+
+    private static void placeOrder() {
+        System.out.println("\n--- Place Order ---");
+        viewMenu();
+
+        System.out.print("Enter item number (1-5): ");
+        int itemChoice = getValidItemChoice(); // User enters: 2
+
+        System.out.print("Enter quantity: ");
+        int quantity = getValidQuantity(); // User enters: 2
+
+        String[] items = {"Burger", "Pizza", "Pasta", "Salad", "Drink"};
+        double[] prices = {8.99, 12.99, 10.99, 7.99, 2.99};
+
+        String selectedItem = items[itemChoice - 1]; // "Pizza"
+        double itemPrice = prices[itemChoice - 1]; // 12.99
+        double totalPrice = itemPrice * quantity; // 25.98
+
+        System.out.println("\n--- Order Summary ---");
+        System.out.println("Item: " + selectedItem); // Item: Pizza
+        System.out.println("Quantity: " + quantity); // Quantity: 2
+        System.out.printf("Unit Price: $%.2f%n", itemPrice); // Unit Price: $12.99
+        System.out.printf("Total: $%.2f%n", totalPrice); // Total: $25.98
+        System.out.println("Order placed successfully!");
+    }
+
+    private static int getValidItemChoice() {
+        while (true) {
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+
+                if (choice >= 1 && choice <= 5) {
+                    return choice;
+                } else {
+                    System.out.print("Invalid item. Please enter 1-5: ");
+                }
+            } catch (Exception e) {
+                System.out.print("Invalid input. Please enter a number (1-5): ");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    private static int getValidQuantity() {
+        while (true) {
+            try {
+                int quantity = scanner.nextInt();
+                scanner.nextLine();
+
+                if (quantity > 0) {
+                    return quantity;
+                } else {
+                    System.out.print("Quantity must be positive. Please try again: ");
+                }
+            } catch (Exception e) {
+                System.out.print("Invalid input. Please enter a positive number: ");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    private static void checkOrderStatus() {
+        System.out.println("\n--- Order Status ---");
+        System.out.print("Enter order ID: ");
+        String orderId = scanner.nextLine(); // "ORD123"
+        System.out.println("Order " + orderId + " is being prepared. Estimated time: 15 minutes.");
+        // Order ORD123 is being prepared. Estimated time: 15 minutes.
+    }
+}
+```
+
+### Best Practices and Common Pitfalls
+
+#### 1. Scanner Resource Management
+
+```java
+import java.util.Scanner;
+
+public class ScannerBestPractices {
+    public static void main(String[] args) {
+        // ✅ Good: Use try-with-resources for automatic closing
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Enter your name: ");
+            String name = scanner.nextLine();
+            System.out.println("Hello, " + name + "!");
+        } // Scanner automatically closed here
+
+        // ✅ Alternative: Manual closing
+        Scanner scanner2 = new Scanner(System.in);
+        try {
+            System.out.print("Enter your age: ");
+            int age = scanner2.nextInt();
+            System.out.println("You are " + age + " years old");
+        } finally {
+            scanner2.close(); // Ensure scanner is closed
+        }
+    }
+}
+```
+
+#### 2. Handling Mixed Input Types
+
+```java
+import java.util.Scanner;
+
+public class MixedInputHandling {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // ❌ Common problem: nextLine() after numeric input
+        System.out.print("Enter your age: ");
+        int age = scanner.nextInt(); // Leaves newline in buffer
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine(); // Reads empty string!
+
+        System.out.println("Age: " + age + ", Name: '" + name + "'"); // Name is empty
+
+        // ✅ Solution: Consume the leftover newline
+        Scanner scanner2 = new Scanner(System.in);
+        System.out.print("Enter your age: ");
+        int age2 = scanner2.nextInt();
+        scanner2.nextLine(); // Consume leftover newline
+        System.out.print("Enter your name: ");
+        String name2 = scanner2.nextLine(); // Now reads correctly
+
+        System.out.println("Age: " + age2 + ", Name: '" + name2 + "'"); // Works correctly
+
+        scanner.close();
+        scanner2.close();
+    }
+}
+```
+
+#### 3. Input Validation Strategies
+
+```java
+import java.util.Scanner;
+
+public class ValidationStrategies {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Strategy 1: hasNextXxx() methods for checking
+        System.out.print("Enter a number: ");
+        if (scanner.hasNextInt()) {
+            int number = scanner.nextInt();
+            System.out.println("Valid integer: " + number);
+        } else {
+            System.out.println("Not a valid integer");
+            scanner.nextLine(); // Clear invalid input
+        }
+
+        // Strategy 2: Exception handling
+        System.out.print("Enter another number: ");
+        try {
+            double value = scanner.nextDouble();
+            System.out.println("Valid number: " + value);
+        } catch (Exception e) {
+            System.out.println("Invalid number format");
+            scanner.nextLine(); // Clear invalid input
+        }
+
+        // Strategy 3: String input with parsing
+        System.out.print("Enter an integer (string method): ");
+        scanner.nextLine(); // Clear buffer
+        String input = scanner.nextLine();
+        try {
+            int parsed = Integer.parseInt(input);
+            System.out.println("Parsed integer: " + parsed);
+        } catch (NumberFormatException e) {
+            System.out.println("Could not parse as integer: " + input);
+        }
+
+        scanner.close();
+    }
+}
+```
+
+### Scanner vs Other Input Methods
+
+```java
+import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+public class InputMethodComparison {
+    public static void main(String[] args) throws IOException {
+        // Method 1: Scanner (most common, feature-rich)
+        System.out.println("=== Using Scanner ===");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter text with Scanner: ");
+        String scannerInput = scanner.nextLine(); // "Hello World"
+        System.out.println("Scanner result: " + scannerInput); // Scanner result: Hello World
+
+        // Method 2: BufferedReader (faster for large inputs)
+        System.out.println("\n=== Using BufferedReader ===");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Enter text with BufferedReader: ");
+        String readerInput = reader.readLine(); // "Hello Java"
+        System.out.println("BufferedReader result: " + readerInput); // BufferedReader result: Hello Java
+
+        // Method 3: Console class (for password input)
+        System.out.println("\n=== Using Console ===");
+        java.io.Console console = System.console();
+        if (console != null) {
+            String consoleInput = console.readLine("Enter text with Console: ");
+            System.out.println("Console result: " + consoleInput);
+
+            // For passwords (input hidden)
+            char[] password = console.readPassword("Enter password: ");
+            System.out.println("Password length: " + password.length);
+        } else {
+            System.out.println("Console not available (running in IDE)");
+        }
+
+        scanner.close();
+        reader.close();
     }
 }
 ```
