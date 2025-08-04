@@ -1,6 +1,8 @@
 import com.accessmodifiers.AccessModifier;
 import com.basics.*;
 import com.oop.Cat;
+import com.oop.Gender;
+import com.oop.Person;
 
 public class Main {
     public static void main(String[] args) {
@@ -39,5 +41,9 @@ public class Main {
         Cat cat2 = new Cat("Rose", 12);
         System.out.println(cat1.equals(cat2));
 
+        Cat[] cats = {cat1,cat2};
+
+        Person sree = new Person("Sree","R", Gender.MALE, cats);
+        System.out.println(sree);
     }
 }

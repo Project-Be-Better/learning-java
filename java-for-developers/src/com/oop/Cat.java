@@ -5,19 +5,22 @@ import java.util.Objects;
 public class Cat implements Animal {
     private String name;
     private int age;
-
-    public Cat() {
-
-    }
+    private String color;
 
     public Cat(String name, int age) {
-        this.age = age;
         this.name = name;
+        this.age = age;
+    }
+
+    public Cat(String name, int age, String color) {
+        this.name = name;
+        this.age = age;
+        this.color = color;
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return name;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class Cat implements Animal {
 
     @Override
     public int getAge() {
-        return this.age;
+        return age;
     }
 
     @Override
@@ -37,38 +40,45 @@ public class Cat implements Animal {
 
     @Override
     public void makeSound() {
-        System.out.println("Sound of Animal : Meow");
+
     }
 
     @Override
     public void eat() {
-        System.out.println("Eating Fish");
+
     }
 
     @Override
     public void help() {
-        System.out.println("Information Doxxing on the Cat");
 
     }
 
-    @Override
-    public String toString() {
-        return String.format("""
-                Cat profile :
-                Name    " %s,
-                Age     : %d
-                """,this.name, this.age);
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Cat cat = (Cat) o;
-        return age == cat.age && Objects.equals(name, cat.name);
+        return age == cat.age && Objects.equals(name, cat.name) && Objects.equals(color, cat.color);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, age);
+        return Objects.hash(name, age, color);
+    }
+
+    @Override
+    public String toString() {
+        return "Cat{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", color='" + color + '\'' +
+                '}';
     }
 }
