@@ -11944,6 +11944,861 @@ class NewsChannel {
 }
 ```
 
+# Pojos
+
+## Introduction to POJOs
+
+POJO stands for "Plain Old Java Object" - a term that describes simple Java classes that don't depend on any special frameworks or libraries. POJOs are fundamental building blocks in Java applications and form the basis for data transfer objects, domain models, and entity classes.
+
+### What Makes a Class a POJO?
+
+```java
+public class WhatIsAPOJO {
+    public static void main(String[] args) {
+        System.out.println("=== Understanding POJOs ===");
+        
+        // POJO characteristics:
+        System.out.println("A POJO is a Java class that:");
+        System.out.println("1. Has private fields");
+        System.out.println("2. Has public getter and setter methods");
+        System.out.println("3. Has a no-argument constructor");
+        System.out.println("4. May have additional constructors");
+        System.out.println("5. Implements Serializable (optional but common)");
+        System.out.println("6. Doesn't extend or implement special framework classes/interfaces");
+        System.out.println("7. Contains only business logic (no framework-specific code)");
+        
+        // Example POJO usage
+        SimplePerson person = new SimplePerson();
+        person.setName("John Doe");
+        person.setAge(30);
+        person.setEmail("john@example.com");
+        
+        System.out.println("\n=== POJO in Action ===");
+        System.out.println("Person: " + person.getName() + ", Age: " + person.getAge());
+        // Person: John Doe, Age: 30
+    }
+}
+
+// Simple POJO example
+class SimplePerson {
+    private String name;
+    private int age;
+    private String email;
+    
+    // No-argument constructor
+    public SimplePerson() {}
+    
+    // Getters and setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
+    
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+}
+```
+
+### POJO vs JavaBean
+
+```java
+import java.io.Serializable;
+
+public class POJOvsJavaBean {
+    public static void main(String[] args) {
+        System.out.println("=== POJO vs JavaBean Comparison ===");
+        
+        // Regular POJO
+        RegularPOJO pojo = new RegularPOJO();
+        pojo.setName("POJO Example");
+        pojo.setActive(true);
+        
+        // JavaBean (stricter POJO)
+        PersonBean bean = new PersonBean();
+        bean.setFirstName("John");
+        bean.setLastName("Doe");
+        bean.setAge(25);
+        
+        System.out.println("POJO: " + pojo.getName() + " (Active: " + pojo.isActive() + ")");
+        System.out.println("JavaBean: " + bean.getFirstName() + " " + bean.getLastName() + 
+                          ", Age: " + bean.getAge());
+        
+        demonstrateDifferences();
+    }
+    
+    private static void demonstrateDifferences() {
+        System.out.println("\n=== Key Differences ===");
+        System.out.println("POJO:");
+        System.out.println("  - Simple Java class");
+        System.out.println("  - No specific rules");
+        System.out.println("  - May or may not be serializable");
+        System.out.println("  - Flexible constructor requirements");
+        
+        System.out.println("\nJavaBean:");
+        System.out.println("  - Follows JavaBean specification");
+        System.out.println("  - Must be serializable");
+        System.out.println("  - Must have no-argument constructor");
+        System.out.println("  - Must follow getter/setter naming conventions");
+        System.out.println("  - Properties must be private with public accessors");
+    }
+}
+
+// Regular POJO - flexible rules
+class RegularPOJO {
+    private String name;
+    private boolean active;
+    
+    // Constructor with parameters (optional)
+    public RegularPOJO(String name, boolean active) {
+        this.name = name;
+        this.active = active;
+    }
+    
+    // Default constructor
+    public RegularPOJO() {}
+    
+    // Getters and setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public boolean isActive() { return active; }  // Note: boolean uses 'is' prefix
+    public void setActive(boolean active) { this.active = active; }
+}
+
+// JavaBean - strict rules
+class PersonBean implements Serializable {
+    private static final long serialVersionUID = 1L;  // Required for Serializable
+    
+    private String firstName;
+    private String lastName;
+    private int age;
+    
+    // Must have no-argument constructor
+    public PersonBean() {}
+    
+    // Getter/setter pairs following JavaBean naming convention
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
+}
+```
+
+### Comprehensive POJO Examples
+
+```java
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+// Product POJO for e-commerce application
+public class Product {
+    private Long id;
+    private String name;
+    private String description;
+    private double price;
+    private int stockQuantity;
+    private String category;
+    private String sku;  // Stock Keeping Unit
+    private boolean active;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private List<String> tags;
+    
+    // Default constructor
+    public Product() {
+        this.tags = new ArrayList<>();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.active = true;
+    }
+    
+    // Constructor with essential fields
+    public Product(String name, double price, int stockQuantity, String category) {
+        this();  // Call default constructor
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.category = category;
+    }
+    
+    // Full constructor
+    public Product(Long id, String name, String description, double price, 
+                  int stockQuantity, String category, String sku) {
+        this(name, price, stockQuantity, category);  // Call partial constructor
+        this.id = id;
+        this.description = description;
+        this.sku = sku;
+    }
+    
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { 
+        this.name = name; 
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public String getDescription() { return description; }
+    public void setDescription(String description) { 
+        this.description = description;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public double getPrice() { return price; }
+    public void setPrice(double price) { 
+        this.price = price;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public int getStockQuantity() { return stockQuantity; }
+    public void setStockQuantity(int stockQuantity) { 
+        this.stockQuantity = stockQuantity;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public String getCategory() { return category; }
+    public void setCategory(String category) { 
+        this.category = category;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public String getSku() { return sku; }
+    public void setSku(String sku) { 
+        this.sku = sku;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { 
+        this.active = active;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    
+    public List<String> getTags() { return new ArrayList<>(tags); }  // Return copy for encapsulation
+    public void setTags(List<String> tags) { 
+        this.tags = new ArrayList<>(tags);
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    // Business methods
+    public void addTag(String tag) {
+        if (tag != null && !tags.contains(tag)) {
+            tags.add(tag);
+            updatedAt = LocalDateTime.now();
+        }
+    }
+    
+    public void removeTag(String tag) {
+        if (tags.remove(tag)) {
+            updatedAt = LocalDateTime.now();
+        }
+    }
+    
+    public boolean isInStock() {
+        return stockQuantity > 0;
+    }
+    
+    public boolean isLowStock(int threshold) {
+        return stockQuantity <= threshold;
+    }
+    
+    public double getTotalValue() {
+        return price * stockQuantity;
+    }
+    
+    // Override equals and hashCode for proper object comparison
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Product product = (Product) obj;
+        return Objects.equals(id, product.id) && 
+               Objects.equals(sku, product.sku);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, sku);
+    }
+    
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + String.format("%.2f", price) +
+                ", stockQuantity=" + stockQuantity +
+                ", category='" + category + '\'' +
+                ", active=" + active +
+                '}';
+    }
+}
+```
+
+### Employee POJO with Nested Objects
+
+```java
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+// Address POJO (nested in Employee)
+class Address {
+    private String street;
+    private String city;
+    private String state;
+    private String zipCode;
+    private String country;
+    
+    public Address() {}
+    
+    public Address(String street, String city, String state, String zipCode, String country) {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.country = country;
+    }
+    
+    // Getters and setters
+    public String getStreet() { return street; }
+    public void setStreet(String street) { this.street = street; }
+    
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+    
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+    
+    public String getZipCode() { return zipCode; }
+    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
+    
+    public String getCountry() { return country; }
+    public void setCountry(String country) { this.country = country; }
+    
+    public String getFullAddress() {
+        return String.format("%s, %s, %s %s, %s", street, city, state, zipCode, country);
+    }
+    
+    @Override
+    public String toString() {
+        return getFullAddress();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Address address = (Address) obj;
+        return Objects.equals(street, address.street) &&
+               Objects.equals(city, address.city) &&
+               Objects.equals(state, address.state) &&
+               Objects.equals(zipCode, address.zipCode) &&
+               Objects.equals(country, address.country);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(street, city, state, zipCode, country);
+    }
+}
+
+// Employee POJO with complex structure
+public class Employee {
+    private Long employeeId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phoneNumber;
+    private LocalDate hireDate;
+    private LocalDate birthDate;
+    private String jobTitle;
+    private String department;
+    private double salary;
+    private Address address;
+    private Employee manager;
+    private List<Employee> directReports;
+    private boolean active;
+    
+    // Default constructor
+    public Employee() {
+        this.directReports = new ArrayList<>();
+        this.active = true;
+        this.hireDate = LocalDate.now();
+    }
+    
+    // Essential constructor
+    public Employee(String firstName, String lastName, String email, String jobTitle, double salary) {
+        this();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.jobTitle = jobTitle;
+        this.salary = salary;
+    }
+    
+    // Getters and setters
+    public Long getEmployeeId() { return employeeId; }
+    public void setEmployeeId(Long employeeId) { this.employeeId = employeeId; }
+    
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    
+    public LocalDate getHireDate() { return hireDate; }
+    public void setHireDate(LocalDate hireDate) { this.hireDate = hireDate; }
+    
+    public LocalDate getBirthDate() { return birthDate; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+    
+    public String getJobTitle() { return jobTitle; }
+    public void setJobTitle(String jobTitle) { this.jobTitle = jobTitle; }
+    
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
+    
+    public double getSalary() { return salary; }
+    public void setSalary(double salary) { this.salary = salary; }
+    
+    public Address getAddress() { return address; }
+    public void setAddress(Address address) { this.address = address; }
+    
+    public Employee getManager() { return manager; }
+    public void setManager(Employee manager) { this.manager = manager; }
+    
+    public List<Employee> getDirectReports() { return new ArrayList<>(directReports); }
+    public void setDirectReports(List<Employee> directReports) { 
+        this.directReports = new ArrayList<>(directReports);
+    }
+    
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+    
+    // Computed properties
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+    
+    public long getYearsOfService() {
+        return ChronoUnit.YEARS.between(hireDate, LocalDate.now());
+    }
+    
+    public int getAge() {
+        return birthDate != null ? (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now()) : 0;
+    }
+    
+    public boolean isManager() {
+        return !directReports.isEmpty();
+    }
+    
+    public int getTeamSize() {
+        return directReports.size();
+    }
+    
+    // Business methods
+    public void addDirectReport(Employee employee) {
+        if (employee != null && !directReports.contains(employee)) {
+            directReports.add(employee);
+            employee.setManager(this);
+        }
+    }
+    
+    public void removeDirectReport(Employee employee) {
+        if (directReports.remove(employee)) {
+            employee.setManager(null);
+        }
+    }
+    
+    public void promoteEmployee(String newJobTitle, double newSalary) {
+        this.jobTitle = newJobTitle;
+        this.salary = newSalary;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Employee employee = (Employee) obj;
+        return Objects.equals(employeeId, employee.employeeId) ||
+               Objects.equals(email, employee.email);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(employeeId, email);
+    }
+    
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", fullName='" + getFullName() + '\'' +
+                ", email='" + email + '\'' +
+                ", jobTitle='" + jobTitle + '\'' +
+                ", department='" + department + '\'' +
+                ", salary=" + String.format("%.2f", salary) +
+                ", yearsOfService=" + getYearsOfService() +
+                ", teamSize=" + getTeamSize() +
+                '}';
+    }
+}
+```
+
+### POJO Best Practices and Patterns
+
+```java
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
+// Builder Pattern with POJO
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    private final String id;  // Immutable after creation
+    private String username;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private boolean active;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastLoginAt;
+    
+    // Private constructor - forces use of builder
+    private User(Builder builder) {
+        this.id = builder.id;
+        this.username = builder.username;
+        this.email = builder.email;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.active = builder.active;
+        this.createdAt = builder.createdAt;
+        this.lastLoginAt = builder.lastLoginAt;
+    }
+    
+    // Getters only - setters through builder or specific methods
+    public String getId() { return id; }
+    public String getUsername() { return username; }
+    public String getEmail() { return email; }
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public boolean isActive() { return active; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getLastLoginAt() { return lastLoginAt; }
+    
+    // Controlled setters for specific business operations
+    public void updateProfile(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+    
+    public void recordLogin() {
+        this.lastLoginAt = LocalDateTime.now();
+    }
+    
+    public void activate() {
+        this.active = true;
+    }
+    
+    public void deactivate() {
+        this.active = false;
+    }
+    
+    // Computed properties
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+    
+    public String getDisplayName() {
+        return getFullName() + " (" + username + ")";
+    }
+    
+    // Builder pattern implementation
+    public static class Builder {
+        private String id;
+        private String username;
+        private String email;
+        private String firstName;
+        private String lastName;
+        private boolean active = true;  // Default value
+        private LocalDateTime createdAt = LocalDateTime.now();  // Default value
+        private LocalDateTime lastLoginAt;
+        
+        public Builder() {
+            this.id = UUID.randomUUID().toString();  // Auto-generate ID
+        }
+        
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+        
+        public Builder username(String username) {
+            this.username = username;
+            return this;
+        }
+        
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+        
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+        
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+        
+        public Builder active(boolean active) {
+            this.active = active;
+            return this;
+        }
+        
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+        
+        public Builder lastLoginAt(LocalDateTime lastLoginAt) {
+            this.lastLoginAt = lastLoginAt;
+            return this;
+        }
+        
+        public User build() {
+            // Validation before building
+            if (username == null || username.trim().isEmpty()) {
+                throw new IllegalArgumentException("Username is required");
+            }
+            if (email == null || email.trim().isEmpty()) {
+                throw new IllegalArgumentException("Email is required");
+            }
+            
+            return new User(this);
+        }
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return Objects.equals(id, user.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+    
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", fullName='" + getFullName() + '\'' +
+                ", active=" + active +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+}
+```
+
+### POJO Usage Demonstration
+
+```java
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class POJODemo {
+    public static void main(String[] args) {
+        System.out.println("=== POJO Demonstration ===");
+        
+        // Product POJO examples
+        demonstrateProductPOJO();
+        
+        // Employee POJO examples
+        demonstrateEmployeePOJO();
+        
+        // User Builder Pattern examples
+        demonstrateUserBuilder();
+        
+        // POJO collections
+        demonstratePOJOCollections();
+    }
+    
+    private static void demonstrateProductPOJO() {
+        System.out.println("\n--- Product POJO Examples ---");
+        
+        // Creating products using different constructors
+        Product laptop = new Product("Gaming Laptop", 1299.99, 15, "Electronics");
+        laptop.setDescription("High-performance gaming laptop with RGB lighting");
+        laptop.setSku("LAPTOP-001");
+        laptop.addTag("Gaming");
+        laptop.addTag("RGB");
+        laptop.addTag("High Performance");
+        
+        Product phone = new Product();
+        phone.setName("Smartphone");
+        phone.setPrice(699.99);
+        phone.setStockQuantity(50);
+        phone.setCategory("Electronics");
+        phone.addTag("Mobile");
+        phone.addTag("5G");
+        
+        System.out.println("Laptop: " + laptop);
+        System.out.println("Phone: " + phone);
+        System.out.println("Laptop in stock: " + laptop.isInStock());
+        System.out.println("Laptop total value: $" + String.format("%.2f", laptop.getTotalValue()));
+    }
+    
+    private static void demonstrateEmployeePOJO() {
+        System.out.println("\n--- Employee POJO Examples ---");
+        
+        // Create employees
+        Employee manager = new Employee("Sarah", "Johnson", "sarah.johnson@company.com", 
+                                      "Engineering Manager", 95000);
+        manager.setEmployeeId(1L);
+        manager.setDepartment("Engineering");
+        manager.setBirthDate(LocalDate.of(1985, 3, 15));
+        
+        Employee developer1 = new Employee("John", "Smith", "john.smith@company.com", 
+                                         "Senior Developer", 80000);
+        developer1.setEmployeeId(2L);
+        developer1.setDepartment("Engineering");
+        
+        Employee developer2 = new Employee("Alice", "Brown", "alice.brown@company.com", 
+                                         "Junior Developer", 60000);
+        developer2.setEmployeeId(3L);
+        developer2.setDepartment("Engineering");
+        
+        // Set up reporting structure
+        manager.addDirectReport(developer1);
+        manager.addDirectReport(developer2);
+        
+        // Create addresses
+        Address managerAddress = new Address("123 Main St", "Seattle", "WA", "98101", "USA");
+        manager.setAddress(managerAddress);
+        
+        System.out.println("Manager: " + manager);
+        System.out.println("Manager's team size: " + manager.getTeamSize());
+        System.out.println("Manager's years of service: " + manager.getYearsOfService());
+        System.out.println("Manager's address: " + manager.getAddress());
+        
+        System.out.println("\nDeveloper 1: " + developer1);
+        System.out.println("Developer 1's manager: " + developer1.getManager().getFullName());
+    }
+    
+    private static void demonstrateUserBuilder() {
+        System.out.println("\n--- User Builder Pattern Examples ---");
+        
+        // Using builder pattern for flexible object creation
+        User user1 = new User.Builder()
+                .username("johndoe")
+                .email("john.doe@example.com")
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+        
+        User user2 = new User.Builder()
+                .username("admin")
+                .email("admin@company.com")
+                .firstName("System")
+                .lastName("Administrator")
+                .active(true)
+                .createdAt(LocalDateTime.now().minusMonths(6))
+                .build();
+        
+        System.out.println("User 1: " + user1);
+        System.out.println("User 1 display name: " + user1.getDisplayName());
+        
+        System.out.println("User 2: " + user2);
+        
+        // Demonstrate business methods
+        user1.recordLogin();
+        user1.updateProfile("Jonathan", "Doe");
+        System.out.println("User 1 after updates: " + user1);
+        
+        // Try invalid user creation
+        try {
+            User invalidUser = new User.Builder()
+                    .username("")  // Invalid username
+                    .email("test@example.com")
+                    .build();
+        } catch (IllegalArgumentException e) {
+            System.out.println("Validation error: " + e.getMessage());
+        }
+    }
+    
+    private static void demonstratePOJOCollections() {
+        System.out.println("\n--- POJO Collections Examples ---");
+        
+        // Create a list of products
+        List<Product> products = new ArrayList<>();
+        products.add(new Product("Laptop", 999.99, 10, "Electronics"));
+        products.add(new Product("Mouse", 29.99, 100, "Electronics"));
+        products.add(new Product("Keyboard", 79.99, 50, "Electronics"));
+        products.add(new Product("Monitor", 299.99, 25, "Electronics"));
+        
+        // Process products
+        System.out.println("Product Inventory:");
+        double totalInventoryValue = 0;
+        for (Product product : products) {
+            System.out.println("  " + product.getName() + ": " + 
+                             product.getStockQuantity() + " units @ $" + 
+                             String.format("%.2f", product.getPrice()));
+            totalInventoryValue += product.getTotalValue();
+        }
+        System.out.println("Total inventory value: $" + String.format("%.2f", totalInventoryValue));
+        
+        // Filter low stock products
+        System.out.println("\nLow stock products (≤ 20 units):");
+        for (Product product : products) {
+            if (product.isLowStock(20)) {
+                System.out.println("  " + product.getName() + ": " + product.getStockQuantity() + " units");
+            }
+        }
+    }
+}
+```
+
 # Working with Strings
 
 ## What are Strings?
