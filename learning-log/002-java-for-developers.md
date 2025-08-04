@@ -12799,6 +12799,847 @@ public class POJODemo {
 }
 ```
 
+## JavaBeans
+
+### Introduction to JavaBeans
+
+JavaBeans are a specific type of POJO that follow the JavaBean specification. This specification defines a set of conventions for creating reusable software components in Java. JavaBeans are widely used in enterprise frameworks, GUI development, and serialization scenarios.
+
+### JavaBean Specification Requirements
+
+```java
+import java.io.Serializable;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+public class JavaBeanRequirements {
+    public static void main(String[] args) {
+        System.out.println("=== JavaBean Specification Requirements ===");
+        System.out.println("1. Must implement Serializable interface");
+        System.out.println("2. Must have a public no-argument constructor");
+        System.out.println("3. Properties must be private with public getters/setters");
+        System.out.println("4. Getter methods must start with 'get' (or 'is' for boolean)");
+        System.out.println("5. Setter methods must start with 'set'");
+        System.out.println("6. Must follow JavaBean naming conventions");
+        System.out.println("7. Should support property change events (optional but recommended)");
+
+        // Demonstrate a compliant JavaBean
+        PersonBean person = new PersonBean();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setAge(30);
+        person.setActive(true);
+
+        System.out.println("\n=== JavaBean Example ===");
+        System.out.println("Name: " + person.getFirstName() + " " + person.getLastName());
+        System.out.println("Age: " + person.getAge());
+        System.out.println("Active: " + person.isActive());
+    }
+}
+
+// Compliant JavaBean example
+class PersonBean implements Serializable {
+    private static final long serialVersionUID = 1L;  // Required for Serializable
+
+    // Private properties
+    private String firstName;
+    private String lastName;
+    private int age;
+    private boolean active;
+
+    // Required: Public no-argument constructor
+    public PersonBean() {
+        // Default values can be set here
+        this.active = true;
+    }
+
+    // Getter methods (must start with 'get' or 'is' for boolean)
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public int getAge() { return age; }
+    public boolean isActive() { return active; }  // Note: 'is' prefix for boolean
+
+    // Setter methods (must start with 'set')
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setAge(int age) { this.age = age; }
+    public void setActive(boolean active) { this.active = active; }
+}
+```
+
+### JavaBean Naming Conventions
+
+```java
+import java.io.Serializable;
+import java.time.LocalDate;
+
+public class JavaBeanNamingDemo {
+    public static void main(String[] args) {
+        System.out.println("=== JavaBean Naming Convention Examples ===");
+
+        NamingConventionBean bean = new NamingConventionBean();
+
+        // Setting properties using setter methods
+        bean.setName("Product Name");
+        bean.setPrice(99.99);
+        bean.setAvailabile(true);  // Note: boolean property
+        bean.setItemCount(50);
+        bean.setBirthDate(LocalDate.of(1990, 5, 15));
+        bean.setXmlData("<xml>data</xml>");  // Special case: XML
+        bean.setId(12345L);
+
+        // Reading properties using getter methods
+        System.out.println("Name: " + bean.getName());
+        System.out.println("Price: $" + bean.getPrice());
+        System.out.println("Available: " + bean.isAvailabile());  // 'is' for boolean
+        System.out.println("Item Count: " + bean.getItemCount());
+        System.out.println("Birth Date: " + bean.getBirthDate());
+        System.out.println("XML Data: " + bean.getXmlData());
+        System.out.println("ID: " + bean.getId());
+
+        // Demonstrate property name derivation
+        System.out.println("\n=== Property Name Derivation ===");
+        System.out.println("Method: getName() → Property: name");
+        System.out.println("Method: setPrice(double) → Property: price");
+        System.out.println("Method: isAvailabile() → Property: availabile");
+        System.out.println("Method: getItemCount() → Property: itemCount");
+        System.out.println("Method: getXmlData() → Property: xmlData (special case)");
+    }
+}
+
+class NamingConventionBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    // Properties with different naming scenarios
+    private String name;          // Simple property
+    private double price;         // Numeric property
+    private boolean availabile;   // Boolean property (uses 'is' getter)
+    private int itemCount;        // CamelCase property
+    private LocalDate birthDate;  // Date property
+    private String xmlData;       // Acronym property
+    private Long id;              // Wrapper type property
+
+    // No-argument constructor
+    public NamingConventionBean() {}
+
+    // Standard getters and setters following JavaBean conventions
+
+    // String property
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    // Numeric property
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+
+    // Boolean property - uses 'is' prefix for getter
+    public boolean isAvailabile() { return availabile; }
+    public void setAvailabile(boolean availabile) { this.availabile = availabile; }
+
+    // CamelCase property
+    public int getItemCount() { return itemCount; }
+    public void setItemCount(int itemCount) { this.itemCount = itemCount; }
+
+    // Date property
+    public LocalDate getBirthDate() { return birthDate; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+
+    // Acronym property - first letter lowercase, rest uppercase
+    public String getXmlData() { return xmlData; }
+    public void setXmlData(String xmlData) { this.xmlData = xmlData; }
+
+    // Wrapper type property
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+}
+```
+
+### JavaBeans with Property Change Support
+
+```java
+import java.io.Serializable;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+public class PropertyChangeDemo {
+    public static void main(String[] args) {
+        System.out.println("=== JavaBean Property Change Events ===");
+
+        AdvancedPersonBean person = new AdvancedPersonBean();
+
+        // Add property change listener
+        person.addPropertyChangeListener(evt -> {
+            System.out.println("Property changed: " + evt.getPropertyName() +
+                             " from '" + evt.getOldValue() + "' to '" + evt.getNewValue() + "'");
+        });
+
+        // Add specific property listener
+        person.addPropertyChangeListener("salary", evt -> {
+            System.out.println("Salary change detected: $" + evt.getOldValue() + " → $" + evt.getNewValue());
+        });
+
+        // Make changes to properties
+        System.out.println("Setting initial values...");
+        person.setName("John Doe");
+        person.setAge(30);
+        person.setSalary(50000.0);
+
+        System.out.println("\nUpdating values...");
+        person.setName("John Smith");
+        person.setAge(31);
+        person.setSalary(55000.0);
+    }
+}
+
+class AdvancedPersonBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    // Property change support for event notifications
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+    // Properties
+    private String name;
+    private int age;
+    private double salary;
+
+    // No-argument constructor
+    public AdvancedPersonBean() {}
+
+    // Getters
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public double getSalary() { return salary; }
+
+    // Setters with property change support
+    public void setName(String name) {
+        String oldName = this.name;
+        this.name = name;
+        pcs.firePropertyChange("name", oldName, name);
+    }
+
+    public void setAge(int age) {
+        int oldAge = this.age;
+        this.age = age;
+        pcs.firePropertyChange("age", oldAge, age);
+    }
+
+    public void setSalary(double salary) {
+        double oldSalary = this.salary;
+        this.salary = salary;
+        pcs.firePropertyChange("salary", oldSalary, salary);
+    }
+
+    // Property change listener methods
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(propertyName, listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(propertyName, listener);
+    }
+}
+```
+
+### JavaBeans in Framework Integration
+
+```java
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Objects;
+
+// JavaBean for web forms and data binding
+public class CustomerBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    // Properties commonly used in web applications
+    private Long customerId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phoneNumber;
+    private LocalDate registrationDate;
+    private boolean active;
+    private String customerType;
+    private double creditLimit;
+
+    // Required no-argument constructor
+    public CustomerBean() {
+        this.registrationDate = LocalDate.now();
+        this.active = true;
+        this.customerType = "STANDARD";
+        this.creditLimit = 1000.0;
+    }
+
+    // Full constructor for convenience (not required by JavaBean spec)
+    public CustomerBean(String firstName, String lastName, String email) {
+        this();  // Call no-arg constructor
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    // All getters and setters following JavaBean conventions
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+    public LocalDate getRegistrationDate() { return registrationDate; }
+    public void setRegistrationDate(LocalDate registrationDate) { this.registrationDate = registrationDate; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    public String getCustomerType() { return customerType; }
+    public void setCustomerType(String customerType) { this.customerType = customerType; }
+
+    public double getCreditLimit() { return creditLimit; }
+    public void setCreditLimit(double creditLimit) { this.creditLimit = creditLimit; }
+
+    // Computed properties (read-only, no setters)
+    public String getFullName() {
+        return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+    }
+
+    public String getDisplayName() {
+        return getFullName() + " (" + email + ")";
+    }
+
+    // Business logic methods
+    public boolean canPurchase(double amount) {
+        return active && amount <= creditLimit;
+    }
+
+    public void increaseCreditLimit(double increase) {
+        if (increase > 0) {
+            this.creditLimit += increase;
+        }
+    }
+
+    // Override Object methods for proper behavior
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CustomerBean that = (CustomerBean) obj;
+        return Objects.equals(customerId, that.customerId) ||
+               Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(customerId, email);
+    }
+
+    @Override
+    public String toString() {
+        return "CustomerBean{" +
+                "customerId=" + customerId +
+                ", fullName='" + getFullName() + '\'' +
+                ", email='" + email + '\'' +
+                ", customerType='" + customerType + '\'' +
+                ", active=" + active +
+                ", creditLimit=" + creditLimit +
+                '}';
+    }
+}
+```
+
+### JavaBean Validation and Best Practices
+
+```java
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class JavaBeanValidationDemo {
+    public static void main(String[] args) {
+        System.out.println("=== JavaBean Validation Examples ===");
+
+        ValidatedProductBean product = new ValidatedProductBean();
+
+        // Test validation
+        try {
+            product.setName("Laptop Computer");
+            product.setPrice(999.99);
+            product.setCategory("Electronics");
+            product.setSku("LAPTOP-001");
+            product.setManufactureDate(LocalDate.now().minusMonths(1));
+
+            System.out.println("Valid product created: " + product);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Validation error: " + e.getMessage());
+        }
+
+        // Test invalid values
+        System.out.println("\n=== Testing Invalid Values ===");
+
+        try {
+            product.setPrice(-100.0);  // Invalid negative price
+        } catch (IllegalArgumentException e) {
+            System.out.println("Price validation: " + e.getMessage());
+        }
+
+        try {
+            product.setName("");  // Invalid empty name
+        } catch (IllegalArgumentException e) {
+            System.out.println("Name validation: " + e.getMessage());
+        }
+
+        try {
+            product.setManufactureDate(LocalDate.now().plusDays(1));  // Future date
+        } catch (IllegalArgumentException e) {
+            System.out.println("Date validation: " + e.getMessage());
+        }
+    }
+}
+
+// JavaBean with comprehensive validation
+class ValidatedProductBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    // Properties
+    private String name;
+    private double price;
+    private String category;
+    private String sku;
+    private LocalDate manufactureDate;
+    private boolean available;
+    private List<String> tags;
+
+    // No-argument constructor
+    public ValidatedProductBean() {
+        this.available = true;
+        this.tags = new ArrayList<>();
+    }
+
+    // Validated getters and setters
+    public String getName() { return name; }
+
+    public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (name.length() > 100) {
+            throw new IllegalArgumentException("Name cannot exceed 100 characters");
+        }
+        this.name = name.trim();
+    }
+
+    public double getPrice() { return price; }
+
+    public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+        if (price > 1_000_000) {
+            throw new IllegalArgumentException("Price cannot exceed $1,000,000");
+        }
+        this.price = price;
+    }
+
+    public String getCategory() { return category; }
+
+    public void setCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
+            throw new IllegalArgumentException("Category cannot be null or empty");
+        }
+
+        // Validate against allowed categories
+        List<String> allowedCategories = List.of("Electronics", "Clothing", "Books", "Home", "Sports");
+        if (!allowedCategories.contains(category)) {
+            throw new IllegalArgumentException("Category must be one of: " + allowedCategories);
+        }
+
+        this.category = category;
+    }
+
+    public String getSku() { return sku; }
+
+    public void setSku(String sku) {
+        if (sku == null || sku.trim().isEmpty()) {
+            throw new IllegalArgumentException("SKU cannot be null or empty");
+        }
+
+        // SKU format validation: LETTERS-NUMBERS
+        if (!sku.matches("^[A-Z]+-\\d+$")) {
+            throw new IllegalArgumentException("SKU must follow format: LETTERS-NUMBERS (e.g., LAPTOP-001)");
+        }
+
+        this.sku = sku.toUpperCase();
+    }
+
+    public LocalDate getManufactureDate() { return manufactureDate; }
+
+    public void setManufactureDate(LocalDate manufactureDate) {
+        if (manufactureDate == null) {
+            throw new IllegalArgumentException("Manufacture date cannot be null");
+        }
+
+        if (manufactureDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Manufacture date cannot be in the future");
+        }
+
+        if (manufactureDate.isBefore(LocalDate.now().minusYears(50))) {
+            throw new IllegalArgumentException("Manufacture date cannot be more than 50 years ago");
+        }
+
+        this.manufactureDate = manufactureDate;
+    }
+
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
+
+    public List<String> getTags() { return new ArrayList<>(tags); }  // Return defensive copy
+
+    public void setTags(List<String> tags) {
+        if (tags == null) {
+            this.tags = new ArrayList<>();
+        } else {
+            // Validate and clean tags
+            this.tags = new ArrayList<>();
+            for (String tag : tags) {
+                if (tag != null && !tag.trim().isEmpty()) {
+                    this.tags.add(tag.trim().toLowerCase());
+                }
+            }
+        }
+    }
+
+    // Business methods
+    public void addTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            String cleanTag = tag.trim().toLowerCase();
+            if (!tags.contains(cleanTag)) {
+                tags.add(cleanTag);
+            }
+        }
+    }
+
+    public void removeTag(String tag) {
+        if (tag != null) {
+            tags.remove(tag.trim().toLowerCase());
+        }
+    }
+
+    public boolean hasTag(String tag) {
+        return tag != null && tags.contains(tag.trim().toLowerCase());
+    }
+
+    // Computed properties
+    public String getFormattedPrice() {
+        return String.format("$%.2f", price);
+    }
+
+    public int getAgeInDays() {
+        if (manufactureDate == null) return 0;
+        return (int) java.time.temporal.ChronoUnit.DAYS.between(manufactureDate, LocalDate.now());
+    }
+
+    @Override
+    public String toString() {
+        return "ValidatedProductBean{" +
+                "name='" + name + '\'' +
+                ", price=" + getFormattedPrice() +
+                ", category='" + category + '\'' +
+                ", sku='" + sku + '\'' +
+                ", available=" + available +
+                ", ageInDays=" + getAgeInDays() +
+                '}';
+    }
+}
+```
+
+### JavaBeans Usage in Real Applications
+
+```java
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class JavaBeanApplicationDemo {
+    public static void main(String[] args) {
+        // Simulate web form processing
+        simulateWebFormProcessing();
+
+        // Simulate database mapping
+        simulateDatabaseMapping();
+
+        // Simulate serialization
+        simulateSerialization();
+    }
+
+    private static void simulateWebFormProcessing() {
+        System.out.println("=== Web Form Processing Simulation ===");
+
+        // Simulate form data coming from HTTP request
+        UserRegistrationBean registration = new UserRegistrationBean();
+
+        // Set form fields (typically done by web framework)
+        registration.setUsername("johndoe");
+        registration.setEmail("john.doe@example.com");
+        registration.setPassword("securepassword123");
+        registration.setFirstName("John");
+        registration.setLastName("Doe");
+        registration.setAgreeToTerms(true);
+
+        // Validate form (typical web application flow)
+        if (registration.isValid()) {
+            System.out.println("Registration successful: " + registration.getDisplayName());
+            System.out.println("User created at: " + registration.getCreatedAt());
+        } else {
+            System.out.println("Registration failed: " + registration.getValidationErrors());
+        }
+    }
+
+    private static void simulateDatabaseMapping() {
+        System.out.println("\n=== Database Mapping Simulation ===");
+
+        // JavaBeans are commonly used with ORM frameworks
+        OrderBean order = new OrderBean();
+        order.setOrderId(12345L);
+        order.setCustomerEmail("customer@example.com");
+        order.setTotalAmount(299.99);
+        order.setStatus("PENDING");
+
+        // Add order items
+        OrderItemBean item1 = new OrderItemBean();
+        item1.setProductName("Wireless Headphones");
+        item1.setQuantity(1);
+        item1.setUnitPrice(199.99);
+
+        OrderItemBean item2 = new OrderItemBean();
+        item2.setProductName("Phone Case");
+        item2.setQuantity(2);
+        item2.setUnitPrice(49.99);
+
+        order.getItems().add(item1);
+        order.getItems().add(item2);
+
+        System.out.println("Order created: " + order);
+        System.out.println("Order total: $" + order.calculateTotal());
+    }
+
+    private static void simulateSerialization() {
+        System.out.println("\n=== Serialization Simulation ===");
+
+        ConfigurationBean config = new ConfigurationBean();
+        config.setApplicationName("MyApp");
+        config.setVersion("1.0.0");
+        config.setDebugMode(false);
+        config.setMaxConnections(100);
+        config.setDatabaseUrl("jdbc:mysql://localhost:3306/myapp");
+
+        System.out.println("Configuration ready for serialization: " + config);
+        System.out.println("Serializable: " + (config instanceof Serializable));
+    }
+}
+
+// JavaBean for user registration forms
+class UserRegistrationBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String username;
+    private String email;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private boolean agreeToTerms;
+    private LocalDateTime createdAt;
+    private List<String> validationErrors;
+
+    public UserRegistrationBean() {
+        this.createdAt = LocalDateTime.now();
+        this.validationErrors = new ArrayList<>();
+    }
+
+    // Standard getters and setters
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public boolean isAgreeToTerms() { return agreeToTerms; }
+    public void setAgreeToTerms(boolean agreeToTerms) { this.agreeToTerms = agreeToTerms; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public List<String> getValidationErrors() { return new ArrayList<>(validationErrors); }
+
+    // Business methods
+    public String getDisplayName() {
+        return firstName + " " + lastName + " (" + username + ")";
+    }
+
+    public boolean isValid() {
+        validationErrors.clear();
+
+        if (username == null || username.trim().length() < 3) {
+            validationErrors.add("Username must be at least 3 characters");
+        }
+
+        if (email == null || !email.contains("@")) {
+            validationErrors.add("Valid email address is required");
+        }
+
+        if (password == null || password.length() < 8) {
+            validationErrors.add("Password must be at least 8 characters");
+        }
+
+        if (!agreeToTerms) {
+            validationErrors.add("Must agree to terms and conditions");
+        }
+
+        return validationErrors.isEmpty();
+    }
+}
+
+// JavaBean for order processing
+class OrderBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private Long orderId;
+    private String customerEmail;
+    private double totalAmount;
+    private String status;
+    private LocalDateTime orderDate;
+    private List<OrderItemBean> items;
+
+    public OrderBean() {
+        this.orderDate = LocalDateTime.now();
+        this.items = new ArrayList<>();
+        this.status = "DRAFT";
+    }
+
+    // Standard getters and setters
+    public Long getOrderId() { return orderId; }
+    public void setOrderId(Long orderId) { this.orderId = orderId; }
+
+    public String getCustomerEmail() { return customerEmail; }
+    public void setCustomerEmail(String customerEmail) { this.customerEmail = customerEmail; }
+
+    public double getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public LocalDateTime getOrderDate() { return orderDate; }
+    public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
+
+    public List<OrderItemBean> getItems() { return items; }
+    public void setItems(List<OrderItemBean> items) { this.items = items; }
+
+    // Business methods
+    public double calculateTotal() {
+        return items.stream()
+                   .mapToDouble(item -> item.getQuantity() * item.getUnitPrice())
+                   .sum();
+    }
+
+    @Override
+    public String toString() {
+        return "OrderBean{orderId=" + orderId + ", customer='" + customerEmail +
+               "', items=" + items.size() + ", status='" + status + "'}";
+    }
+}
+
+class OrderItemBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String productName;
+    private int quantity;
+    private double unitPrice;
+
+    public OrderItemBean() {}
+
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
+
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
+    public double getUnitPrice() { return unitPrice; }
+    public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
+
+    public double getTotalPrice() {
+        return quantity * unitPrice;
+    }
+}
+
+// JavaBean for application configuration
+class ConfigurationBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String applicationName;
+    private String version;
+    private boolean debugMode;
+    private int maxConnections;
+    private String databaseUrl;
+
+    public ConfigurationBean() {
+        this.debugMode = false;
+        this.maxConnections = 10;
+    }
+
+    public String getApplicationName() { return applicationName; }
+    public void setApplicationName(String applicationName) { this.applicationName = applicationName; }
+
+    public String getVersion() { return version; }
+    public void setVersion(String version) { this.version = version; }
+
+    public boolean isDebugMode() { return debugMode; }
+    public void setDebugMode(boolean debugMode) { this.debugMode = debugMode; }
+
+    public int getMaxConnections() { return maxConnections; }
+    public void setMaxConnections(int maxConnections) { this.maxConnections = maxConnections; }
+
+    public String getDatabaseUrl() { return databaseUrl; }
+    public void setDatabaseUrl(String databaseUrl) { this.databaseUrl = databaseUrl; }
+
+    @Override
+    public String toString() {
+        return "ConfigurationBean{" +
+                "applicationName='" + applicationName + '\'' +
+                ", version='" + version + '\'' +
+                ", debugMode=" + debugMode +
+                ", maxConnections=" + maxConnections +
+                '}';
+    }
+}
+```
+
 # Working with Strings
 
 ## What are Strings?
