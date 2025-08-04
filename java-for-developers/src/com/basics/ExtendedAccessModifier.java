@@ -1,6 +1,6 @@
-package com.Basics;
+package com.basics;
 
-import com.AccessModifiers.AccessModifier;
+import com.accessmodifiers.AccessModifier;
 
 public class ExtendedAccessModifier extends AccessModifier {
 

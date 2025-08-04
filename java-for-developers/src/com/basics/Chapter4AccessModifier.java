@@ -1,5 +1,5 @@
-package com.Basics;
-import com.AccessModifiers.AccessModifier;
+package com.basics;
+import com.accessmodifiers.AccessModifier;
 
 public class Chapter4AccessModifier {
 

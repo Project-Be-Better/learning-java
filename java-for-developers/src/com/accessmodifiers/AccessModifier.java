@@ -1,4 +1,4 @@
-package com.AccessModifiers;
+package com.accessmodifiers;
 
 public class AccessModifier {
     private final int secret = 42;

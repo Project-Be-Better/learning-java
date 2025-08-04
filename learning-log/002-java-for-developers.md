@@ -59,34 +59,56 @@
 34. [Java Packages](#java-packages)
 35. [Java Access Modifiers](#java-access-modifiers)
 
+### Classes And Objects
+
+36. [Intro](#intro)
+37. [Your First Class](#your-first-class)
+38. [Setters](#setters)
+39. [Getters](#getters)
+40. [Constructors](#constructors)
+41. [Default Constructors](#default-constructors)
+42. [Multiple Constructors](#multiple-constructors)
+43. [This Inside Constructors](#this-inside-constructors)
+44. [ToString](#tostring)
+45. [The This Keyword](#the-this-keyword)
+46. [Everything In Java Is An Object](#everything-in-java-is-an-object)
+47. [@Override](#override)
+48. [Comparing Objects With ==](#comparing-objects-with-==)
+49. [Comparing Objects With .Equals](#comparing-objects-with-equals)
+50. [Generating Equals Method](#generating-equals-method)
+51. [Equals Explained](#equals-explained)
+52. [Generating Code](#generating-code)
+53. [Person And Cats Example](#person-and-cats-example)
+54. [Pojos](#pojos)
+
 ### Strings
 
-36. [Working with Strings](#working-with-strings)
-37. [How Strings are Stored - String Pool](#how-strings-are-stored---string-pool)
-38. [Strings are Immutable](#strings-are-immutable)
-39. [String Literal vs String Object](#string-literal-vs-string-object)
-40. [Comparing Strings with ==](#comparing-strings-with-==)
-41. [Comparing Strings with .equals()](#comparing-strings-with-equals)
-42. [Useful String Static Methods](#useful-string-static-methods)
+55. [Working with Strings](#working-with-strings)
+56. [How Strings are Stored - String Pool](#how-strings-are-stored---string-pool)
+57. [Strings are Immutable](#strings-are-immutable)
+58. [String Literal vs String Object](#string-literal-vs-string-object)
+59. [Comparing Strings with ==](#comparing-strings-with-==)
+60. [Comparing Strings with .equals()](#comparing-strings-with-equals)
+61. [Useful String Static Methods](#useful-string-static-methods)
 
 ### Dates
 
-43. [LocalDateTime](#localdatetime)
-44. [LocalDate and LocalTime](#localdate-and-localtime)
-45. [Creating Specific Dates](#creating-specific-dates)
-46. [Zone IDs](#zone-ids)
-47. [Other Date Classes](#other-date-classes)
+62. [LocalDateTime](#localdatetime)
+63. [LocalDate and LocalTime](#localdate-and-localtime)
+64. [Creating Specific Dates](#creating-specific-dates)
+65. [Zone IDs](#zone-ids)
+66. [Other Date Classes](#other-date-classes)
 
 ### Big Decimal
 
-48. [The Problem With Double](#the-problem-with-double)
-49. [BigDecimal](#bigdecimal)
-50. [Exploring BigDecimal Methods](#exploring-bigdecimal-methods)
+67. [The Problem With Double](#the-problem-with-double)
+68. [BigDecimal](#bigdecimal)
+69. [Exploring BigDecimal Methods](#exploring-bigdecimal-methods)
 
 ### Practice and Assessment
 
-51. [Practice Problems](#practice-problems)
-52. [Code Reference](#code-reference-combined-usage-of-all-loops)
+70. [Practice Problems](#practice-problems)
+71. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
@@ -7958,6 +7980,3966 @@ public class WrapperPitfalls {
         System.out.println("a == b: " + (a == b));         // false
         System.out.println("a.equals(b): " + a.equals(b)); // true
         System.out.println("c == d: " + (c == d));         // true (cached)
+    }
+}
+```
+
+# Intro
+
+## Introduction to Classes and Objects
+
+Classes and objects are the fundamental building blocks of object-oriented programming (OOP) in Java. Understanding these concepts is crucial for creating well-structured, maintainable, and reusable code.
+
+### What is Object-Oriented Programming?
+
+Object-oriented programming is a programming paradigm that organizes code around objects rather than functions and logic. It provides a way to structure programs so that properties and behaviors are bundled into individual objects.
+
+#### Key Benefits of OOP:
+
+- **Modularity**: Code is organized into discrete objects
+- **Reusability**: Objects can be reused across different parts of an application
+- **Maintainability**: Changes to one object don't affect others
+- **Abstraction**: Complex implementation details are hidden
+- **Encapsulation**: Data and methods are bundled together
+
+### Real-World Object Examples
+
+```java
+public class ObjectExamples {
+    public static void main(String[] args) {
+        // Think of objects as real-world entities
+        demonstrateRealWorldObjects();
+    }
+
+    private static void demonstrateRealWorldObjects() {
+        System.out.println("=== Real-World Object Examples ===");
+
+        // A car has properties (attributes) and behaviors (methods)
+        System.out.println("Car Object:");
+        System.out.println("  Properties: brand, model, year, color, mileage");
+        System.out.println("  Behaviors: start(), stop(), accelerate(), brake()");
+
+        // A bank account has properties and behaviors
+        System.out.println("\nBank Account Object:");
+        System.out.println("  Properties: accountNumber, balance, ownerName, accountType");
+        System.out.println("  Behaviors: deposit(), withdraw(), checkBalance(), transfer()");
+
+        // A student has properties and behaviors
+        System.out.println("\nStudent Object:");
+        System.out.println("  Properties: studentId, name, age, grade, courses");
+        System.out.println("  Behaviors: enroll(), study(), takeExam(), graduate()");
+    }
+}
+```
+
+### Classes vs Objects
+
+```java
+public class ClassVsObjectDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Understanding Classes vs Objects ===");
+
+        // CLASS: A blueprint or template
+        System.out.println("CLASS = Blueprint/Template");
+        System.out.println("- Defines what properties an object will have");
+        System.out.println("- Defines what behaviors an object can perform");
+        System.out.println("- Does not consume memory until instantiated");
+
+        System.out.println("\nOBJECT = Instance of a Class");
+        System.out.println("- Actual entity created from the class blueprint");
+        System.out.println("- Has actual values for properties");
+        System.out.println("- Can perform the behaviors defined in the class");
+        System.out.println("- Consumes memory");
+
+        // Example: Cookie cutter (class) vs actual cookies (objects)
+        System.out.println("\n=== Cookie Analogy ===");
+        System.out.println("Class = Cookie cutter (defines shape and structure)");
+        System.out.println("Objects = Individual cookies made from the cutter");
+        System.out.println("- Each cookie has the same shape (structure)");
+        System.out.println("- But each can have different flavors, decorations (values)");
+    }
+}
+```
+
+# Your First Class
+
+## Creating Your First Java Class
+
+A class in Java is a blueprint for creating objects. It defines the properties (fields) and behaviors (methods) that objects of that class will have.
+
+### Basic Class Structure
+
+```java
+// Basic class structure
+public class Person {
+    // Fields (properties/attributes)
+    String name;
+    int age;
+    String email;
+
+    // Methods (behaviors)
+    public void introduce() {
+        System.out.println("Hi, I'm " + name + " and I'm " + age + " years old.");
+    }
+
+    public void celebrateBirthday() {
+        age++;
+        System.out.println("Happy birthday! I'm now " + age + " years old.");
+    }
+}
+```
+
+### Creating and Using Objects
+
+```java
+public class PersonDemo {
+    public static void main(String[] args) {
+        // Creating objects (instances) of the Person class
+        Person person1 = new Person();
+        Person person2 = new Person();
+
+        // Setting properties for person1
+        person1.name = "Alice";
+        person1.age = 25;
+        person1.email = "alice@example.com";
+
+        // Setting properties for person2
+        person2.name = "Bob";
+        person2.age = 30;
+        person2.email = "bob@example.com";
+
+        // Using methods
+        person1.introduce(); // Hi, I'm Alice and I'm 25 years old.
+        person2.introduce(); // Hi, I'm Bob and I'm 30 years old.
+
+        // Modifying object state
+        person1.celebrateBirthday(); // Happy birthday! I'm now 26 years old.
+
+        // Demonstrating that objects are independent
+        System.out.println("After birthday:");
+        System.out.println("Person 1 age: " + person1.age); // 26
+        System.out.println("Person 2 age: " + person2.age); // 30 (unchanged)
+    }
+}
+```
+
+### Complete Example: Student Class
+
+```java
+public class Student {
+    // Fields
+    int studentId;
+    String name;
+    String major;
+    double gpa;
+    int creditHours;
+
+    // Methods
+    public void displayInfo() {
+        System.out.println("=== Student Information ===");
+        System.out.println("ID: " + studentId);
+        System.out.println("Name: " + name);
+        System.out.println("Major: " + major);
+        System.out.println("GPA: " + String.format("%.2f", gpa));
+        System.out.println("Credit Hours: " + creditHours);
+    }
+
+    public void addCreditHours(int hours) {
+        creditHours += hours;
+        System.out.println("Added " + hours + " credit hours. Total: " + creditHours);
+    }
+
+    public void updateGPA(double newGPA) {
+        System.out.println("GPA updated from " + String.format("%.2f", gpa) +
+                          " to " + String.format("%.2f", newGPA));
+        gpa = newGPA;
+    }
+
+    public String getClassification() {
+        if (creditHours < 30) {
+            return "Freshman";
+        } else if (creditHours < 60) {
+            return "Sophomore";
+        } else if (creditHours < 90) {
+            return "Junior";
+        } else {
+            return "Senior";
+        }
+    }
+
+    public boolean isEligibleForGraduation() {
+        return creditHours >= 120 && gpa >= 2.0;
+    }
+}
+```
+
+### Using the Student Class
+
+```java
+public class StudentDemo {
+    public static void main(String[] args) {
+        // Create student objects
+        Student student1 = new Student();
+        Student student2 = new Student();
+
+        // Initialize student1
+        student1.studentId = 12345;
+        student1.name = "Emma Johnson";
+        student1.major = "Computer Science";
+        student1.gpa = 3.75;
+        student1.creditHours = 85;
+
+        // Initialize student2
+        student2.studentId = 67890;
+        student2.name = "Michael Chen";
+        student2.major = "Engineering";
+        student2.gpa = 3.45;
+        student2.creditHours = 115;
+
+        // Display information
+        student1.displayInfo();
+        // === Student Information ===
+        // ID: 12345
+        // Name: Emma Johnson
+        // Major: Computer Science
+        // GPA: 3.75
+        // Credit Hours: 85
+
+        System.out.println();
+        student2.displayInfo();
+
+        // Use methods
+        System.out.println("\n=== Student Operations ===");
+
+        // Check classifications
+        System.out.println(student1.name + " is a " + student1.getClassification());
+        // Emma Johnson is a Junior
+        System.out.println(student2.name + " is a " + student2.getClassification());
+        // Michael Chen is a Senior
+
+        // Add credit hours
+        student1.addCreditHours(15); // Added 15 credit hours. Total: 100
+        student2.addCreditHours(10); // Added 10 credit hours. Total: 125
+
+        // Update GPA
+        student1.updateGPA(3.85); // GPA updated from 3.75 to 3.85
+
+        // Check graduation eligibility
+        System.out.println("\n=== Graduation Eligibility ===");
+        System.out.println(student1.name + " eligible for graduation: " +
+                          student1.isEligibleForGraduation()); // false (only 100 hours)
+        System.out.println(student2.name + " eligible for graduation: " +
+                          student2.isEligibleForGraduation()); // true
+
+        // Final classifications after adding hours
+        System.out.println("\n=== Updated Classifications ===");
+        System.out.println(student1.name + " is now a " + student1.getClassification());
+        // Emma Johnson is now a Junior
+        System.out.println(student2.name + " is now a " + student2.getClassification());
+        // Michael Chen is now a Senior
+    }
+}
+```
+
+### Bank Account Example
+
+```java
+public class BankAccount {
+    // Fields
+    String accountNumber;
+    String accountHolderName;
+    double balance;
+    String accountType;
+    boolean isActive;
+
+    // Methods
+    public void displayAccountInfo() {
+        System.out.println("=== Account Information ===");
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Account Holder: " + accountHolderName);
+        System.out.println("Account Type: " + accountType);
+        System.out.println("Balance: $" + String.format("%.2f", balance));
+        System.out.println("Status: " + (isActive ? "Active" : "Inactive"));
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0 && isActive) {
+            balance += amount;
+            System.out.println("Deposited $" + String.format("%.2f", amount) +
+                              ". New balance: $" + String.format("%.2f", balance));
+        } else if (!isActive) {
+            System.out.println("Cannot deposit to inactive account");
+        } else {
+            System.out.println("Invalid deposit amount");
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (!isActive) {
+            System.out.println("Cannot withdraw from inactive account");
+        } else if (amount <= 0) {
+            System.out.println("Invalid withdrawal amount");
+        } else if (amount > balance) {
+            System.out.println("Insufficient funds. Available balance: $" +
+                              String.format("%.2f", balance));
+        } else {
+            balance -= amount;
+            System.out.println("Withdrew $" + String.format("%.2f", amount) +
+                              ". New balance: $" + String.format("%.2f", balance));
+        }
+    }
+
+    public void transfer(BankAccount targetAccount, double amount) {
+        if (amount <= balance && isActive && targetAccount.isActive) {
+            this.withdraw(amount);
+            targetAccount.deposit(amount);
+            System.out.println("Transferred $" + String.format("%.2f", amount) +
+                              " to " + targetAccount.accountHolderName);
+        } else {
+            System.out.println("Transfer failed - check account status and balance");
+        }
+    }
+
+    public void closeAccount() {
+        isActive = false;
+        System.out.println("Account " + accountNumber + " has been closed");
+    }
+}
+```
+
+### Using Bank Account Objects
+
+```java
+public class BankAccountDemo {
+    public static void main(String[] args) {
+        // Create bank account objects
+        BankAccount aliceAccount = new BankAccount();
+        BankAccount bobAccount = new BankAccount();
+
+        // Initialize Alice's account
+        aliceAccount.accountNumber = "ACC-001";
+        aliceAccount.accountHolderName = "Alice Johnson";
+        aliceAccount.balance = 1500.00;
+        aliceAccount.accountType = "Checking";
+        aliceAccount.isActive = true;
+
+        // Initialize Bob's account
+        bobAccount.accountNumber = "ACC-002";
+        bobAccount.accountHolderName = "Bob Smith";
+        bobAccount.balance = 2000.00;
+        bobAccount.accountType = "Savings";
+        bobAccount.isActive = true;
+
+        // Display initial account information
+        aliceAccount.displayAccountInfo();
+        System.out.println();
+        bobAccount.displayAccountInfo();
+
+        System.out.println("\n=== Banking Operations ===");
+
+        // Perform banking operations
+        aliceAccount.deposit(250.00);
+        // Deposited $250.00. New balance: $1750.00
+
+        bobAccount.withdraw(300.00);
+        // Withdrew $300.00. New balance: $1700.00
+
+        // Transfer money
+        aliceAccount.transfer(bobAccount, 200.00);
+        // Withdrew $200.00. New balance: $1550.00
+        // Deposited $200.00. New balance: $1900.00
+        // Transferred $200.00 to Bob Smith
+
+        // Try invalid operations
+        aliceAccount.withdraw(2000.00);
+        // Insufficient funds. Available balance: $1550.00
+
+        bobAccount.deposit(-50.00);
+        // Invalid deposit amount
+
+        System.out.println("\n=== Final Account Status ===");
+        aliceAccount.displayAccountInfo();
+        System.out.println();
+        bobAccount.displayAccountInfo();
+    }
+}
+```
+
+# Setters
+
+## Introduction to Setter Methods
+
+Setter methods (also called mutator methods) are used to modify the values of private fields in a class. They provide controlled access to change object properties while maintaining encapsulation principles.
+
+### Why Use Setter Methods?
+
+```java
+public class WhySettersDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Why Setter Methods Are Important ===");
+
+        // Problem with public fields
+        PersonWithPublicFields person1 = new PersonWithPublicFields();
+        person1.age = -25;  // Invalid age, but no validation!
+        person1.email = "invalid-email";  // Invalid format
+
+        System.out.println("Person with public fields:");
+        System.out.println("Age: " + person1.age);  // -25 (invalid!)
+        System.out.println("Email: " + person1.email);  // invalid-email
+
+        // Solution with setter methods
+        PersonWithSetters person2 = new PersonWithSetters();
+        person2.setAge(-25);  // Will be validated and handled properly
+        person2.setEmail("invalid-email");  // Will be validated
+
+        System.out.println("\nPerson with setter methods:");
+        System.out.println("Age: " + person2.getAge());  // Valid age or default
+        System.out.println("Email: " + person2.getEmail());  // Valid email or default
+    }
+}
+
+// Bad example - public fields
+class PersonWithPublicFields {
+    public String name;
+    public int age;
+    public String email;
+}
+
+// Good example - private fields with setters
+class PersonWithSetters {
+    private String name;
+    private int age;
+    private String email;
+
+    // Getter methods
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getEmail() { return email; }
+
+    // Setter methods with validation
+    public void setAge(int age) {
+        if (age >= 0 && age <= 150) {
+            this.age = age;
+        } else {
+            System.out.println("Invalid age: " + age + ". Age not updated.");
+        }
+    }
+
+    public void setEmail(String email) {
+        if (email != null && email.contains("@") && email.contains(".")) {
+            this.email = email;
+        } else {
+            System.out.println("Invalid email format: " + email + ". Email not updated.");
+        }
+    }
+
+    public void setName(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name.trim();
+        } else {
+            System.out.println("Invalid name. Name not updated.");
+        }
+    }
+}
+```
+
+### Basic Setter Method Structure
+
+```java
+public class Employee {
+    // Private fields (encapsulation)
+    private String employeeId;
+    private String name;
+    private String department;
+    private double salary;
+    private boolean isActive;
+
+    // Basic setter methods
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    // Getter methods for accessing private fields
+    public String getEmployeeId() { return employeeId; }
+    public String getName() { return name; }
+    public String getDepartment() { return department; }
+    public double getSalary() { return salary; }
+    public boolean isActive() { return isActive; }
+
+    // Method to display employee information
+    public void displayInfo() {
+        System.out.println("Employee ID: " + employeeId);
+        System.out.println("Name: " + name);
+        System.out.println("Department: " + department);
+        System.out.println("Salary: $" + String.format("%.2f", salary));
+        System.out.println("Status: " + (isActive ? "Active" : "Inactive"));
+    }
+}
+```
+
+### Setter Methods with Validation
+
+```java
+public class Product {
+    private String productId;
+    private String name;
+    private double price;
+    private int quantity;
+    private String category;
+    private boolean available;
+
+    // Setter with ID format validation
+    public void setProductId(String productId) {
+        if (productId != null && productId.matches("^PROD-\\d{4}$")) {
+            this.productId = productId;
+        } else {
+            System.out.println("Invalid product ID format. Must be PROD-XXXX (e.g., PROD-1234)");
+        }
+    }
+
+    // Setter with name validation
+    public void setName(String name) {
+        if (name != null && name.trim().length() >= 2) {
+            this.name = name.trim();
+        } else {
+            System.out.println("Product name must be at least 2 characters long");
+        }
+    }
+
+    // Setter with price validation
+    public void setPrice(double price) {
+        if (price >= 0) {
+            this.price = price;
+        } else {
+            System.out.println("Price cannot be negative. Current price unchanged.");
+        }
+    }
+
+    // Setter with quantity validation
+    public void setQuantity(int quantity) {
+        if (quantity >= 0) {
+            this.quantity = quantity;
+            // Automatically update availability based on quantity
+            this.available = quantity > 0;
+        } else {
+            System.out.println("Quantity cannot be negative");
+        }
+    }
+
+    // Setter with category validation
+    public void setCategory(String category) {
+        String[] validCategories = {"Electronics", "Clothing", "Books", "Home", "Sports"};
+        boolean isValidCategory = false;
+
+        if (category != null) {
+            for (String validCat : validCategories) {
+                if (validCat.equalsIgnoreCase(category)) {
+                    this.category = validCat;
+                    isValidCategory = true;
+                    break;
+                }
+            }
+        }
+
+        if (!isValidCategory) {
+            System.out.println("Invalid category. Valid categories: Electronics, Clothing, Books, Home, Sports");
+        }
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    // Getter methods
+    public String getProductId() { return productId; }
+    public String getName() { return name; }
+    public double getPrice() { return price; }
+    public int getQuantity() { return quantity; }
+    public String getCategory() { return category; }
+    public boolean isAvailable() { return available; }
+
+    // Utility methods
+    public void displayProductInfo() {
+        System.out.println("=== Product Information ===");
+        System.out.println("ID: " + (productId != null ? productId : "Not set"));
+        System.out.println("Name: " + (name != null ? name : "Not set"));
+        System.out.println("Price: $" + String.format("%.2f", price));
+        System.out.println("Quantity: " + quantity);
+        System.out.println("Category: " + (category != null ? category : "Not set"));
+        System.out.println("Available: " + (available ? "Yes" : "No"));
+    }
+}
+```
+
+### Advanced Setter Examples
+
+```java
+public class BankAccount {
+    private String accountNumber;
+    private String accountHolderName;
+    private double balance;
+    private String accountType;
+    private double minimumBalance;
+    private boolean frozen;
+
+    // Constructor to set initial values
+    public BankAccount() {
+        this.balance = 0.0;
+        this.minimumBalance = 100.0; // Default minimum balance
+        this.frozen = false;
+    }
+
+    // Setter with account number format validation
+    public void setAccountNumber(String accountNumber) {
+        if (accountNumber != null && accountNumber.matches("^\\d{10}$")) {
+            this.accountNumber = accountNumber;
+        } else {
+            System.out.println("Account number must be exactly 10 digits");
+        }
+    }
+
+    // Setter with name validation
+    public void setAccountHolderName(String name) {
+        if (name != null && name.trim().length() >= 2 && name.matches("^[a-zA-Z\\s]+$")) {
+            this.accountHolderName = name.trim();
+        } else {
+            System.out.println("Account holder name must contain only letters and spaces, minimum 2 characters");
+        }
+    }
+
+    // Setter with balance validation and minimum balance check
+    public void setBalance(double balance) {
+        if (frozen) {
+            System.out.println("Cannot modify balance - account is frozen");
+            return;
+        }
+
+        if (balance >= 0) {
+            if (balance < minimumBalance) {
+                System.out.println("Warning: Balance $" + String.format("%.2f", balance) +
+                                 " is below minimum balance of $" + String.format("%.2f", minimumBalance));
+            }
+            this.balance = balance;
+            System.out.println("Balance updated to $" + String.format("%.2f", balance));
+        } else {
+            System.out.println("Balance cannot be negative");
+        }
+    }
+
+    // Setter with account type validation
+    public void setAccountType(String accountType) {
+        if (accountType != null) {
+            String upperType = accountType.toUpperCase();
+            if (upperType.equals("CHECKING") || upperType.equals("SAVINGS") || upperType.equals("BUSINESS")) {
+                this.accountType = upperType;
+
+                // Set minimum balance based on account type
+                switch (upperType) {
+                    case "CHECKING":
+                        this.minimumBalance = 100.0;
+                        break;
+                    case "SAVINGS":
+                        this.minimumBalance = 500.0;
+                        break;
+                    case "BUSINESS":
+                        this.minimumBalance = 1000.0;
+                        break;
+                }
+                System.out.println("Account type set to " + upperType +
+                                 ". Minimum balance: $" + String.format("%.2f", minimumBalance));
+            } else {
+                System.out.println("Invalid account type. Valid types: CHECKING, SAVINGS, BUSINESS");
+            }
+        }
+    }
+
+    // Setter for minimum balance with validation
+    public void setMinimumBalance(double minimumBalance) {
+        if (minimumBalance >= 0) {
+            this.minimumBalance = minimumBalance;
+            if (balance < minimumBalance) {
+                System.out.println("Warning: Current balance is below new minimum balance");
+            }
+        } else {
+            System.out.println("Minimum balance cannot be negative");
+        }
+    }
+
+    // Setter for frozen status
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
+        System.out.println("Account " + (frozen ? "frozen" : "unfrozen"));
+    }
+
+    // Getter methods
+    public String getAccountNumber() { return accountNumber; }
+    public String getAccountHolderName() { return accountHolderName; }
+    public double getBalance() { return balance; }
+    public String getAccountType() { return accountType; }
+    public double getMinimumBalance() { return minimumBalance; }
+    public boolean isFrozen() { return frozen; }
+
+    // Utility method
+    public void displayAccountInfo() {
+        System.out.println("=== Account Information ===");
+        System.out.println("Account Number: " + (accountNumber != null ? accountNumber : "Not set"));
+        System.out.println("Account Holder: " + (accountHolderName != null ? accountHolderName : "Not set"));
+        System.out.println("Account Type: " + (accountType != null ? accountType : "Not set"));
+        System.out.println("Balance: $" + String.format("%.2f", balance));
+        System.out.println("Minimum Balance: $" + String.format("%.2f", minimumBalance));
+        System.out.println("Status: " + (frozen ? "Frozen" : "Active"));
+    }
+}
+```
+
+### Using Setter Methods - Complete Example
+
+```java
+public class SetterMethodsDemo {
+    public static void main(String[] args) {
+        // Demonstrate product setters with validation
+        System.out.println("=== Product Setter Validation Demo ===");
+        Product laptop = new Product();
+
+        // Valid inputs
+        laptop.setProductId("PROD-1234");  // Valid format
+        laptop.setName("Gaming Laptop");   // Valid name
+        laptop.setPrice(1299.99);         // Valid price
+        laptop.setQuantity(15);           // Valid quantity
+        laptop.setCategory("Electronics"); // Valid category
+
+        laptop.displayProductInfo();
+
+        System.out.println("\n=== Testing Invalid Inputs ===");
+
+        // Invalid inputs - these will show error messages
+        laptop.setProductId("INVALID-ID");  // Invalid product ID format. Must be PROD-XXXX (e.g., PROD-1234)
+        laptop.setName("");                // Product name must be at least 2 characters long
+        laptop.setPrice(-50.0);            // Price cannot be negative. Current price unchanged.
+        laptop.setQuantity(-5);            // Quantity cannot be negative
+        laptop.setCategory("InvalidCategory"); // Invalid category. Valid categories: Electronics, Clothing, Books, Home, Sports
+
+        System.out.println("\n=== Bank Account Setter Demo ===");
+        BankAccount account = new BankAccount();
+
+        // Valid account setup
+        account.setAccountNumber("1234567890");  // Valid 10-digit number
+        account.setAccountHolderName("John Doe"); // Valid name
+        account.setAccountType("SAVINGS");       // Account type set to SAVINGS. Minimum balance: $500.00
+        account.setBalance(750.00);              // Balance updated to $750.00
+
+        account.displayAccountInfo();
+
+        System.out.println("\n=== Testing Account Validation ===");
+
+        // Test various validations
+        account.setBalance(300.00);  // Warning: Balance $300.00 is below minimum balance of $500.00
+        account.setFrozen(true);     // Account frozen
+        account.setBalance(800.00);  // Cannot modify balance - account is frozen
+        account.setFrozen(false);    // Account unfrozen
+        account.setBalance(800.00);  // Balance updated to $800.00
+
+        // Test invalid inputs
+        account.setAccountNumber("123");  // Account number must be exactly 10 digits
+        account.setAccountHolderName("John123");  // Account holder name must contain only letters and spaces, minimum 2 characters
+        account.setAccountType("INVALID"); // Invalid account type. Valid types: CHECKING, SAVINGS, BUSINESS
+    }
+}
+```
+
+# Getters
+
+## Introduction to Getter Methods
+
+Getter methods (also called accessor methods) are used to retrieve the values of private fields in a class. They provide controlled access to read object properties while maintaining encapsulation principles.
+
+### Why Use Getter Methods?
+
+```java
+public class GetterMethodsIntro {
+    public static void main(String[] args) {
+        System.out.println("=== Why Getter Methods Are Important ===");
+
+        // With getter methods, we can:
+        // 1. Control access to private fields
+        // 2. Add validation or formatting
+        // 3. Calculate derived values
+        // 4. Log access attempts
+        // 5. Maintain encapsulation
+
+        Employee emp = new Employee();
+        emp.setName("Alice Johnson");
+        emp.setSalary(75000);
+        emp.setDepartment("Engineering");
+        emp.setYearsOfService(5);
+
+        // Using getter methods
+        System.out.println("Employee Name: " + emp.getName());
+        System.out.println("Salary: " + emp.getFormattedSalary());
+        System.out.println("Department: " + emp.getDepartment());
+        System.out.println("Annual Salary: " + emp.getAnnualSalary());
+        System.out.println("Employee Level: " + emp.getEmployeeLevel());
+    }
+}
+```
+
+### Basic Getter Method Structure
+
+```java
+public class Student {
+    // Private fields
+    private int studentId;
+    private String name;
+    private String major;
+    private double gpa;
+    private int creditHours;
+    private boolean isEnrolled;
+
+    // Basic getter methods
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public double getGpa() {
+        return gpa;
+    }
+
+    public int getCreditHours() {
+        return creditHours;
+    }
+
+    public boolean isEnrolled() {  // Note: boolean getters often use "is" prefix
+        return isEnrolled;
+    }
+
+    // Setter methods (for completeness)
+    public void setStudentId(int studentId) { this.studentId = studentId; }
+    public void setName(String name) { this.name = name; }
+    public void setMajor(String major) { this.major = major; }
+    public void setGpa(double gpa) { this.gpa = gpa; }
+    public void setCreditHours(int creditHours) { this.creditHours = creditHours; }
+    public void setEnrolled(boolean enrolled) { this.isEnrolled = enrolled; }
+}
+```
+
+### Advanced Getter Methods with Calculations
+
+```java
+public class Employee {
+    private String name;
+    private double salary;
+    private String department;
+    private int yearsOfService;
+    private boolean isFullTime;
+    private double hoursPerWeek;
+
+    // Basic getters
+    public String getName() { return name; }
+    public double getSalary() { return salary; }
+    public String getDepartment() { return department; }
+    public int getYearsOfService() { return yearsOfService; }
+    public boolean isFullTime() { return isFullTime; }
+    public double getHoursPerWeek() { return hoursPerWeek; }
+
+    // Calculated getters
+    public double getAnnualSalary() {
+        return salary * 12;  // Assuming salary is monthly
+    }
+
+    public double getHourlyRate() {
+        if (hoursPerWeek > 0) {
+            return (salary * 12) / (hoursPerWeek * 52);  // Annual salary / annual hours
+        }
+        return 0;
+    }
+
+    public String getEmployeeLevel() {
+        if (yearsOfService >= 10) {
+            return "Senior";
+        } else if (yearsOfService >= 5) {
+            return "Mid-level";
+        } else {
+            return "Junior";
+        }
+    }
+
+    public String getFormattedSalary() {
+        return "$" + String.format("%,.2f", salary);
+    }
+
+    public String getEmploymentStatus() {
+        return isFullTime ? "Full-time" : "Part-time";
+    }
+
+    public boolean isEligibleForBonus() {
+        return yearsOfService >= 1 && isFullTime;
+    }
+
+    public double getVacationDays() {
+        if (yearsOfService >= 5) {
+            return 20;
+        } else if (yearsOfService >= 2) {
+            return 15;
+        } else {
+            return 10;
+        }
+    }
+
+    // Setter methods
+    public void setName(String name) { this.name = name; }
+    public void setSalary(double salary) { this.salary = salary; }
+    public void setDepartment(String department) { this.department = department; }
+    public void setYearsOfService(int yearsOfService) { this.yearsOfService = yearsOfService; }
+    public void setFullTime(boolean fullTime) { this.isFullTime = fullTime; }
+    public void setHoursPerWeek(double hoursPerWeek) { this.hoursPerWeek = hoursPerWeek; }
+}
+```
+
+### Getter Methods with Validation and Formatting
+
+```java
+public class Product {
+    private String productId;
+    private String name;
+    private double price;
+    private int quantity;
+    private String category;
+    private java.time.LocalDate manufactureDate;
+    private double weight;  // in kg
+
+    // Basic getters with null checks
+    public String getProductId() {
+        return productId != null ? productId : "Unknown";
+    }
+
+    public String getName() {
+        return name != null ? name : "Unnamed Product";
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getCategory() {
+        return category != null ? category : "Uncategorized";
+    }
+
+    public java.time.LocalDate getManufactureDate() {
+        return manufactureDate;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    // Formatted getters
+    public String getFormattedPrice() {
+        return "$" + String.format("%.2f", price);
+    }
+
+    public String getFormattedWeight() {
+        if (weight < 1) {
+            return String.format("%.0f g", weight * 1000);  // Convert to grams
+        } else {
+            return String.format("%.2f kg", weight);
+        }
+    }
+
+    public String getAvailabilityStatus() {
+        if (quantity > 50) {
+            return "In Stock";
+        } else if (quantity > 0) {
+            return "Low Stock";
+        } else {
+            return "Out of Stock";
+        }
+    }
+
+    public String getProductAge() {
+        if (manufactureDate != null) {
+            long days = java.time.temporal.ChronoUnit.DAYS.between(manufactureDate, java.time.LocalDate.now());
+            if (days < 30) {
+                return "New (" + days + " days old)";
+            } else if (days < 365) {
+                return "Recent (" + (days / 30) + " months old)";
+            } else {
+                return "Mature (" + (days / 365) + " years old)";
+            }
+        }
+        return "Unknown age";
+    }
+
+    // Calculated getters
+    public double getTotalValue() {
+        return price * quantity;
+    }
+
+    public boolean isExpensive() {
+        return price > 100;
+    }
+
+    public boolean isHeavy() {
+        return weight > 5.0;  // More than 5 kg
+    }
+
+    public String getProductSummary() {
+        return String.format("%s (%s) - %s - %s - Qty: %d",
+                           getName(),
+                           getProductId(),
+                           getFormattedPrice(),
+                           getAvailabilityStatus(),
+                           quantity);
+    }
+
+    // Setter methods
+    public void setProductId(String productId) { this.productId = productId; }
+    public void setName(String name) { this.name = name; }
+    public void setPrice(double price) { this.price = price; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setCategory(String category) { this.category = category; }
+    public void setManufactureDate(java.time.LocalDate manufactureDate) { this.manufactureDate = manufactureDate; }
+    public void setWeight(double weight) { this.weight = weight; }
+}
+```
+
+### Getters with Security and Access Control
+
+```java
+public class BankAccount {
+    private String accountNumber;
+    private String accountHolderName;
+    private double balance;
+    private String pin;
+    private java.time.LocalDateTime lastAccessed;
+    private boolean isLocked;
+    private int failedLoginAttempts;
+
+    // Public getters (safe to expose)
+    public String getAccountHolderName() {
+        updateLastAccessed();
+        return accountHolderName;
+    }
+
+    public String getMaskedAccountNumber() {
+        updateLastAccessed();
+        if (accountNumber != null && accountNumber.length() >= 4) {
+            return "****-****-" + accountNumber.substring(accountNumber.length() - 4);
+        }
+        return "****-****";
+    }
+
+    public String getAccountStatus() {
+        return isLocked ? "Locked" : "Active";
+    }
+
+    // Secured getters (require authentication)
+    public double getBalance(String enteredPin) {
+        if (authenticatePin(enteredPin)) {
+            updateLastAccessed();
+            return balance;
+        } else {
+            System.out.println("Access denied - incorrect PIN");
+            return -1;  // Indicates error
+        }
+    }
+
+    public String getFullAccountNumber(String enteredPin) {
+        if (authenticatePin(enteredPin)) {
+            updateLastAccessed();
+            return accountNumber;
+        } else {
+            System.out.println("Access denied - incorrect PIN");
+            return null;
+        }
+    }
+
+    // Formatted getters
+    public String getFormattedBalance(String enteredPin) {
+        double bal = getBalance(enteredPin);
+        return bal >= 0 ? "$" + String.format("%,.2f", bal) : "Access Denied";
+    }
+
+    public String getLastAccessedTime() {
+        if (lastAccessed != null) {
+            return lastAccessed.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        return "Never accessed";
+    }
+
+    // Status getters
+    public boolean isAccountLocked() {
+        return isLocked;
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public boolean isHighRiskAccount() {
+        return failedLoginAttempts >= 3 || isLocked;
+    }
+
+    // Helper methods
+    private boolean authenticatePin(String enteredPin) {
+        if (isLocked) {
+            System.out.println("Account is locked");
+            return false;
+        }
+
+        if (pin != null && pin.equals(enteredPin)) {
+            failedLoginAttempts = 0;  // Reset on successful login
+            return true;
+        } else {
+            failedLoginAttempts++;
+            if (failedLoginAttempts >= 3) {
+                isLocked = true;
+                System.out.println("Account locked due to multiple failed attempts");
+            }
+            return false;
+        }
+    }
+
+    private void updateLastAccessed() {
+        lastAccessed = java.time.LocalDateTime.now();
+    }
+
+    // Setter methods (with appropriate validation)
+    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
+    public void setAccountHolderName(String accountHolderName) { this.accountHolderName = accountHolderName; }
+    public void setBalance(double balance) { this.balance = balance; }
+    public void setPin(String pin) { this.pin = pin; }
+    public void unlockAccount(String adminCode) {
+        if ("ADMIN123".equals(adminCode)) {
+            isLocked = false;
+            failedLoginAttempts = 0;
+            System.out.println("Account unlocked by administrator");
+        }
+    }
+}
+```
+
+### Complete Getter Methods Demo
+
+```java
+public class GetterMethodsDemo {
+    public static void main(String[] args) {
+        // Employee getter methods demo
+        System.out.println("=== Employee Getter Methods Demo ===");
+        Employee emp = new Employee();
+        emp.setName("Sarah Wilson");
+        emp.setSalary(6500);  // Monthly salary
+        emp.setDepartment("Software Engineering");
+        emp.setYearsOfService(7);
+        emp.setFullTime(true);
+        emp.setHoursPerWeek(40);
+
+        // Basic getters
+        System.out.println("Name: " + emp.getName());
+        System.out.println("Department: " + emp.getDepartment());
+        System.out.println("Years of Service: " + emp.getYearsOfService());
+
+        // Calculated getters
+        System.out.println("Monthly Salary: " + emp.getFormattedSalary());
+        System.out.println("Annual Salary: $" + String.format("%,.2f", emp.getAnnualSalary()));
+        System.out.println("Hourly Rate: $" + String.format("%.2f", emp.getHourlyRate()));
+        System.out.println("Employee Level: " + emp.getEmployeeLevel());
+        System.out.println("Employment Status: " + emp.getEmploymentStatus());
+        System.out.println("Eligible for Bonus: " + emp.isEligibleForBonus());
+        System.out.println("Vacation Days: " + emp.getVacationDays());
+
+        // Product getter methods demo
+        System.out.println("\n=== Product Getter Methods Demo ===");
+        Product laptop = new Product();
+        laptop.setProductId("PROD-5678");
+        laptop.setName("Ultra Gaming Laptop");
+        laptop.setPrice(1599.99);
+        laptop.setQuantity(25);
+        laptop.setCategory("Electronics");
+        laptop.setWeight(2.3);
+        laptop.setManufactureDate(java.time.LocalDate.of(2024, 3, 15));
+
+        // Basic and formatted getters
+        System.out.println("Product ID: " + laptop.getProductId());
+        System.out.println("Name: " + laptop.getName());
+        System.out.println("Price: " + laptop.getFormattedPrice());
+        System.out.println("Weight: " + laptop.getFormattedWeight());
+        System.out.println("Availability: " + laptop.getAvailabilityStatus());
+        System.out.println("Age: " + laptop.getProductAge());
+        System.out.println("Total Value: $" + String.format("%,.2f", laptop.getTotalValue()));
+        System.out.println("Is Expensive: " + laptop.isExpensive());
+        System.out.println("Summary: " + laptop.getProductSummary());
+
+        // Bank account getter methods demo
+        System.out.println("\n=== Bank Account Getter Methods Demo ===");
+        BankAccount account = new BankAccount();
+        account.setAccountNumber("1234567890");
+        account.setAccountHolderName("Michael Chen");
+        account.setBalance(5420.75);
+        account.setPin("1234");
+
+        // Public getters
+        System.out.println("Account Holder: " + account.getAccountHolderName());
+        System.out.println("Masked Account: " + account.getMaskedAccountNumber());
+        System.out.println("Account Status: " + account.getAccountStatus());
+        System.out.println("Last Accessed: " + account.getLastAccessedTime());
+
+        // Secured getters with correct PIN
+        System.out.println("\n--- With Correct PIN ---");
+        System.out.println("Balance: " + account.getFormattedBalance("1234"));
+        System.out.println("Full Account Number: " + account.getFullAccountNumber("1234"));
+
+        // Secured getters with incorrect PIN
+        System.out.println("\n--- With Incorrect PIN ---");
+        account.getBalance("wrong");  // Access denied - incorrect PIN
+        account.getBalance("wrong");  // Access denied - incorrect PIN
+        account.getBalance("wrong");  // Account locked due to multiple failed attempts
+
+        System.out.println("Account Status: " + account.getAccountStatus());
+        System.out.println("Failed Attempts: " + account.getFailedLoginAttempts());
+        System.out.println("High Risk Account: " + account.isHighRiskAccount());
+
+        // Unlock account
+        account.unlockAccount("ADMIN123");
+        System.out.println("Account Status after unlock: " + account.getAccountStatus());
+    }
+}
+```
+
+# Constructors
+
+## Introduction to Constructors
+
+A constructor is a special method that is called when an object is created. It initializes the object's state by setting initial values for the object's fields. Constructors have the same name as the class and have no return type.
+
+### Why Constructors Are Important
+
+```java
+public class ConstructorImportanceDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Why Constructors Are Important ===");
+
+        // Without constructors, objects start with default values
+        PersonWithoutConstructor person1 = new PersonWithoutConstructor();
+        System.out.println("Person without constructor:");
+        person1.displayInfo();  // Will show null/0 values
+
+        // With constructors, objects start with meaningful values
+        PersonWithConstructor person2 = new PersonWithConstructor("Alice", 25, "alice@example.com");
+        System.out.println("\nPerson with constructor:");
+        person2.displayInfo();  // Will show initialized values
+
+        // Constructors ensure objects are created in a valid state
+        BankAccount account = new BankAccount("1234567890", "John Doe", 1000.0);
+        account.displayInfo();  // Account is ready to use immediately
+    }
+}
+
+// Example without constructor
+class PersonWithoutConstructor {
+    String name;
+    int age;
+    String email;
+
+    void displayInfo() {
+        System.out.println("Name: " + name);      // null
+        System.out.println("Age: " + age);        // 0
+        System.out.println("Email: " + email);    // null
+    }
+}
+
+// Example with constructor
+class PersonWithConstructor {
+    String name;
+    int age;
+    String email;
+
+    // Constructor
+    public PersonWithConstructor(String name, int age, String email) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+    }
+
+    void displayInfo() {
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("Email: " + email);
+    }
+}
+```
+
+### Basic Constructor Syntax
+
+```java
+public class Student {
+    // Fields
+    private String studentId;
+    private String name;
+    private String major;
+    private double gpa;
+
+    // Constructor
+    public Student(String studentId, String name, String major, double gpa) {
+        this.studentId = studentId;
+        this.name = name;
+        this.major = major;
+        this.gpa = gpa;
+
+        // Constructor can also perform validation
+        if (gpa < 0.0 || gpa > 4.0) {
+            System.out.println("Warning: Invalid GPA provided. Setting to 0.0");
+            this.gpa = 0.0;
+        }
+    }
+
+    // Getter methods
+    public String getStudentId() { return studentId; }
+    public String getName() { return name; }
+    public String getMajor() { return major; }
+    public double getGpa() { return gpa; }
+
+    public void displayStudentInfo() {
+        System.out.println("Student ID: " + studentId);
+        System.out.println("Name: " + name);
+        System.out.println("Major: " + major);
+        System.out.println("GPA: " + String.format("%.2f", gpa));
+    }
+}
+
+// Using the constructor
+class StudentDemo {
+    public static void main(String[] args) {
+        // Creating students using constructor
+        Student student1 = new Student("S001", "Emma Watson", "Computer Science", 3.85);
+        Student student2 = new Student("S002", "James Bond", "Engineering", 3.42);
+        Student student3 = new Student("S003", "Invalid GPA Student", "Math", 5.0); // Invalid GPA
+
+        student1.displayStudentInfo();
+        // Student ID: S001
+        // Name: Emma Watson
+        // Major: Computer Science
+        // GPA: 3.85
+
+        System.out.println();
+        student2.displayStudentInfo();
+
+        System.out.println();
+        student3.displayStudentInfo();  // GPA will be 0.0 due to validation
+    }
+}
+```
+
+### Constructor with Validation and Initialization
+
+```java
+public class Employee {
+    private String employeeId;
+    private String name;
+    private String department;
+    private double salary;
+    private java.time.LocalDate hireDate;
+    private boolean isActive;
+
+    // Constructor with comprehensive initialization
+    public Employee(String employeeId, String name, String department, double salary) {
+        // Validate and set employee ID
+        if (employeeId != null && employeeId.matches("^EMP\\d{4}$")) {
+            this.employeeId = employeeId;
+        } else {
+            System.out.println("Invalid employee ID format. Using default.");
+            this.employeeId = "EMP0000";
+        }
+
+        // Validate and set name
+        if (name != null && name.trim().length() >= 2) {
+            this.name = name.trim();
+        } else {
+            System.out.println("Invalid name. Using 'Unknown Employee'.");
+            this.name = "Unknown Employee";
+        }
+
+        // Validate and set department
+        String[] validDepartments = {"Engineering", "Sales", "Marketing", "HR", "Finance"};
+        boolean validDept = false;
+        if (department != null) {
+            for (String dept : validDepartments) {
+                if (dept.equalsIgnoreCase(department)) {
+                    this.department = dept;
+                    validDept = true;
+                    break;
+                }
+            }
+        }
+        if (!validDept) {
+            System.out.println("Invalid department. Using 'General'.");
+            this.department = "General";
+        }
+
+        // Validate and set salary
+        if (salary >= 30000 && salary <= 500000) {
+            this.salary = salary;
+        } else {
+            System.out.println("Invalid salary range. Using minimum salary.");
+            this.salary = 30000;
+        }
+
+        // Set default values
+        this.hireDate = java.time.LocalDate.now();
+        this.isActive = true;
+
+        System.out.println("Employee created successfully: " + this.name + " (" + this.employeeId + ")");
+    }
+
+    // Getter methods
+    public String getEmployeeId() { return employeeId; }
+    public String getName() { return name; }
+    public String getDepartment() { return department; }
+    public double getSalary() { return salary; }
+    public java.time.LocalDate getHireDate() { return hireDate; }
+    public boolean isActive() { return isActive; }
+
+    public void displayEmployeeInfo() {
+        System.out.println("=== Employee Information ===");
+        System.out.println("ID: " + employeeId);
+        System.out.println("Name: " + name);
+        System.out.println("Department: " + department);
+        System.out.println("Salary: $" + String.format("%,.2f", salary));
+        System.out.println("Hire Date: " + hireDate);
+        System.out.println("Status: " + (isActive ? "Active" : "Inactive"));
+    }
+}
+```
+
+### Complex Constructor Example - BankAccount
+
+```java
+public class BankAccount {
+    private String accountNumber;
+    private String accountHolderName;
+    private double balance;
+    private String accountType;
+    private double interestRate;
+    private java.time.LocalDateTime creationDate;
+    private boolean isActive;
+    private int transactionCount;
+
+    // Constructor with full initialization and validation
+    public BankAccount(String accountNumber, String accountHolderName,
+                      String accountType, double initialDeposit) {
+
+        // Initialize creation date first
+        this.creationDate = java.time.LocalDateTime.now();
+        this.transactionCount = 0;
+
+        // Validate account number
+        if (accountNumber != null && accountNumber.matches("^\\d{10}$")) {
+            this.accountNumber = accountNumber;
+        } else {
+            // Generate a default account number
+            this.accountNumber = generateAccountNumber();
+            System.out.println("Invalid account number provided. Generated: " + this.accountNumber);
+        }
+
+        // Validate account holder name
+        if (accountHolderName != null &&
+            accountHolderName.trim().length() >= 2 &&
+            accountHolderName.matches("^[a-zA-Z\\s]+$")) {
+            this.accountHolderName = accountHolderName.trim();
+        } else {
+            throw new IllegalArgumentException("Invalid account holder name. Must contain only letters and spaces.");
+        }
+
+        // Validate and set account type with interest rates
+        if (accountType != null) {
+            switch (accountType.toUpperCase()) {
+                case "CHECKING":
+                    this.accountType = "CHECKING";
+                    this.interestRate = 0.01;  // 1%
+                    break;
+                case "SAVINGS":
+                    this.accountType = "SAVINGS";
+                    this.interestRate = 0.025; // 2.5%
+                    break;
+                case "BUSINESS":
+                    this.accountType = "BUSINESS";
+                    this.interestRate = 0.015; // 1.5%
+                    break;
+                default:
+                    System.out.println("Invalid account type. Defaulting to CHECKING.");
+                    this.accountType = "CHECKING";
+                    this.interestRate = 0.01;
+            }
+        } else {
+            this.accountType = "CHECKING";
+            this.interestRate = 0.01;
+        }
+
+        // Validate initial deposit based on account type
+        double minimumDeposit = getMinimumDepositForType(this.accountType);
+        if (initialDeposit >= minimumDeposit) {
+            this.balance = initialDeposit;
+            this.isActive = true;
+            this.transactionCount = 1; // Initial deposit counts as transaction
+            System.out.println("Account created with initial deposit of $" +
+                             String.format("%.2f", initialDeposit));
+        } else {
+            System.out.println("Insufficient initial deposit for " + this.accountType +
+                             " account. Minimum required: $" + minimumDeposit);
+            this.balance = 0;
+            this.isActive = false;
+        }
+
+        // Log account creation
+        System.out.println("Bank account initialized for " + this.accountHolderName +
+                          " (" + this.accountNumber + ")");
+    }
+
+    // Helper method for minimum deposit requirements
+    private double getMinimumDepositForType(String accountType) {
+        switch (accountType) {
+            case "CHECKING": return 100.0;
+            case "SAVINGS": return 500.0;
+            case "BUSINESS": return 1000.0;
+            default: return 100.0;
+        }
+    }
+
+    // Helper method to generate account number
+    private String generateAccountNumber() {
+        long timestamp = System.currentTimeMillis();
+        return String.valueOf(timestamp).substring(3, 13); // Get 10 digits
+    }
+
+    // Getter methods
+    public String getAccountNumber() { return accountNumber; }
+    public String getAccountHolderName() { return accountHolderName; }
+    public double getBalance() { return balance; }
+    public String getAccountType() { return accountType; }
+    public double getInterestRate() { return interestRate; }
+    public java.time.LocalDateTime getCreationDate() { return creationDate; }
+    public boolean isActive() { return isActive; }
+    public int getTransactionCount() { return transactionCount; }
+
+    public void displayAccountInfo() {
+        System.out.println("=== Bank Account Information ===");
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Account Holder: " + accountHolderName);
+        System.out.println("Account Type: " + accountType);
+        System.out.println("Balance: $" + String.format("%.2f", balance));
+        System.out.println("Interest Rate: " + String.format("%.2f%%", interestRate * 100));
+        System.out.println("Created: " + creationDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        System.out.println("Status: " + (isActive ? "Active" : "Inactive"));
+        System.out.println("Transactions: " + transactionCount);
+    }
+}
+```
+
+### Constructor Demo and Usage
+
+```java
+public class ConstructorDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Constructor Validation Demo ===");
+
+        // Employee constructor examples
+        System.out.println("--- Employee Creation ---");
+
+        // Valid employee
+        Employee emp1 = new Employee("EMP1234", "John Smith", "Engineering", 75000);
+        emp1.displayEmployeeInfo();
+
+        System.out.println();
+
+        // Employee with validation issues
+        Employee emp2 = new Employee("INVALID", "", "InvalidDept", -5000);
+        // Invalid employee ID format. Using default.
+        // Invalid name. Using 'Unknown Employee'.
+        // Invalid department. Using 'General'.
+        // Invalid salary range. Using minimum salary.
+        // Employee created successfully: Unknown Employee (EMP0000)
+
+        System.out.println("\n=== Bank Account Constructor Demo ===");
+
+        // Valid bank accounts
+        System.out.println("--- Valid Accounts ---");
+
+        BankAccount account1 = new BankAccount("1234567890", "Alice Johnson", "SAVINGS", 750.0);
+        account1.displayAccountInfo();
+
+        System.out.println();
+
+        BankAccount account2 = new BankAccount("9876543210", "Bob Wilson", "BUSINESS", 1500.0);
+        account2.displayAccountInfo();
+
+        System.out.println("\n--- Account Creation Issues ---");
+
+        // Account with insufficient initial deposit
+        BankAccount account3 = new BankAccount("1111111111", "Charlie Brown", "SAVINGS", 100.0);
+        // Insufficient initial deposit for SAVINGS account. Minimum required: $500.0
+
+        // Account with invalid account number (will generate new one)
+        BankAccount account4 = new BankAccount("123", "David Lee", "CHECKING", 200.0);
+        // Invalid account number provided. Generated: [timestamp-based number]
+
+        // Account with invalid account type
+        BankAccount account5 = new BankAccount("5555555555", "Eva Martinez", "PREMIUM", 300.0);
+        // Invalid account type. Defaulting to CHECKING.
+
+        try {
+            // Account with invalid name (will throw exception)
+            BankAccount account6 = new BankAccount("6666666666", "123Invalid", "CHECKING", 150.0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Exception caught: " + e.getMessage());
+            // Exception caught: Invalid account holder name. Must contain only letters and spaces.
+        }
+
+        System.out.println("\n=== Student Constructor Demo ===");
+
+        Student student1 = new Student("STU001", "Sarah Davis", "Computer Science", 3.7);
+        student1.displayStudentInfo();
+
+        System.out.println();
+
+        Student student2 = new Student("STU002", "Mike Johnson", "Mathematics", 4.5); // Invalid GPA
+        // Warning: Invalid GPA provided. Setting to 0.0
+        student2.displayStudentInfo();
+    }
+}
+```
+
+# Default Constructors
+
+## Understanding Default Constructors
+
+A default constructor is a constructor that takes no parameters. If you don't provide any constructor in your class, Java automatically provides a default constructor that initializes fields to their default values.
+
+### Automatic Default Constructor
+
+```java
+// When you don't define any constructor, Java provides one automatically
+public class AutoDefaultConstructorExample {
+    String name;        // null
+    int age;           // 0
+    boolean isActive;  // false
+    double salary;     // 0.0
+
+    // Java automatically provides:
+    // public AutoDefaultConstructorExample() { }
+
+    public void displayInfo() {
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("Active: " + isActive);
+        System.out.println("Salary: " + salary);
+    }
+}
+
+// Demo of automatic default constructor
+class AutoDefaultDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Automatic Default Constructor ===");
+
+        AutoDefaultConstructorExample obj = new AutoDefaultConstructorExample();
+        obj.displayInfo();
+        // Name: null
+        // Age: 0
+        // Active: false
+        // Salary: 0.0
+    }
+}
+```
+
+### Explicit Default Constructor
+
+```java
+public class Person {
+    private String name;
+    private int age;
+    private String email;
+    private boolean isEmployed;
+
+    // Explicit default constructor with meaningful defaults
+    public Person() {
+        this.name = "Unknown";
+        this.age = 0;
+        this.email = "no-email@example.com";
+        this.isEmployed = false;
+
+        System.out.println("Person created with default values");
+    }
+
+    // Getter methods
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getEmail() { return email; }
+    public boolean isEmployed() { return isEmployed; }
+
+    // Setter methods
+    public void setName(String name) { this.name = name; }
+    public void setAge(int age) { this.age = age; }
+    public void setEmail(String email) { this.email = email; }
+    public void setEmployed(boolean employed) { this.isEmployed = employed; }
+
+    public void displayInfo() {
+        System.out.println("=== Person Information ===");
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("Email: " + email);
+        System.out.println("Employed: " + isEmployed);
+    }
+}
+```
+
+### Default Constructor with Initialization Logic
+
+```java
+public class BankAccount {
+    private String accountNumber;
+    private String accountHolderName;
+    private double balance;
+    private String accountType;
+    private java.time.LocalDateTime creationDate;
+    private boolean isActive;
+    private String status;
+
+    // Default constructor with initialization logic
+    public BankAccount() {
+        // Generate default account number
+        this.accountNumber = generateDefaultAccountNumber();
+
+        // Set default values
+        this.accountHolderName = "New Account Holder";
+        this.balance = 0.0;
+        this.accountType = "CHECKING";
+        this.creationDate = java.time.LocalDateTime.now();
+        this.isActive = true;
+        this.status = "PENDING_SETUP";
+
+        // Log creation
+        System.out.println("New bank account created with default settings");
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Please complete account setup by providing holder information");
+    }
+
+    // Helper method to generate account number
+    private String generateDefaultAccountNumber() {
+        // Generate a simple account number based on timestamp
+        long timestamp = System.currentTimeMillis();
+        return "ACC" + String.valueOf(timestamp).substring(7);
+    }
+
+    // Method to complete account setup
+    public void completeSetup(String holderName, String accountType, double initialDeposit) {
+        if (holderName != null && !holderName.trim().isEmpty()) {
+            this.accountHolderName = holderName.trim();
+        }
+
+        if (accountType != null &&
+            (accountType.equals("CHECKING") || accountType.equals("SAVINGS") || accountType.equals("BUSINESS"))) {
+            this.accountType = accountType;
+        }
+
+        if (initialDeposit >= 0) {
+            this.balance = initialDeposit;
+        }
+
+        this.status = "ACTIVE";
+        System.out.println("Account setup completed for " + this.accountHolderName);
+    }
+
+    // Getter methods
+    public String getAccountNumber() { return accountNumber; }
+    public String getAccountHolderName() { return accountHolderName; }
+    public double getBalance() { return balance; }
+    public String getAccountType() { return accountType; }
+    public String getStatus() { return status; }
+
+    public void displayAccountInfo() {
+        System.out.println("=== Bank Account Information ===");
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Account Holder: " + accountHolderName);
+        System.out.println("Account Type: " + accountType);
+        System.out.println("Balance: $" + String.format("%.2f", balance));
+        System.out.println("Created: " + creationDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        System.out.println("Status: " + status);
+    }
+}
+```
+
+### Default Constructor with Configuration
+
+```java
+public class Employee {
+    private String employeeId;
+    private String name;
+    private String department;
+    private double salary;
+    private java.time.LocalDate hireDate;
+    private boolean isActive;
+    private String jobTitle;
+    private int vacationDays;
+
+    // Default constructor with company defaults
+    public Employee() {
+        // Generate temporary employee ID
+        this.employeeId = generateTempEmployeeId();
+
+        // Set default values according to company policy
+        this.name = "New Employee";
+        this.department = "UNASSIGNED";
+        this.salary = 40000.0;  // Starting salary
+        this.hireDate = java.time.LocalDate.now();
+        this.isActive = true;
+        this.jobTitle = "Entry Level";
+        this.vacationDays = 10;  // Default vacation days for new employees
+
+        System.out.println("New employee record created with default settings");
+        System.out.println("Temporary Employee ID: " + employeeId);
+        System.out.println("Please update employee information using setter methods");
+    }
+
+    private String generateTempEmployeeId() {
+        return "TEMP" + System.currentTimeMillis() % 10000;
+    }
+
+    // Convenience method for quick setup
+    public void setupEmployee(String name, String department, String jobTitle, double salary) {
+        setName(name);
+        setDepartment(department);
+        setJobTitle(jobTitle);
+        setSalary(salary);
+
+        // Generate proper employee ID after setup
+        this.employeeId = generateProperEmployeeId();
+        System.out.println("Employee setup completed. New ID: " + employeeId);
+    }
+
+    private String generateProperEmployeeId() {
+        String deptCode = department.substring(0, Math.min(3, department.length())).toUpperCase();
+        return "EMP" + deptCode + String.format("%04d", (int)(Math.random() * 9999));
+    }
+
+    // Setter methods with validation
+    public void setName(String name) {
+        if (name != null && name.trim().length() >= 2) {
+            this.name = name.trim();
+        }
+    }
+
+    public void setDepartment(String department) {
+        String[] validDepartments = {"ENGINEERING", "SALES", "MARKETING", "HR", "FINANCE", "OPERATIONS"};
+        if (department != null) {
+            for (String dept : validDepartments) {
+                if (dept.equalsIgnoreCase(department)) {
+                    this.department = dept;
+                    // Adjust vacation days based on department
+                    if (dept.equals("ENGINEERING") || dept.equals("FINANCE")) {
+                        this.vacationDays = 15;  // Tech departments get more vacation
+                    }
+                    return;
+                }
+            }
+        }
+        System.out.println("Invalid department. Using UNASSIGNED.");
+    }
+
+    public void setJobTitle(String jobTitle) {
+        if (jobTitle != null && !jobTitle.trim().isEmpty()) {
+            this.jobTitle = jobTitle.trim();
+        }
+    }
+
+    public void setSalary(double salary) {
+        if (salary >= 30000 && salary <= 200000) {
+            this.salary = salary;
+        } else {
+            System.out.println("Salary out of range. Using default.");
+        }
+    }
+
+    // Getter methods
+    public String getEmployeeId() { return employeeId; }
+    public String getName() { return name; }
+    public String getDepartment() { return department; }
+    public double getSalary() { return salary; }
+    public String getJobTitle() { return jobTitle; }
+    public int getVacationDays() { return vacationDays; }
+
+    public void displayEmployeeInfo() {
+        System.out.println("=== Employee Information ===");
+        System.out.println("Employee ID: " + employeeId);
+        System.out.println("Name: " + name);
+        System.out.println("Department: " + department);
+        System.out.println("Job Title: " + jobTitle);
+        System.out.println("Salary: $" + String.format("%,.2f", salary));
+        System.out.println("Hire Date: " + hireDate);
+        System.out.println("Vacation Days: " + vacationDays);
+        System.out.println("Status: " + (isActive ? "Active" : "Inactive"));
+    }
+}
+```
+
+### When Default Constructor Is Not Provided
+
+```java
+// When you provide ANY constructor, Java doesn't provide default constructor
+class StudentWithParameterizedConstructor {
+    private String name;
+    private int age;
+
+    // Parameterized constructor
+    public StudentWithParameterizedConstructor(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // No default constructor available!
+    // This would cause compilation error:
+    // StudentWithParameterizedConstructor student = new StudentWithParameterizedConstructor();
+
+    public void displayInfo() {
+        System.out.println("Name: " + name + ", Age: " + age);
+    }
+}
+
+// Solution: Provide both constructors
+class StudentWithBothConstructors {
+    private String name;
+    private int age;
+    private String major;
+
+    // Default constructor
+    public StudentWithBothConstructors() {
+        this.name = "Unknown Student";
+        this.age = 18;
+        this.major = "Undeclared";
+    }
+
+    // Parameterized constructor
+    public StudentWithBothConstructors(String name, int age, String major) {
+        this.name = name;
+        this.age = age;
+        this.major = major;
+    }
+
+    public void displayInfo() {
+        System.out.println("Name: " + name + ", Age: " + age + ", Major: " + major);
+    }
+}
+```
+
+### Default Constructor Demo
+
+```java
+public class DefaultConstructorDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Automatic Default Constructor Demo ===");
+
+        AutoDefaultConstructorExample autoDefault = new AutoDefaultConstructorExample();
+        autoDefault.displayInfo();
+
+        System.out.println("\n=== Explicit Default Constructor Demo ===");
+
+        Person person = new Person();  // Person created with default values
+        person.displayInfo();
+
+        // Update person information
+        person.setName("John Doe");
+        person.setAge(30);
+        person.setEmail("john.doe@example.com");
+        person.setEmployed(true);
+
+        System.out.println("\nAfter updating:");
+        person.displayInfo();
+
+        System.out.println("\n=== Bank Account Default Constructor Demo ===");
+
+        BankAccount account = new BankAccount();
+        // New bank account created with default settings
+        // Account Number: ACC1234567
+        // Please complete account setup by providing holder information
+
+        account.displayAccountInfo();
+
+        // Complete the setup
+        account.completeSetup("Alice Johnson", "SAVINGS", 500.0);
+        // Account setup completed for Alice Johnson
+
+        System.out.println("\nAfter setup completion:");
+        account.displayAccountInfo();
+
+        System.out.println("\n=== Employee Default Constructor Demo ===");
+
+        Employee emp1 = new Employee();
+        // New employee record created with default settings
+        // Temporary Employee ID: TEMP1234
+        // Please update employee information using setter methods
+
+        emp1.displayEmployeeInfo();
+
+        // Setup employee
+        emp1.setupEmployee("Sarah Wilson", "ENGINEERING", "Software Developer", 75000);
+        // Employee setup completed. New ID: EMPENG5678
+
+        System.out.println("\nAfter employee setup:");
+        emp1.displayEmployeeInfo();
+
+        System.out.println("\n=== Multiple Employee Creation ===");
+
+        Employee emp2 = new Employee();
+        emp2.setupEmployee("Mike Chen", "FINANCE", "Financial Analyst", 65000);
+
+        Employee emp3 = new Employee();
+        emp3.setupEmployee("Lisa Brown", "MARKETING", "Marketing Manager", 70000);
+
+        System.out.println("\nAll employees created:");
+        emp1.displayEmployeeInfo();
+        System.out.println();
+        emp2.displayEmployeeInfo();
+        System.out.println();
+        emp3.displayEmployeeInfo();
+
+        System.out.println("\n=== Constructor Availability Demo ===");
+
+        // This works - both constructors available
+        StudentWithBothConstructors student1 = new StudentWithBothConstructors();
+        StudentWithBothConstructors student2 = new StudentWithBothConstructors("Alice", 20, "Computer Science");
+
+        student1.displayInfo();  // Name: Unknown Student, Age: 18, Major: Undeclared
+        student2.displayInfo();  // Name: Alice, Age: 20, Major: Computer Science
+
+        // This would NOT work (compilation error):
+        // StudentWithParameterizedConstructor student3 = new StudentWithParameterizedConstructor();
+
+        // This works:
+        StudentWithParameterizedConstructor student4 = new StudentWithParameterizedConstructor("Bob", 22);
+        student4.displayInfo();  // Name: Bob, Age: 22
+    }
+}
+```
+
+# Multiple Constructors
+
+## Constructor Overloading
+
+Java allows you to define multiple constructors in a class with different parameter lists. This is called constructor overloading and provides flexibility in object creation.
+
+### Basic Constructor Overloading
+
+```java
+public class Person {
+    private String name;
+    private int age;
+    private String email;
+    private String phone;
+    private String address;
+
+    // Default constructor
+    public Person() {
+        this.name = "Unknown";
+        this.age = 0;
+        this.email = "no-email@example.com";
+        this.phone = "000-000-0000";
+        this.address = "No address provided";
+        System.out.println("Person created with default values");
+    }
+
+    // Constructor with name only
+    public Person(String name) {
+        this.name = name;
+        this.age = 0;
+        this.email = "no-email@example.com";
+        this.phone = "000-000-0000";
+        this.address = "No address provided";
+        System.out.println("Person created with name: " + name);
+    }
+
+    // Constructor with name and age
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+        this.email = "no-email@example.com";
+        this.phone = "000-000-0000";
+        this.address = "No address provided";
+        System.out.println("Person created with name: " + name + ", age: " + age);
+    }
+
+    // Constructor with name, age, and email
+    public Person(String name, int age, String email) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.phone = "000-000-0000";
+        this.address = "No address provided";
+        System.out.println("Person created with name: " + name + ", age: " + age + ", email: " + email);
+    }
+
+    // Constructor with all parameters
+    public Person(String name, int age, String email, String phone, String address) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        System.out.println("Person created with all details for: " + name);
+    }
+
+    // Getter methods
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getEmail() { return email; }
+    public String getPhone() { return phone; }
+    public String getAddress() { return address; }
+
+    public void displayInfo() {
+        System.out.println("=== Person Information ===");
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("Email: " + email);
+        System.out.println("Phone: " + phone);
+        System.out.println("Address: " + address);
+    }
+}
+```
+
+### Constructor Overloading with Validation
+
+```java
+public class BankAccount {
+    private String accountNumber;
+    private String accountHolderName;
+    private double balance;
+    private String accountType;
+    private double interestRate;
+    private boolean isActive;
+
+    // Default constructor
+    public BankAccount() {
+        this.accountNumber = generateAccountNumber();
+        this.accountHolderName = "New Account Holder";
+        this.balance = 0.0;
+        this.accountType = "CHECKING";
+        this.interestRate = 0.01;
+        this.isActive = false;  // Requires setup
+        System.out.println("Default bank account created. Account Number: " + accountNumber);
+    }
+
+    // Constructor with account holder name
+    public BankAccount(String accountHolderName) {
+        this();  // Call default constructor first
+        if (isValidName(accountHolderName)) {
+            this.accountHolderName = accountHolderName;
+            System.out.println("Account created for: " + accountHolderName);
+        } else {
+            System.out.println("Invalid name provided. Using default.");
+        }
+    }
+
+    // Constructor with name and initial deposit
+    public BankAccount(String accountHolderName, double initialDeposit) {
+        this(accountHolderName);  // Call previous constructor
+        if (initialDeposit >= 100) {  // Minimum deposit requirement
+            this.balance = initialDeposit;
+            this.isActive = true;
+            System.out.println("Initial deposit of $" + String.format("%.2f", initialDeposit) + " added");
+        } else {
+            System.out.println("Minimum deposit of $100 required. Account remains inactive.");
+        }
+    }
+
+    // Constructor with name, deposit, and account type
+    public BankAccount(String accountHolderName, double initialDeposit, String accountType) {
+        this(accountHolderName, initialDeposit);  // Call previous constructor
+        if (isValidAccountType(accountType)) {
+            this.accountType = accountType.toUpperCase();
+            setInterestRateForType();
+            System.out.println("Account type set to: " + this.accountType);
+        } else {
+            System.out.println("Invalid account type. Using CHECKING.");
+        }
+    }
+
+    // Constructor with all parameters
+    public BankAccount(String accountNumber, String accountHolderName,
+                      double initialDeposit, String accountType) {
+        this(accountHolderName, initialDeposit, accountType);  // Call previous constructor
+        if (isValidAccountNumber(accountNumber)) {
+            this.accountNumber = accountNumber;
+            System.out.println("Custom account number set: " + accountNumber);
+        } else {
+            System.out.println("Invalid account number format. Using generated number.");
+        }
+    }
+
+    // Helper methods for validation
+    private boolean isValidName(String name) {
+        return name != null && name.trim().length() >= 2 && name.matches("^[a-zA-Z\\s]+$");
+    }
+
+    private boolean isValidAccountType(String type) {
+        return type != null &&
+               (type.equalsIgnoreCase("CHECKING") ||
+                type.equalsIgnoreCase("SAVINGS") ||
+                type.equalsIgnoreCase("BUSINESS"));
+    }
+
+    private boolean isValidAccountNumber(String accountNum) {
+        return accountNum != null && accountNum.matches("^\\d{10}$");
+    }
+
+    private String generateAccountNumber() {
+        return String.valueOf(System.currentTimeMillis()).substring(3, 13);
+    }
+
+    private void setInterestRateForType() {
+        switch (accountType) {
+            case "CHECKING":
+                this.interestRate = 0.01;   // 1%
+                break;
+            case "SAVINGS":
+                this.interestRate = 0.025;  // 2.5%
+                break;
+            case "BUSINESS":
+                this.interestRate = 0.015;  // 1.5%
+                break;
+        }
+    }
+
+    // Getter methods
+    public String getAccountNumber() { return accountNumber; }
+    public String getAccountHolderName() { return accountHolderName; }
+    public double getBalance() { return balance; }
+    public String getAccountType() { return accountType; }
+    public double getInterestRate() { return interestRate; }
+    public boolean isActive() { return isActive; }
+
+    public void displayAccountInfo() {
+        System.out.println("=== Bank Account Information ===");
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Account Holder: " + accountHolderName);
+        System.out.println("Account Type: " + accountType);
+        System.out.println("Balance: $" + String.format("%.2f", balance));
+        System.out.println("Interest Rate: " + String.format("%.2f%%", interestRate * 100));
+        System.out.println("Status: " + (isActive ? "Active" : "Inactive"));
+    }
+}
+```
+
+### Multiple Constructors Demo
+
+```java
+public class MultipleConstructorsDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Person Constructor Overloading Demo ===");
+
+        // Using different constructors
+        Person person1 = new Person();  // Default constructor
+        Person person2 = new Person("Alice Johnson");  // Name only
+        Person person3 = new Person("Bob Smith", 30);  // Name and age
+        Person person4 = new Person("Carol Davis", 25, "carol@example.com");  // Name, age, email
+        Person person5 = new Person("David Wilson", 35, "david@example.com",
+                                   "555-1234", "123 Main St");  // All parameters
+
+        System.out.println("\n--- Person Information ---");
+        person1.displayInfo();
+        System.out.println();
+        person2.displayInfo();
+        System.out.println();
+        person3.displayInfo();
+
+        System.out.println("\n=== Bank Account Constructor Overloading Demo ===");
+
+        // Using different BankAccount constructors
+        System.out.println("--- Default Constructor ---");
+        BankAccount account1 = new BankAccount();
+        account1.displayAccountInfo();
+
+        System.out.println("\n--- Name Only Constructor ---");
+        BankAccount account2 = new BankAccount("Emma Johnson");
+        account2.displayAccountInfo();
+
+        System.out.println("\n--- Name and Deposit Constructor ---");
+        BankAccount account3 = new BankAccount("Frank Miller", 250.0);
+        account3.displayAccountInfo();
+
+        System.out.println("\n--- Name, Deposit, and Type Constructor ---");
+        BankAccount account4 = new BankAccount("Grace Lee", 750.0, "SAVINGS");
+        account4.displayAccountInfo();
+
+        System.out.println("\n--- All Parameters Constructor ---");
+        BankAccount account5 = new BankAccount("1234567890", "Henry Brown", 1500.0, "BUSINESS");
+        account5.displayAccountInfo();
+
+        System.out.println("\n--- Constructor with Validation Issues ---");
+        BankAccount account6 = new BankAccount("", 50.0, "INVALID_TYPE");  // Multiple issues
+        account6.displayAccountInfo();
+    }
+}
+```
+
+# This Inside Constructors
+
+## Using 'this()' for Constructor Chaining
+
+Constructor chaining allows one constructor to call another constructor in the same class using `this()`. This helps avoid code duplication and ensures consistent initialization.
+
+### Basic Constructor Chaining
+
+```java
+public class Student {
+    private String studentId;
+    private String name;
+    private String major;
+    private double gpa;
+    private int creditHours;
+    private boolean isEnrolled;
+
+    // Most comprehensive constructor
+    public Student(String studentId, String name, String major, double gpa, int creditHours, boolean isEnrolled) {
+        // Validation and initialization logic
+        this.studentId = (studentId != null) ? studentId : generateStudentId();
+        this.name = (name != null && !name.trim().isEmpty()) ? name.trim() : "Unknown Student";
+        this.major = (major != null) ? major : "Undeclared";
+        this.gpa = (gpa >= 0.0 && gpa <= 4.0) ? gpa : 0.0;
+        this.creditHours = (creditHours >= 0) ? creditHours : 0;
+        this.isEnrolled = isEnrolled;
+
+        System.out.println("Student created: " + this.name + " (" + this.studentId + ")");
+    }
+
+    // Constructor chaining - calls the main constructor with defaults
+    public Student(String studentId, String name, String major) {
+        this(studentId, name, major, 0.0, 0, true);  // Default GPA=0, creditHours=0, enrolled=true
+        System.out.println("Student created with basic information");
+    }
+
+    // Constructor chaining - calls previous constructor with default major
+    public Student(String studentId, String name) {
+        this(studentId, name, "Undeclared");  // Default major
+        System.out.println("Student created with name only");
+    }
+
+    // Constructor chaining - calls previous constructor with generated ID
+    public Student(String name) {
+        this(null, name);  // ID will be generated in main constructor
+        System.out.println("Student created with generated ID");
+    }
+
+    // Default constructor - calls previous constructor with default name
+    public Student() {
+        this("New Student");  // Default name
+        System.out.println("Default student created");
+    }
+
+    private String generateStudentId() {
+        return "STU" + String.valueOf(System.currentTimeMillis()).substring(7);
+    }
+
+    // Getter methods
+    public String getStudentId() { return studentId; }
+    public String getName() { return name; }
+    public String getMajor() { return major; }
+    public double getGpa() { return gpa; }
+    public int getCreditHours() { return creditHours; }
+    public boolean isEnrolled() { return isEnrolled; }
+
+    public void displayStudentInfo() {
+        System.out.println("=== Student Information ===");
+        System.out.println("Student ID: " + studentId);
+        System.out.println("Name: " + name);
+        System.out.println("Major: " + major);
+        System.out.println("GPA: " + String.format("%.2f", gpa));
+        System.out.println("Credit Hours: " + creditHours);
+        System.out.println("Enrolled: " + (isEnrolled ? "Yes" : "No"));
+    }
+}
+```
+
+### Advanced Constructor Chaining with Validation
+
+```java
+public class Employee {
+    private String employeeId;
+    private String name;
+    private String department;
+    private String jobTitle;
+    private double salary;
+    private java.time.LocalDate hireDate;
+    private boolean isFullTime;
+    private String manager;
+
+    // Master constructor with all parameters and validation
+    public Employee(String employeeId, String name, String department, String jobTitle,
+                   double salary, java.time.LocalDate hireDate, boolean isFullTime, String manager) {
+
+        // Validate and set employee ID
+        if (employeeId != null && employeeId.matches("^EMP\\d{4}$")) {
+            this.employeeId = employeeId;
+        } else {
+            this.employeeId = generateEmployeeId();
+            System.out.println("Invalid employee ID. Generated: " + this.employeeId);
+        }
+
+        // Validate and set name
+        if (name != null && name.trim().length() >= 2) {
+            this.name = name.trim();
+        } else {
+            throw new IllegalArgumentException("Employee name must be at least 2 characters");
+        }
+
+        // Validate and set department
+        String[] validDepartments = {"ENGINEERING", "SALES", "MARKETING", "HR", "FINANCE"};
+        boolean isValidDept = false;
+        if (department != null) {
+            for (String dept : validDepartments) {
+                if (dept.equalsIgnoreCase(department)) {
+                    this.department = dept;
+                    isValidDept = true;
+                    break;
+                }
+            }
+        }
+        if (!isValidDept) {
+            this.department = "GENERAL";
+            System.out.println("Invalid department. Set to GENERAL");
+        }
+
+        this.jobTitle = (jobTitle != null) ? jobTitle : "Employee";
+        this.salary = Math.max(salary, 30000);  // Minimum salary
+        this.hireDate = (hireDate != null) ? hireDate : java.time.LocalDate.now();
+        this.isFullTime = isFullTime;
+        this.manager = manager;
+
+        System.out.println("Employee initialized: " + this.name + " in " + this.department);
+    }
+
+    // Constructor without manager (defaults to null)
+    public Employee(String employeeId, String name, String department, String jobTitle,
+                   double salary, java.time.LocalDate hireDate, boolean isFullTime) {
+        this(employeeId, name, department, jobTitle, salary, hireDate, isFullTime, null);
+        System.out.println("Employee created without assigned manager");
+    }
+
+    // Constructor without hire date (defaults to today)
+    public Employee(String employeeId, String name, String department, String jobTitle,
+                   double salary, boolean isFullTime) {
+        this(employeeId, name, department, jobTitle, salary, null, isFullTime);
+        System.out.println("Employee created with today's hire date");
+    }
+
+    // Constructor with default full-time status
+    public Employee(String employeeId, String name, String department, String jobTitle, double salary) {
+        this(employeeId, name, department, jobTitle, salary, true);  // Default to full-time
+        System.out.println("Employee created as full-time by default");
+    }
+
+    // Constructor with default job title and salary
+    public Employee(String employeeId, String name, String department) {
+        this(employeeId, name, department, "Entry Level", 40000.0);  // Default title and salary
+        System.out.println("Employee created with entry-level defaults");
+    }
+
+    // Constructor with generated employee ID
+    public Employee(String name, String department) {
+        this(null, name, department);  // ID will be generated
+        System.out.println("Employee created with generated ID");
+    }
+
+    private String generateEmployeeId() {
+        return "EMP" + String.format("%04d", (int)(Math.random() * 9999));
+    }
+
+    // Getter methods
+    public String getEmployeeId() { return employeeId; }
+    public String getName() { return name; }
+    public String getDepartment() { return department; }
+    public String getJobTitle() { return jobTitle; }
+    public double getSalary() { return salary; }
+    public java.time.LocalDate getHireDate() { return hireDate; }
+    public boolean isFullTime() { return isFullTime; }
+    public String getManager() { return manager; }
+
+    public void displayEmployeeInfo() {
+        System.out.println("=== Employee Information ===");
+        System.out.println("Employee ID: " + employeeId);
+        System.out.println("Name: " + name);
+        System.out.println("Department: " + department);
+        System.out.println("Job Title: " + jobTitle);
+        System.out.println("Salary: $" + String.format("%,.2f", salary));
+        System.out.println("Hire Date: " + hireDate);
+        System.out.println("Employment Type: " + (isFullTime ? "Full-time" : "Part-time"));
+        System.out.println("Manager: " + (manager != null ? manager : "Not assigned"));
+    }
+}
+```
+
+### Constructor Chaining Demo
+
+```java
+public class ConstructorChainingDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Student Constructor Chaining Demo ===");
+
+        // Each constructor calls the next one in the chain
+        System.out.println("--- Default Constructor Chain ---");
+        Student student1 = new Student();
+        // Default student created
+        // Student created with generated ID
+        // Student created with name only
+        // Student created with basic information
+        // Student created: New Student (STU1234567)
+
+        student1.displayStudentInfo();
+
+        System.out.println("\n--- Name Only Constructor Chain ---");
+        Student student2 = new Student("Alice Johnson");
+        // Student created with generated ID
+        // Student created with name only
+        // Student created with basic information
+        // Student created: Alice Johnson (STU7891234)
+
+        System.out.println("\n--- Name and ID Constructor Chain ---");
+        Student student3 = new Student("STU001", "Bob Smith");
+        // Student created with name only
+        // Student created with basic information
+        // Student created: Bob Smith (STU001)
+
+        System.out.println("\n--- Full Information Constructor ---");
+        Student student4 = new Student("STU002", "Carol Davis", "Computer Science", 3.5, 45, true);
+        // Student created: Carol Davis (STU002)
+
+        student4.displayStudentInfo();
+
+        System.out.println("\n=== Employee Constructor Chaining Demo ===");
+
+        System.out.println("--- Name and Department Only ---");
+        Employee emp1 = new Employee("John Doe", "ENGINEERING");
+        // Employee created with generated ID
+        // Employee created with entry-level defaults
+        // Employee created as full-time by default
+        // Employee created with today's hire date
+        // Employee created without assigned manager
+        // Employee initialized: John Doe in ENGINEERING
+
+        emp1.displayEmployeeInfo();
+
+        System.out.println("\n--- With Custom Salary ---");
+        Employee emp2 = new Employee("EMP1234", "Jane Smith", "MARKETING", "Marketing Specialist", 55000.0);
+        // Employee created as full-time by default
+        // Employee created with today's hire date
+        // Employee created without assigned manager
+        // Employee initialized: Jane Smith in MARKETING
+
+        System.out.println("\n--- Full Employee Information ---");
+        Employee emp3 = new Employee("EMP5678", "Mike Wilson", "SALES", "Sales Manager",
+                                   75000.0, java.time.LocalDate.of(2023, 6, 15), true, "Sarah Johnson");
+        // Employee initialized: Mike Wilson in SALES
+
+        emp3.displayEmployeeInfo();
+
+        System.out.println("\n--- Constructor with Validation Issues ---");
+        try {
+            Employee emp4 = new Employee("INVALID_ID", "", "INVALID_DEPT", "Manager", 25000.0);
+            // Invalid employee ID. Generated: EMP7890
+            // Invalid department. Set to GENERAL
+            // This will throw exception due to empty name
+        } catch (IllegalArgumentException e) {
+            System.out.println("Exception caught: " + e.getMessage());
+        }
+    }
+}
+```
+
+# ToString
+
+## Understanding toString() Method
+
+The `toString()` method is a special method that returns a string representation of an object. Every class in Java inherits this method from the Object class, but it's often overridden to provide meaningful information about the object's state.
+
+### Default toString() Behavior
+
+```java
+public class DefaultToStringExample {
+    private String name;
+    private int age;
+
+    public DefaultToStringExample(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // Not overriding toString() - uses default implementation
+
+    public static void main(String[] args) {
+        DefaultToStringExample obj = new DefaultToStringExample("John", 25);
+
+        System.out.println("Object without custom toString():");
+        System.out.println(obj);  // Prints: DefaultToStringExample@hashcode
+        System.out.println(obj.toString());  // Same as above
+
+        // The default toString() returns: ClassName@HashCode
+        System.out.println("Class name: " + obj.getClass().getSimpleName());
+        System.out.println("Hash code: " + obj.hashCode());
+    }
+}
+```
+
+### Custom toString() Implementation
+
+```java
+public class Person {
+    private String name;
+    private int age;
+    private String email;
+    private String phone;
+
+    public Person(String name, int age, String email, String phone) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    // Custom toString() method
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
+
+    // Alternative toString() format
+    public String toStringFormatted() {
+        return String.format("Person: %s (Age: %d, Email: %s, Phone: %s)",
+                           name, age, email, phone);
+    }
+
+    // Getter methods
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getEmail() { return email; }
+    public String getPhone() { return phone; }
+
+    public static void main(String[] args) {
+        Person person = new Person("Alice Johnson", 28, "alice@example.com", "555-1234");
+
+        System.out.println("Custom toString() output:");
+        System.out.println(person);  // Automatically calls toString()
+        // Person{name='Alice Johnson', age=28, email='alice@example.com', phone='555-1234'}
+
+        System.out.println("\nFormatted toString() output:");
+        System.out.println(person.toStringFormatted());
+        // Person: Alice Johnson (Age: 28, Email: alice@example.com, Phone: 555-1234)
+    }
+}
+```
+
+### Advanced toString() Examples
+
+```java
+public class BankAccount {
+    private String accountNumber;
+    private String accountHolderName;
+    private double balance;
+    private String accountType;
+    private java.time.LocalDateTime creationDate;
+    private boolean isActive;
+
+    public BankAccount(String accountNumber, String accountHolderName,
+                      String accountType, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.accountHolderName = accountHolderName;
+        this.accountType = accountType;
+        this.balance = initialBalance;
+        this.creationDate = java.time.LocalDateTime.now();
+        this.isActive = true;
+    }
+
+    // Comprehensive toString() method
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", accountHolderName='" + accountHolderName + '\'' +
+                ", balance=" + String.format("%.2f", balance) +
+                ", accountType='" + accountType + '\'' +
+                ", creationDate=" + creationDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) +
+                ", isActive=" + isActive +
+                '}';
+    }
+
+    // Business-friendly toString()
+    public String toBusinessString() {
+        return String.format("Account %s (%s) - %s: $%,.2f [%s]",
+                           accountNumber,
+                           accountHolderName,
+                           accountType,
+                           balance,
+                           isActive ? "Active" : "Inactive");
+    }
+
+    // Summary toString()
+    public String toSummaryString() {
+        return String.format("%s - $%,.2f", accountHolderName, balance);
+    }
+
+    // Getter methods
+    public String getAccountNumber() { return accountNumber; }
+    public String getAccountHolderName() { return accountHolderName; }
+    public double getBalance() { return balance; }
+    public String getAccountType() { return accountType; }
+    public boolean isActive() { return isActive; }
+}
+```
+
+### toString() with Collections
+
+```java
+import java.util.*;
+
+public class Student {
+    private String studentId;
+    private String name;
+    private String major;
+    private double gpa;
+    private List<String> courses;
+    private Map<String, String> grades;
+
+    public Student(String studentId, String name, String major, double gpa) {
+        this.studentId = studentId;
+        this.name = name;
+        this.major = major;
+        this.gpa = gpa;
+        this.courses = new ArrayList<>();
+        this.grades = new HashMap<>();
+    }
+
+    public void addCourse(String course, String grade) {
+        courses.add(course);
+        grades.put(course, grade);
+    }
+
+    // toString() that handles collections
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Student{");
+        sb.append("studentId='").append(studentId).append('\'');
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", major='").append(major).append('\'');
+        sb.append(", gpa=").append(String.format("%.2f", gpa));
+
+        if (!courses.isEmpty()) {
+            sb.append(", courses=").append(courses);
+        }
+
+        if (!grades.isEmpty()) {
+            sb.append(", grades=").append(grades);
+        }
+
+        sb.append('}');
+        return sb.toString();
+    }
+
+    // Detailed toString() for academic records
+    public String toAcademicString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== Academic Record ===\n");
+        sb.append("Student ID: ").append(studentId).append("\n");
+        sb.append("Name: ").append(name).append("\n");
+        sb.append("Major: ").append(major).append("\n");
+        sb.append("GPA: ").append(String.format("%.2f", gpa)).append("\n");
+
+        if (!courses.isEmpty()) {
+            sb.append("Courses and Grades:\n");
+            for (String course : courses) {
+                String grade = grades.get(course);
+                sb.append("  - ").append(course).append(": ").append(grade).append("\n");
+            }
+        } else {
+            sb.append("No courses enrolled\n");
+        }
+
+        return sb.toString();
+    }
+
+    // Compact toString()
+    public String toCompactString() {
+        return String.format("%s (%s) - %s, GPA: %.2f", name, studentId, major, gpa);
+    }
+}
+```
+
+### toString() Best Practices and Examples
+
+```java
+public class Product {
+    private String productId;
+    private String name;
+    private double price;
+    private int quantity;
+    private String category;
+    private List<String> tags;
+    private Date manufactureDate;
+
+    public Product(String productId, String name, double price, int quantity, String category) {
+        this.productId = productId;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.category = category;
+        this.tags = new ArrayList<>();
+        this.manufactureDate = new Date();
+    }
+
+    public void addTag(String tag) {
+        tags.add(tag);
+    }
+
+    // Standard toString() - includes all important fields
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId='" + productId + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + String.format("%.2f", price) +
+                ", quantity=" + quantity +
+                ", category='" + category + '\'' +
+                ", tags=" + tags +
+                ", manufactureDate=" + new java.text.SimpleDateFormat("yyyy-MM-dd").format(manufactureDate) +
+                '}';
+    }
+
+    // Business toString() - customer-facing format
+    public String toBusinessString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+        sb.append(" - $").append(String.format("%.2f", price));
+        sb.append(" (").append(quantity > 0 ? "In Stock" : "Out of Stock").append(")");
+
+        if (!tags.isEmpty()) {
+            sb.append(" Tags: ").append(String.join(", ", tags));
+        }
+
+        return sb.toString();
+    }
+
+    // Inventory toString() - for internal use
+    public String toInventoryString() {
+        return String.format("ID: %s | %s | $%.2f | Qty: %d | Category: %s",
+                           productId, name, price, quantity, category);
+    }
+
+    // JSON-like toString()
+    public String toJsonLikeString() {
+        return String.format(
+            "{\n" +
+            "  \"productId\": \"%s\",\n" +
+            "  \"name\": \"%s\",\n" +
+            "  \"price\": %.2f,\n" +
+            "  \"quantity\": %d,\n" +
+            "  \"category\": \"%s\",\n" +
+            "  \"tags\": %s,\n" +
+            "  \"inStock\": %s\n" +
+            "}",
+            productId, name, price, quantity, category, tags, quantity > 0
+        );
+    }
+}
+```
+
+### toString() Demo
+
+```java
+public class ToStringDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Default toString() vs Custom toString() ===");
+
+        // Default toString() example
+        DefaultToStringExample defaultObj = new DefaultToStringExample("John", 25);
+        System.out.println("Default toString(): " + defaultObj);
+        // Default toString(): DefaultToStringExample@15db9742
+
+        // Custom toString() example
+        Person person = new Person("Alice Johnson", 28, "alice@example.com", "555-1234");
+        System.out.println("Custom toString(): " + person);
+        // Custom toString(): Person{name='Alice Johnson', age=28, email='alice@example.com', phone='555-1234'}
+
+        System.out.println("\n=== Bank Account toString() Examples ===");
+
+        BankAccount account = new BankAccount("1234567890", "Bob Smith", "SAVINGS", 2500.75);
+        System.out.println("Standard toString():");
+        System.out.println(account);
+
+        System.out.println("\nBusiness toString():");
+        System.out.println(account.toBusinessString());
+        // Account 1234567890 (Bob Smith) - SAVINGS: $2,500.75 [Active]
+
+        System.out.println("Summary toString():");
+        System.out.println(account.toSummaryString());
+        // Bob Smith - $2,500.75
+
+        System.out.println("\n=== Student toString() with Collections ===");
+
+        Student student = new Student("STU001", "Emma Davis", "Computer Science", 3.85);
+        student.addCourse("Java Programming", "A");
+        student.addCourse("Data Structures", "A-");
+        student.addCourse("Database Systems", "B+");
+
+        System.out.println("Standard toString():");
+        System.out.println(student);
+
+        System.out.println("\nAcademic toString():");
+        System.out.println(student.toAcademicString());
+
+        System.out.println("Compact toString():");
+        System.out.println(student.toCompactString());
+        // Emma Davis (STU001) - Computer Science, GPA: 3.85
+
+        System.out.println("\n=== Product toString() Examples ===");
+
+        Product laptop = new Product("PROD001", "Gaming Laptop", 1299.99, 15, "Electronics");
+        laptop.addTag("Gaming");
+        laptop.addTag("High Performance");
+        laptop.addTag("RGB");
+
+        System.out.println("Standard toString():");
+        System.out.println(laptop);
+
+        System.out.println("\nBusiness toString():");
+        System.out.println(laptop.toBusinessString());
+        // Gaming Laptop - $1299.99 (In Stock) Tags: Gaming, High Performance, RGB
+
+        System.out.println("\nInventory toString():");
+        System.out.println(laptop.toInventoryString());
+        // ID: PROD001 | Gaming Laptop | $1299.99 | Qty: 15 | Category: Electronics
+
+        System.out.println("\nJSON-like toString():");
+        System.out.println(laptop.toJsonLikeString());
+
+        System.out.println("\n=== toString() in Collections ===");
+
+        List<Person> people = Arrays.asList(
+            new Person("John Doe", 30, "john@example.com", "555-0001"),
+            new Person("Jane Smith", 25, "jane@example.com", "555-0002"),
+            new Person("Mike Wilson", 35, "mike@example.com", "555-0003")
+        );
+
+        System.out.println("List of people:");
+        for (Person p : people) {
+            System.out.println("  " + p);
+        }
+
+        // toString() is automatically called when printing collections
+        System.out.println("\nCollection toString():");
+        System.out.println(people);
+    }
+}
+```
+
+# The This Keyword
+
+## Understanding the 'this' Keyword
+
+The `this` keyword is a reference to the current object. It's used to refer to instance variables and methods of the current class, and to distinguish between instance variables and parameters when they have the same name.
+
+### Basic Usage of 'this'
+
+```java
+public class Person {
+    private String name;
+    private int age;
+    private String email;
+
+    // Constructor using 'this' to distinguish between parameters and instance variables
+    public Person(String name, int age, String email) {
+        this.name = name;    // this.name refers to instance variable, name refers to parameter
+        this.age = age;      // this.age refers to instance variable, age refers to parameter
+        this.email = email;  // this.email refers to instance variable, email refers to parameter
+    }
+
+    // Setter methods using 'this'
+    public void setName(String name) {
+        this.name = name;  // Without 'this', both would refer to the parameter
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    // Method using 'this' to call another method
+    public void updatePersonalInfo(String name, int age, String email) {
+        this.setName(name);   // Calling setter method using 'this'
+        this.setAge(age);     // 'this' is optional here, but makes intent clear
+        this.setEmail(email);
+
+        // this.displayInfo(); // Calling another method of the same class
+    }
+
+    // Method that returns 'this' for method chaining
+    public Person withName(String name) {
+        this.name = name;
+        return this;  // Returns the current object
+    }
+
+    public Person withAge(int age) {
+        this.age = age;
+        return this;
+    }
+
+    public Person withEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    // Getter methods
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getEmail() { return email; }
+
+    public void displayInfo() {
+        System.out.println("Person Information:");
+        System.out.println("Name: " + this.name);    // 'this' is optional here
+        System.out.println("Age: " + this.age);
+        System.out.println("Email: " + this.email);
+    }
+
+    // Method that compares current object with another
+    public boolean isSameAge(Person other) {
+        return this.age == other.age;  // 'this' refers to current object
+    }
+
+    public boolean hasSameName(Person other) {
+        return this.name != null && this.name.equals(other.name);
+    }
+}
+```
+
+### Advanced Usage of 'this'
+
+```java
+public class BankAccount {
+    private String accountNumber;
+    private String accountHolderName;
+    private double balance;
+    private String accountType;
+    private double interestRate;
+    private boolean isActive;
+
+    public BankAccount(String accountNumber, String accountHolderName, double balance) {
+        this.accountNumber = accountNumber;
+        this.accountHolderName = accountHolderName;
+        this.balance = balance;
+        this.accountType = "CHECKING";  // Default
+        this.interestRate = 0.01;       // Default
+        this.isActive = true;           // Default
+
+        // Call initialization method using 'this'
+        this.validateAccount();
+    }
+
+    // Method using 'this' extensively
+    private void validateAccount() {
+        if (this.accountNumber == null || this.accountNumber.length() != 10) {
+            throw new IllegalArgumentException("Invalid account number");
+        }
+
+        if (this.accountHolderName == null || this.accountHolderName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Account holder name cannot be empty");
+        }
+
+        if (this.balance < 0) {
+            System.out.println("Warning: Account created with negative balance");
+        }
+
+        System.out.println("Account validation completed for: " + this.accountHolderName);
+    }
+
+    // Method chaining using 'this'
+    public BankAccount setAccountType(String accountType) {
+        this.accountType = accountType;
+        this.updateInterestRate();  // Call another method using 'this'
+        return this;  // Return current object for chaining
+    }
+
+    public BankAccount setBalance(double balance) {
+        this.balance = balance;
+        return this;
+    }
+
+    public BankAccount activate() {
+        this.isActive = true;
+        return this;
+    }
+
+    public BankAccount deactivate() {
+        this.isActive = false;
+        return this;
+    }
+
+    // Method that uses 'this' to pass current object to another method
+    public void transferTo(BankAccount targetAccount, double amount) {
+        if (this.canWithdraw(amount)) {  // Call method on current object
+            this.withdraw(amount);
+            targetAccount.deposit(amount);
+
+            // Log the transfer
+            this.logTransaction("Transfer out", amount);
+            targetAccount.logTransaction("Transfer in", amount);
+        }
+    }
+
+    private boolean canWithdraw(double amount) {
+        return this.isActive && this.balance >= amount;
+    }
+
+    private void withdraw(double amount) {
+        this.balance -= amount;
+        System.out.println("Withdrew $" + String.format("%.2f", amount) + " from " + this.accountHolderName);
+    }
+
+    private void deposit(double amount) {
+        this.balance += amount;
+        System.out.println("Deposited $" + String.format("%.2f", amount) + " to " + this.accountHolderName);
+    }
+
+    private void logTransaction(String type, double amount) {
+        System.out.println("Transaction logged for " + this.accountHolderName +
+                          ": " + type + " $" + String.format("%.2f", amount));
+    }
+
+    private void updateInterestRate() {
+        switch (this.accountType) {
+            case "CHECKING":
+                this.interestRate = 0.01;
+                break;
+            case "SAVINGS":
+                this.interestRate = 0.025;
+                break;
+            case "BUSINESS":
+                this.interestRate = 0.015;
+                break;
+        }
+    }
+
+    // Method that compares current object with another using 'this'
+    public boolean hasSameAccountType(BankAccount other) {
+        return this.accountType.equals(other.accountType);
+    }
+
+    public boolean hasHigherBalance(BankAccount other) {
+        return this.balance > other.balance;
+    }
+
+    // toString() method using 'this'
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "accountNumber='" + this.accountNumber + '\'' +
+                ", accountHolderName='" + this.accountHolderName + '\'' +
+                ", balance=" + this.balance +
+                ", accountType='" + this.accountType + '\'' +
+                ", interestRate=" + this.interestRate +
+                ", isActive=" + this.isActive +
+                '}';
+    }
+
+    // Getter methods
+    public String getAccountNumber() { return this.accountNumber; }
+    public String getAccountHolderName() { return this.accountHolderName; }
+    public double getBalance() { return this.balance; }
+    public String getAccountType() { return this.accountType; }
+    public boolean isActive() { return this.isActive; }
+}
+```
+
+### 'this' in Constructor Chaining
+
+```java
+public class Employee {
+    private String employeeId;
+    private String name;
+    private String department;
+    private double salary;
+    private boolean isFullTime;
+
+    // Constructor chaining using 'this()'
+    public Employee() {
+        this("Unknown", "GENERAL", 40000.0);  // Call another constructor
+    }
+
+    public Employee(String name) {
+        this(name, "GENERAL", 40000.0);  // Call another constructor
+    }
+
+    public Employee(String name, String department) {
+        this(name, department, 40000.0);  // Call another constructor
+    }
+
+    // Main constructor
+    public Employee(String name, String department, double salary) {
+        this.employeeId = generateEmployeeId();
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+        this.isFullTime = true;  // Default
+
+        // Call validation method using 'this'
+        this.validateEmployeeData();
+    }
+
+    private String generateEmployeeId() {
+        return "EMP" + System.currentTimeMillis() % 10000;
+    }
+
+    private void validateEmployeeData() {
+        if (this.name == null || this.name.trim().isEmpty()) {
+            this.name = "Unknown Employee";
+        }
+
+        if (this.salary < 30000) {
+            System.out.println("Warning: Salary below minimum threshold for " + this.name);
+        }
+    }
+
+    // Method that creates a copy of current object
+    public Employee createCopy() {
+        Employee copy = new Employee(this.name, this.department, this.salary);
+        copy.employeeId = "COPY_" + this.employeeId;
+        copy.isFullTime = this.isFullTime;
+        return copy;
+    }
+
+    // Method that compares current object with another
+    public int compareSalary(Employee other) {
+        if (this.salary > other.salary) {
+            return 1;
+        } else if (this.salary < other.salary) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
+    // Method chaining example
+    public Employee updateSalary(double newSalary) {
+        this.salary = newSalary;
+        return this;
+    }
+
+    public Employee changeDepartment(String newDepartment) {
+        this.department = newDepartment;
+        return this;
+    }
+
+    public Employee setFullTime(boolean fullTime) {
+        this.isFullTime = fullTime;
+        return this;
+    }
+
+    // Getter methods using 'this' (optional but explicit)
+    public String getEmployeeId() { return this.employeeId; }
+    public String getName() { return this.name; }
+    public String getDepartment() { return this.department; }
+    public double getSalary() { return this.salary; }
+    public boolean isFullTime() { return this.isFullTime; }
+
+    public void displayInfo() {
+        System.out.println("Employee: " + this.name + " (" + this.employeeId + ")");
+        System.out.println("Department: " + this.department);
+        System.out.println("Salary: $" + String.format("%.2f", this.salary));
+        System.out.println("Full-time: " + this.isFullTime);
+    }
+}
+```
+
+### 'this' Keyword Demo
+
+```java
+public class ThisKeywordDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Basic 'this' Usage Demo ===");
+
+        // Creating person with constructor that uses 'this'
+        Person person1 = new Person("Alice Johnson", 28, "alice@example.com");
+        person1.displayInfo();
+
+        // Using setter methods that use 'this'
+        person1.setName("Alice Smith");  // Using 'this' to distinguish parameter from field
+        person1.setAge(29);
+
+        System.out.println("\nAfter updates:");
+        person1.displayInfo();
+
+        System.out.println("\n=== Method Chaining with 'this' ===");
+
+        // Method chaining - each method returns 'this'
+        Person person2 = new Person("", 0, "")
+                .withName("Bob Wilson")
+                .withAge(35)
+                .withEmail("bob@example.com");
+
+        person2.displayInfo();
+
+        System.out.println("\n=== Object Comparison using 'this' ===");
+
+        Person person3 = new Person("Carol Davis", 28, "carol@example.com");
+
+        System.out.println("person1 and person3 same age: " + person1.isSameAge(person3));  // true
+        System.out.println("person1 and person3 same name: " + person1.hasSameName(person3)); // false
+
+        System.out.println("\n=== Bank Account 'this' Demo ===");
+
+        // Bank account with validation using 'this'
+        BankAccount account1 = new BankAccount("1234567890", "John Doe", 1500.0);
+
+        // Method chaining using 'this'
+        account1.setAccountType("SAVINGS")
+                .setBalance(2000.0)
+                .activate();
+
+        System.out.println("Account 1: " + account1);
+
+        BankAccount account2 = new BankAccount("9876543210", "Jane Smith", 1000.0);
+        account2.setAccountType("CHECKING");
+
+        System.out.println("\nAccount comparison:");
+        System.out.println("Same account type: " + account1.hasSameAccountType(account2)); // false
+        System.out.println("Account1 has higher balance: " + account1.hasHigherBalance(account2)); // true
+
+        System.out.println("\n=== Transfer using 'this' ===");
+        account1.transferTo(account2, 500.0);
+
+        System.out.println("After transfer:");
+        System.out.println("Account1 balance: $" + String.format("%.2f", account1.getBalance()));
+        System.out.println("Account2 balance: $" + String.format("%.2f", account2.getBalance()));
+
+        System.out.println("\n=== Employee Constructor Chaining with 'this()' ===");
+
+        // Different constructor calls using 'this()'
+        Employee emp1 = new Employee();  // Uses this() to call another constructor
+        Employee emp2 = new Employee("Alice Johnson");  // Uses this() to call another constructor
+        Employee emp3 = new Employee("Bob Smith", "ENGINEERING");  // Uses this() to call main constructor
+        Employee emp4 = new Employee("Carol Davis", "MARKETING", 65000.0);  // Main constructor
+
+        System.out.println("Employee 1:");
+        emp1.displayInfo();
+
+        System.out.println("\nEmployee 2:");
+        emp2.displayInfo();
+
+        System.out.println("\n=== Method Chaining with Employee ===");
+
+        // Method chaining using 'this'
+        emp4.updateSalary(70000.0)
+            .changeDepartment("SALES")
+            .setFullTime(false);
+
+        System.out.println("Employee 4 after chaining:");
+        emp4.displayInfo();
+
+        System.out.println("\n=== Employee Comparison ===");
+
+        int salaryComparison = emp3.compareSalary(emp4);
+        if (salaryComparison > 0) {
+            System.out.println(emp3.getName() + " has higher salary than " + emp4.getName());
+        } else if (salaryComparison < 0) {
+            System.out.println(emp3.getName() + " has lower salary than " + emp4.getName());
+        } else {
+            System.out.println(emp3.getName() + " and " + emp4.getName() + " have same salary");
+        }
+
+        System.out.println("\n=== Creating Employee Copy ===");
+
+        Employee empCopy = emp4.createCopy();
+        System.out.println("Original employee:");
+        emp4.displayInfo();
+        System.out.println("\nCopied employee:");
+        empCopy.displayInfo();
+    }
+}
+```
+
+# Everything In Java Is An Object
+
+## Understanding Object-Oriented Nature of Java
+
+In Java, almost everything is an object. This fundamental concept is crucial for understanding how Java works and how to write effective object-oriented code.
+
+### What Are Objects in Java?
+
+```java
+public class EverythingIsObjectDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Understanding Objects in Java ===");
+
+        // Strings are objects
+        String text = "Hello World";
+        System.out.println("String is an object: " + (text instanceof Object));  // true
+        System.out.println("String class: " + text.getClass().getName());  // java.lang.String
+        System.out.println("String methods available: length(), charAt(), substring(), etc.");
+
+        // Arrays are objects
+        int[] numbers = {1, 2, 3, 4, 5};
+        System.out.println("Array is an object: " + (numbers instanceof Object));  // true
+        System.out.println("Array class: " + numbers.getClass().getName());  // [I (array of int)
+        System.out.println("Array has length property: " + numbers.length);
+
+        // Even wrapper classes for primitives are objects
+        Integer num = 42;
+        System.out.println("Integer wrapper is an object: " + (num instanceof Object));  // true
+        System.out.println("Integer class: " + num.getClass().getName());  // java.lang.Integer
+
+        // Collections are objects
+        java.util.List<String> list = new java.util.ArrayList<>();
+        list.add("Item 1");
+        list.add("Item 2");
+        System.out.println("ArrayList is an object: " + (list instanceof Object));  // true
+        System.out.println("ArrayList class: " + list.getClass().getName());  // java.util.ArrayList
+
+        // Custom classes create objects
+        Person person = new Person("John Doe");
+        System.out.println("Custom Person is an object: " + (person instanceof Object));  // true
+        System.out.println("Person class: " + person.getClass().getName());  // Person
+
+        // Even classes are objects (Class objects)
+        Class<?> stringClass = String.class;
+        System.out.println("Class is an object: " + (stringClass instanceof Object));  // true
+        System.out.println("Class class: " + stringClass.getClass().getName());  // java.lang.Class
+    }
+}
+
+class Person {
+    private String name;
+
+    public Person(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+```
+
+### Primitives vs Objects
+
+```java
+public class PrimitivesVsObjects {
+    public static void main(String[] args) {
+        System.out.println("=== Primitives vs Objects ===");
+
+        // Primitives are NOT objects
+        int primitiveInt = 42;
+        double primitiveDouble = 3.14;
+        boolean primitiveBoolean = true;
+        char primitiveChar = 'A';
+
+        // These are the 8 primitive types in Java:
+        // byte, short, int, long, float, double, boolean, char
+
+        System.out.println("Primitive int value: " + primitiveInt);
+        // System.out.println(primitiveInt instanceof Object);  // Compilation error!
+        // Primitives don't have methods or inherit from Object
+
+        // Wrapper classes ARE objects
+        Integer objectInteger = 42;  // Autoboxing: int -> Integer
+        Double objectDouble = 3.14;   // Autoboxing: double -> Double
+        Boolean objectBoolean = true; // Autoboxing: boolean -> Boolean
+        Character objectChar = 'A';   // Autoboxing: char -> Character
+
+        System.out.println("Object Integer: " + objectInteger);
+        System.out.println("Integer is object: " + (objectInteger instanceof Object));  // true
+
+        // Wrapper objects have methods
+        System.out.println("Integer methods:");
+        System.out.println("  toString(): " + objectInteger.toString());
+        System.out.println("  compareTo(): " + objectInteger.compareTo(50));
+        System.out.println("  intValue(): " + objectInteger.intValue());
+
+        // Autoboxing and Unboxing
+        demonstrateAutoboxing();
+
+        // Object methods available on all objects
+        demonstrateObjectMethods();
+    }
+
+    private static void demonstrateAutoboxing() {
+        System.out.println("\n=== Autoboxing and Unboxing ===");
+
+        // Autoboxing: primitive -> wrapper object
+        int primitive = 100;
+        Integer wrapper = primitive;  // Automatic conversion
+        System.out.println("Autoboxing: int " + primitive + " -> Integer " + wrapper);
+
+        // Unboxing: wrapper object -> primitive
+        Integer wrapperObj = 200;
+        int primitiveValue = wrapperObj;  // Automatic conversion
+        System.out.println("Unboxing: Integer " + wrapperObj + " -> int " + primitiveValue);
+
+        // Collections only work with objects, not primitives
+        java.util.List<Integer> numberList = new java.util.ArrayList<>();
+        numberList.add(10);   // Autoboxing: int -> Integer
+        numberList.add(20);
+        numberList.add(30);
+
+        int sum = 0;
+        for (Integer num : numberList) {
+            sum += num;  // Unboxing: Integer -> int
+        }
+        System.out.println("Sum from list: " + sum);
+    }
+
+    private static void demonstrateObjectMethods() {
+        System.out.println("\n=== Object Methods Available to All Objects ===");
+
+        String text = "Hello World";
+        Integer number = 42;
+        java.util.List<String> list = new java.util.ArrayList<>();
+
+        // Every object inherits these methods from Object class:
+
+        // toString() - string representation
+        System.out.println("toString() examples:");
+        System.out.println("  String: " + text.toString());
+        System.out.println("  Integer: " + number.toString());
+        System.out.println("  ArrayList: " + list.toString());
+
+        // getClass() - runtime class information
+        System.out.println("\ngetClass() examples:");
+        System.out.println("  String class: " + text.getClass());
+        System.out.println("  Integer class: " + number.getClass());
+        System.out.println("  ArrayList class: " + list.getClass());
+
+        // hashCode() - hash code for the object
+        System.out.println("\nhashCode() examples:");
+        System.out.println("  String hashCode: " + text.hashCode());
+        System.out.println("  Integer hashCode: " + number.hashCode());
+        System.out.println("  ArrayList hashCode: " + list.hashCode());
+
+        // equals() - object equality
+        String text1 = "Hello";
+        String text2 = "Hello";
+        String text3 = new String("Hello");
+
+        System.out.println("\nequals() examples:");
+        System.out.println("  text1.equals(text2): " + text1.equals(text2));  // true
+        System.out.println("  text1.equals(text3): " + text1.equals(text3));  // true
+        System.out.println("  text1 == text2: " + (text1 == text2));  // true (string pool)
+        System.out.println("  text1 == text3: " + (text1 == text3));  // false (different objects)
+    }
+}
+```
+
+### Object Hierarchy and Inheritance
+
+```java
+public class ObjectHierarchyDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Object Hierarchy in Java ===");
+
+        // All classes inherit from Object (directly or indirectly)
+        demonstrateInheritanceFromObject();
+
+        // Using Object references
+        demonstrateObjectReferences();
+
+        // Polymorphism with Object
+        demonstratePolymorphism();
+    }
+
+    private static void demonstrateInheritanceFromObject() {
+        System.out.println("--- Inheritance from Object ---");
+
+        // Create different types of objects
+        Student student = new Student("John", "CS");
+        Employee employee = new Employee("Jane", "Engineering");
+        BankAccount account = new BankAccount("123456", "Bob");
+
+        // All inherit from Object
+        System.out.println("Student inherits from Object: " + (student instanceof Object));
+        System.out.println("Employee inherits from Object: " + (employee instanceof Object));
+        System.out.println("BankAccount inherits from Object: " + (account instanceof Object));
+
+        // All have Object methods
+        System.out.println("\nObject methods available:");
+        System.out.println("Student toString(): " + student.toString());
+        System.out.println("Employee getClass(): " + employee.getClass().getSimpleName());
+        System.out.println("BankAccount hashCode(): " + account.hashCode());
+    }
+
+    private static void demonstrateObjectReferences() {
+        System.out.println("\n--- Object References ---");
+
+        // Object reference can hold any object
+        Object obj1 = "This is a String";
+        Object obj2 = 42;  // Autoboxed to Integer
+        Object obj3 = new Student("Alice", "Math");
+        Object obj4 = new java.util.ArrayList<String>();
+
+        System.out.println("Object references:");
+        System.out.println("obj1 (String): " + obj1);
+        System.out.println("obj2 (Integer): " + obj2);
+        System.out.println("obj3 (Student): " + obj3);
+        System.out.println("obj4 (ArrayList): " + obj4);
+
+        // Type checking with instanceof
+        System.out.println("\nType checking:");
+        System.out.println("obj1 is String: " + (obj1 instanceof String));
+        System.out.println("obj2 is Integer: " + (obj2 instanceof Integer));
+        System.out.println("obj3 is Student: " + (obj3 instanceof Student));
+        System.out.println("obj4 is List: " + (obj4 instanceof java.util.List));
+
+        // Casting back to specific types
+        if (obj1 instanceof String) {
+            String str = (String) obj1;
+            System.out.println("Cast to String, length: " + str.length());
+        }
+
+        if (obj3 instanceof Student) {
+            Student student = (Student) obj3;
+            System.out.println("Cast to Student, name: " + student.getName());
+        }
+    }
+
+    private static void demonstratePolymorphism() {
+        System.out.println("\n--- Polymorphism with Object ---");
+
+        // Array of Objects can hold different types
+        Object[] objects = {
+            "Hello World",
+            42,
+            3.14,
+            true,
+            new Student("Charlie", "Physics"),
+            new Employee("Diana", "Marketing"),
+            new java.util.Date()
+        };
+
+        System.out.println("Processing array of different object types:");
+        for (int i = 0; i < objects.length; i++) {
+            Object obj = objects[i];
+            System.out.printf("objects[%d]: %s (Type: %s)%n",
+                            i, obj.toString(), obj.getClass().getSimpleName());
+        }
+
+        // Polymorphic method calls
+        System.out.println("\nPolymorphic method calls:");
+        for (Object obj : objects) {
+            processObject(obj);  // Same method handles different types
+        }
+    }
+
+    // Polymorphic method that works with any Object
+    private static void processObject(Object obj) {
+        System.out.println("Processing: " + obj.getClass().getSimpleName());
+
+        // Use instanceof to handle different types differently
+        if (obj instanceof String) {
+            String str = (String) obj;
+            System.out.println("  String length: " + str.length());
+        } else if (obj instanceof Number) {
+            Number num = (Number) obj;
+            System.out.println("  Number value: " + num.doubleValue());
+        } else if (obj instanceof Student) {
+            Student student = (Student) obj;
+            System.out.println("  Student name: " + student.getName());
+        } else if (obj instanceof Employee) {
+            Employee employee = (Employee) obj;
+            System.out.println("  Employee name: " + employee.getName());
+        } else {
+            System.out.println("  Generic object: " + obj.toString());
+        }
+    }
+}
+
+// Supporting classes
+class Student {
+    private String name;
+    private String major;
+
+    public Student(String name, String major) {
+        this.name = name;
+        this.major = major;
+    }
+
+    public String getName() { return name; }
+    public String getMajor() { return major; }
+
+    @Override
+    public String toString() {
+        return "Student{name='" + name + "', major='" + major + "'}";
+    }
+}
+
+class Employee {
+    private String name;
+    private String department;
+
+    public Employee(String name, String department) {
+        this.name = name;
+        this.department = department;
+    }
+
+    public String getName() { return name; }
+    public String getDepartment() { return department; }
+
+    @Override
+    public String toString() {
+        return "Employee{name='" + name + "', department='" + department + "'}";
+    }
+}
+
+class BankAccount {
+    private String accountNumber;
+    private String holderName;
+
+    public BankAccount(String accountNumber, String holderName) {
+        this.accountNumber = accountNumber;
+        this.holderName = holderName;
+    }
+
+    public String getAccountNumber() { return accountNumber; }
+    public String getHolderName() { return holderName; }
+
+    @Override
+    public String toString() {
+        return "BankAccount{accountNumber='" + accountNumber + "', holderName='" + holderName + "'}";
+    }
+}
+```
+
+### Practical Implications
+
+```java
+public class PracticalImplications {
+    public static void main(String[] args) {
+        System.out.println("=== Practical Implications of Everything Being Objects ===");
+
+        // Collections can only store objects, not primitives
+        demonstrateCollections();
+
+        // Generics work with objects
+        demonstrateGenerics();
+
+        // Reflection works with objects
+        demonstrateReflection();
+
+        // Object-oriented design patterns
+        demonstrateDesignPatterns();
+    }
+
+    private static void demonstrateCollections() {
+        System.out.println("--- Collections and Objects ---");
+
+        // Collections store objects, not primitives
+        java.util.List<Integer> numbers = new java.util.ArrayList<>();
+        numbers.add(10);  // Autoboxing: int -> Integer
+        numbers.add(20);
+        numbers.add(30);
+
+        // Mixed object collection
+        java.util.List<Object> mixedList = new java.util.ArrayList<>();
+        mixedList.add("String");
+        mixedList.add(42);
+        mixedList.add(3.14);
+        mixedList.add(new Student("Alice", "CS"));
+
+        System.out.println("Numbers list: " + numbers);
+        System.out.println("Mixed list: " + mixedList);
+
+        // Iterating through mixed objects
+        for (Object item : mixedList) {
+            System.out.println("Item: " + item + " (Type: " + item.getClass().getSimpleName() + ")");
+        }
+    }
+
+    private static void demonstrateGenerics() {
+        System.out.println("\n--- Generics with Objects ---");
+
+        // Generic classes work with objects
+        Container<String> stringContainer = new Container<>("Hello World");
+        Container<Integer> intContainer = new Container<>(42);
+        Container<Student> studentContainer = new Container<>(new Student("Bob", "Math"));
+
+        System.out.println("String container: " + stringContainer.getValue());
+        System.out.println("Integer container: " + intContainer.getValue());
+        System.out.println("Student container: " + studentContainer.getValue());
+
+        // Generic methods
+        printObjectInfo("This is a string");
+        printObjectInfo(123);
+        printObjectInfo(new Employee("Carol", "HR"));
+    }
+
+    private static <T> void printObjectInfo(T obj) {
+        System.out.println("Object: " + obj + " (Class: " + obj.getClass().getSimpleName() + ")");
+    }
+
+    private static void demonstrateReflection() {
+        System.out.println("\n--- Reflection with Objects ---");
+
+        try {
+            // Get class information at runtime
+            Student student = new Student("David", "Physics");
+            Class<?> studentClass = student.getClass();
+
+            System.out.println("Class name: " + studentClass.getName());
+            System.out.println("Simple name: " + studentClass.getSimpleName());
+            System.out.println("Package: " + studentClass.getPackage());
+
+            // Get methods
+            System.out.println("Methods:");
+            java.lang.reflect.Method[] methods = studentClass.getDeclaredMethods();
+            for (java.lang.reflect.Method method : methods) {
+                System.out.println("  " + method.getName());
+            }
+
+            // Get fields
+            System.out.println("Fields:");
+            java.lang.reflect.Field[] fields = studentClass.getDeclaredFields();
+            for (java.lang.reflect.Field field : fields) {
+                System.out.println("  " + field.getName() + " (" + field.getType().getSimpleName() + ")");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Reflection error: " + e.getMessage());
+        }
+    }
+
+    private static void demonstrateDesignPatterns() {
+        System.out.println("\n--- Object-Oriented Design Patterns ---");
+
+        // Factory pattern - creates objects
+        ShapeFactory factory = new ShapeFactory();
+        Shape circle = factory.createShape("CIRCLE");
+        Shape rectangle = factory.createShape("RECTANGLE");
+
+        System.out.println("Created shapes:");
+        circle.draw();
+        rectangle.draw();
+
+        // Observer pattern - objects communicate
+        NewsAgency agency = new NewsAgency();
+        NewsChannel cnn = new NewsChannel("CNN");
+        NewsChannel bbc = new NewsChannel("BBC");
+
+        agency.addObserver(cnn);
+        agency.addObserver(bbc);
+        agency.setNews("Breaking: Everything in Java is an Object!");
+    }
+}
+
+// Supporting classes for demonstrations
+class Container<T> {
+    private T value;
+
+    public Container(T value) {
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
+    }
+}
+
+// Shape hierarchy for factory pattern
+interface Shape {
+    void draw();
+}
+
+class Circle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a Circle");
+    }
+}
+
+class Rectangle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a Rectangle");
+    }
+}
+
+class ShapeFactory {
+    public Shape createShape(String type) {
+        switch (type.toUpperCase()) {
+            case "CIRCLE":
+                return new Circle();
+            case "RECTANGLE":
+                return new Rectangle();
+            default:
+                throw new IllegalArgumentException("Unknown shape type: " + type);
+        }
+    }
+}
+
+// Observer pattern classes
+class NewsAgency {
+    private java.util.List<NewsChannel> observers = new java.util.ArrayList<>();
+    private String news;
+
+    public void addObserver(NewsChannel channel) {
+        observers.add(channel);
+    }
+
+    public void setNews(String news) {
+        this.news = news;
+        notifyObservers();
+    }
+
+    private void notifyObservers() {
+        for (NewsChannel channel : observers) {
+            channel.update(news);
+        }
+    }
+}
+
+class NewsChannel {
+    private String name;
+
+    public NewsChannel(String name) {
+        this.name = name;
+    }
+
+    public void update(String news) {
+        System.out.println(name + " received news: " + news);
     }
 }
 ```
