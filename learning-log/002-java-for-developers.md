@@ -47,10 +47,16 @@
 29. [Zone IDs](#zone-ids)
 30. [Other Date Classes](#other-date-classes)
 
+### Big Decimal
+
+31. [The Problem With Double](#the-problem-with-double)
+32. [BigDecimal](#bigdecimal)
+33. [Exploring BigDecimal Methods](#exploring-bigdecimal-methods)
+
 ### Practice and Assessment
 
-31. [Practice Problems](#practice-problems)
-32. [Code Reference](#code-reference-combined-usage-of-all-loops)
+34. [Practice Problems](#practice-problems)
+35. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
@@ -3736,25 +3742,25 @@ public class StringValueOf {
         String flagStr = String.valueOf(flag);
         String charStr = String.valueOf(character);
 
-        System.out.println("Number as string: " + numberStr);
-        System.out.println("Decimal as string: " + decimalStr);
-        System.out.println("Boolean as string: " + flagStr);
-        System.out.println("Character as string: " + charStr);
+        System.out.println("Number as string: " + numberStr); // "42"
+        System.out.println("Decimal as string: " + decimalStr); // "3.14159"
+        System.out.println("Boolean as string: " + flagStr); // "true"
+        System.out.println("Character as string: " + charStr); // "A"
 
         // Converting arrays to strings
         char[] charArray = {'H', 'e', 'l', 'l', 'o'};
         String fromCharArray = String.valueOf(charArray);
-        System.out.println("From char array: " + fromCharArray);
+        System.out.println("From char array: " + fromCharArray); // "Hello"
 
         // Subset of char array
         char[] largeArray = {'A', 'B', 'C', 'D', 'E', 'F'};
         String subset = String.valueOf(largeArray, 1, 3); // "BCD"
-        System.out.println("Subset: " + subset);
+        System.out.println("Subset: " + subset); // "BCD"
 
         // Handling null objects
         Object nullObject = null;
         String nullStr = String.valueOf(nullObject); // Returns "null"
-        System.out.println("Null object: " + nullStr);
+        System.out.println("Null object: " + nullStr); // "null"
     }
 }
 ```
@@ -3772,29 +3778,29 @@ public class StringFormat {
         // Using placeholders
         String message = String.format("Employee: %s, Age: %d, Salary: $%.2f",
                                      name, age, salary);
-        System.out.println(message);
+        System.out.println(message); // "Employee: Alice, Age: 25, Salary: $50000.75"
 
         // Number formatting
         int number = 1234567;
-        System.out.println("With commas: " + String.format("%,d", number));
-        System.out.println("Padded: " + String.format("%010d", number));
-        System.out.println("Hex: " + String.format("%x", number));
-        System.out.println("Octal: " + String.format("%o", number));
+        System.out.println("With commas: " + String.format("%,d", number)); // "1,234,567"
+        System.out.println("Padded: " + String.format("%010d", number)); // "0001234567"
+        System.out.println("Hex: " + String.format("%x", number)); // "12d687"
+        System.out.println("Octal: " + String.format("%o", number)); // "4553207"
 
         // Floating point formatting
         double pi = Math.PI;
-        System.out.println("Pi (2 decimals): " + String.format("%.2f", pi));
-        System.out.println("Pi (scientific): " + String.format("%.2e", pi));
+        System.out.println("Pi (2 decimals): " + String.format("%.2f", pi)); // "3.14"
+        System.out.println("Pi (scientific): " + String.format("%.2e", pi)); // "3.14e+00"
 
         // String formatting
         String text = "Hello";
-        System.out.println("Left aligned: '" + String.format("%-10s", text) + "'");
-        System.out.println("Right aligned: '" + String.format("%10s", text) + "'");
+        System.out.println("Left aligned: '" + String.format("%-10s", text) + "'"); // "Hello     "
+        System.out.println("Right aligned: '" + String.format("%10s", text) + "'"); // "     Hello"
 
         // Date formatting
         java.util.Date now = new java.util.Date();
-        System.out.println("Date: " + String.format("%tF", now)); // ISO date
-        System.out.println("Time: " + String.format("%tT", now)); // ISO time
+        System.out.println("Date: " + String.format("%tF", now)); // "2024-08-15"
+        System.out.println("Time: " + String.format("%tT", now)); // "14:30:45"
     }
 }
 ```
@@ -3809,28 +3815,28 @@ public class StringJoin {
         // Basic joining with delimiter
         String[] words = {"Java", "is", "awesome"};
         String sentence = String.join(" ", words);
-        System.out.println("Sentence: " + sentence);
+        System.out.println("Sentence: " + sentence); // "Java is awesome"
 
         // Joining with different delimiters
         String csvLine = String.join(",", words);
         String pipeSeparated = String.join(" | ", words);
-        System.out.println("CSV: " + csvLine);
-        System.out.println("Pipe separated: " + pipeSeparated);
+        System.out.println("CSV: " + csvLine); // "Java,is,awesome"
+        System.out.println("Pipe separated: " + pipeSeparated); // "Java | is | awesome"
 
         // Joining collections
         List<String> fruits = Arrays.asList("apple", "banana", "cherry");
         String fruitList = String.join(", ", fruits);
-        System.out.println("Fruits: " + fruitList);
+        System.out.println("Fruits: " + fruitList); // "apple, banana, cherry"
 
         // Joining with complex delimiters
         String[] paths = {"home", "user", "documents", "file.txt"};
         String filePath = String.join("/", paths);
-        System.out.println("File path: " + filePath);
+        System.out.println("File path: " + filePath); // "home/user/documents/file.txt"
 
         // Creating SQL-like queries
         List<String> columns = Arrays.asList("id", "name", "email", "age");
         String selectQuery = "SELECT " + String.join(", ", columns) + " FROM users";
-        System.out.println("SQL Query: " + selectQuery);
+        System.out.println("SQL Query: " + selectQuery); // "SELECT id, name, email, age FROM users"
     }
 }
 ```
@@ -3943,19 +3949,19 @@ public class LocalDateTimeBasics {
     public static void main(String[] args) {
         // Current date and time
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("Current date and time: " + now);
+        System.out.println("Current date and time: " + now); // 2024-08-04T14:30:45.123
 
         // Specific date and time
         LocalDateTime specificDateTime = LocalDateTime.of(2024, 12, 25, 14, 30, 0);
-        System.out.println("Christmas 2024 at 2:30 PM: " + specificDateTime);
+        System.out.println("Christmas 2024 at 2:30 PM: " + specificDateTime); // 2024-12-25T14:30
 
         // Using Month enum
         LocalDateTime newYear = LocalDateTime.of(2025, Month.JANUARY, 1, 0, 0, 0);
-        System.out.println("New Year 2025: " + newYear);
+        System.out.println("New Year 2025: " + newYear); // 2025-01-01T00:00
 
         // With nanoseconds
         LocalDateTime precise = LocalDateTime.of(2024, 8, 15, 10, 30, 45, 123456789);
-        System.out.println("Precise time: " + precise);
+        System.out.println("Precise time: " + precise); // 2024-08-15T10:30:45.123456789
     }
 }
 ```
@@ -3971,29 +3977,29 @@ public class LocalDateTimeOperations {
         LocalDateTime dateTime = LocalDateTime.now();
 
         // Getting components
-        System.out.println("Year: " + dateTime.getYear());
-        System.out.println("Month: " + dateTime.getMonth());
-        System.out.println("Day: " + dateTime.getDayOfMonth());
-        System.out.println("Hour: " + dateTime.getHour());
-        System.out.println("Minute: " + dateTime.getMinute());
-        System.out.println("Second: " + dateTime.getSecond());
-        System.out.println("Day of week: " + dateTime.getDayOfWeek());
-        System.out.println("Day of year: " + dateTime.getDayOfYear());
+        System.out.println("Year: " + dateTime.getYear()); // 2024
+        System.out.println("Month: " + dateTime.getMonth()); // AUGUST
+        System.out.println("Day: " + dateTime.getDayOfMonth()); // 15
+        System.out.println("Hour: " + dateTime.getHour()); // 14
+        System.out.println("Minute: " + dateTime.getMinute()); // 30
+        System.out.println("Second: " + dateTime.getSecond()); // 45
+        System.out.println("Day of week: " + dateTime.getDayOfWeek()); // THURSDAY
+        System.out.println("Day of year: " + dateTime.getDayOfYear()); // 228
 
         // Adding time
         LocalDateTime future = dateTime.plusDays(30)
                                       .plusHours(2)
                                       .plusMinutes(15);
-        System.out.println("30 days, 2 hours, 15 minutes later: " + future);
+        System.out.println("30 days, 2 hours, 15 minutes later: " + future); // 2024-09-14T16:45:45
 
         // Subtracting time
         LocalDateTime past = dateTime.minusWeeks(2)
                                     .minusHours(5);
-        System.out.println("2 weeks and 5 hours ago: " + past);
+        System.out.println("2 weeks and 5 hours ago: " + past); // 2024-08-01T09:30:45
 
         // Truncating
         LocalDateTime truncated = dateTime.truncatedTo(ChronoUnit.HOURS);
-        System.out.println("Truncated to hours: " + truncated);
+        System.out.println("Truncated to hours: " + truncated); // 2024-08-15T14:00
     }
 }
 ```
@@ -4010,25 +4016,23 @@ public class LocalDateTimeFormatting {
         LocalDateTime dateTime = LocalDateTime.now();
 
         // Predefined formatters
-        System.out.println("ISO format: " + dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        System.out.println("ISO format: " + dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)); // 2024-08-15T14:30:45.123
 
         // Custom formatters
         DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        System.out.println("Custom format: " + dateTime.format(customFormatter));
+        System.out.println("Custom format: " + dateTime.format(customFormatter)); // 2024-08-15 14:30:45
 
         DateTimeFormatter readableFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a");
-        System.out.println("Readable format: " + dateTime.format(readableFormatter));
+        System.out.println("Readable format: " + dateTime.format(readableFormatter)); // August 15, 2024 at 02:30 PM
 
         // Parsing strings to LocalDateTime
         String dateTimeString = "2024-12-25 14:30:00";
         try {
             LocalDateTime parsed = LocalDateTime.parse(dateTimeString, customFormatter);
-            System.out.println("Parsed date: " + parsed);
+            System.out.println("Parsed date: " + parsed); // 2024-12-25T14:30
         } catch (DateTimeParseException e) {
             System.out.println("Failed to parse: " + e.getMessage());
-        }
-
-        // Common patterns
+        }        // Common patterns
         demonstrateCommonPatterns();
     }
 
@@ -4037,15 +4041,15 @@ public class LocalDateTimeFormatting {
 
         // Database format
         DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        System.out.println("Database format: " + now.format(dbFormat));
+        System.out.println("Database format: " + now.format(dbFormat)); // 2024-08-15 14:30:45.123
 
         // Log format
         DateTimeFormatter logFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        System.out.println("Log format: " + now.format(logFormat));
+        System.out.println("Log format: " + now.format(logFormat)); // 2024-08-15 14:30:45
 
         // User-friendly format
         DateTimeFormatter userFormat = DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a");
-        System.out.println("User format: " + now.format(userFormat));
+        System.out.println("User format: " + now.format(userFormat)); // Aug 15, 2024 2:30 PM
     }
 }
 ```
@@ -4074,11 +4078,11 @@ public class LocalDateTimePractical {
         LocalDateTime meetingEnd = meetingStart.plusHours(1).plusMinutes(30);
 
         System.out.println("Meeting Details:");
-        System.out.println("Start: " + meetingStart.format(DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a")));
-        System.out.println("End: " + meetingEnd.format(DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a")));
+        System.out.println("Start: " + meetingStart.format(DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a"))); // Aug 15, 2024 2:00 PM
+        System.out.println("End: " + meetingEnd.format(DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a"))); // Aug 15, 2024 3:30 PM
 
         Duration duration = Duration.between(meetingStart, meetingEnd);
-        System.out.println("Duration: " + duration.toMinutes() + " minutes");
+        System.out.println("Duration: " + duration.toMinutes() + " minutes"); // 90 minutes
     }
 
     private static void calculateAge() {
@@ -4090,9 +4094,9 @@ public class LocalDateTimePractical {
         long days = ChronoUnit.DAYS.between(birthDate, now);
 
         System.out.println("\nAge Calculation:");
-        System.out.println("Years: " + years);
-        System.out.println("Total months: " + months);
-        System.out.println("Total days: " + days);
+        System.out.println("Years: " + years); // 29
+        System.out.println("Total months: " + months); // 350
+        System.out.println("Total days: " + days); // 10716
     }
 
     private static void checkBusinessHours() {
@@ -4134,27 +4138,27 @@ public class LocalDateExample {
         LocalDate specificDate = LocalDate.of(2024, 12, 25);
         LocalDate withMonth = LocalDate.of(2024, Month.DECEMBER, 25);
 
-        System.out.println("Today: " + today);
-        System.out.println("Christmas: " + specificDate);
-        System.out.println("Using Month enum: " + withMonth);
+        System.out.println("Today: " + today); // 2024-08-15
+        System.out.println("Christmas: " + specificDate); // 2024-12-25
+        System.out.println("Using Month enum: " + withMonth); // 2024-12-25
 
         // Date operations
         LocalDate nextWeek = today.plusWeeks(1);
         LocalDate lastMonth = today.minusMonths(1);
         LocalDate nextYear = today.plusYears(1);
 
-        System.out.println("Next week: " + nextWeek);
-        System.out.println("Last month: " + lastMonth);
-        System.out.println("Next year: " + nextYear);
+        System.out.println("Next week: " + nextWeek); // 2024-08-22
+        System.out.println("Last month: " + lastMonth); // 2024-07-15
+        System.out.println("Next year: " + nextYear); // 2025-08-15
 
         // Getting date components
         System.out.println("\nDate Components:");
-        System.out.println("Year: " + today.getYear());
-        System.out.println("Month: " + today.getMonth());
-        System.out.println("Day: " + today.getDayOfMonth());
-        System.out.println("Day of week: " + today.getDayOfWeek());
-        System.out.println("Day of year: " + today.getDayOfYear());
-        System.out.println("Is leap year: " + today.isLeapYear());
+        System.out.println("Year: " + today.getYear()); // 2024
+        System.out.println("Month: " + today.getMonth()); // AUGUST
+        System.out.println("Day: " + today.getDayOfMonth()); // 15
+        System.out.println("Day of week: " + today.getDayOfWeek()); // THURSDAY
+        System.out.println("Day of year: " + today.getDayOfYear()); // 228
+        System.out.println("Is leap year: " + today.isLeapYear()); // true
     }
 }
 ```
@@ -4177,23 +4181,23 @@ public class LocalDateAdvanced {
         LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
         LocalDate firstMonday = today.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
 
-        System.out.println("First day of month: " + firstDayOfMonth);
-        System.out.println("Last day of month: " + lastDayOfMonth);
-        System.out.println("Next Monday: " + nextMonday);
-        System.out.println("First Monday of month: " + firstMonday);
+        System.out.println("First day of month: " + firstDayOfMonth); // 2024-08-01
+        System.out.println("Last day of month: " + lastDayOfMonth); // 2024-08-31
+        System.out.println("Next Monday: " + nextMonday); // 2024-08-19
+        System.out.println("First Monday of month: " + firstMonday); // 2024-08-05
 
         // Period calculations
         LocalDate birthDate = LocalDate.of(1995, 6, 15);
         Period age = Period.between(birthDate, today);
         System.out.println("\nAge: " + age.getYears() + " years, " +
-                          age.getMonths() + " months, " + age.getDays() + " days");
+                          age.getMonths() + " months, " + age.getDays() + " days"); // 29 years, 2 months, 0 days
 
         // Date comparisons
         LocalDate deadline = LocalDate.of(2024, 12, 31);
         System.out.println("\nDate Comparisons:");
-        System.out.println("Today is before deadline: " + today.isBefore(deadline));
-        System.out.println("Today is after deadline: " + today.isAfter(deadline));
-        System.out.println("Days until deadline: " + ChronoUnit.DAYS.between(today, deadline));
+        System.out.println("Today is before deadline: " + today.isBefore(deadline)); // true
+        System.out.println("Today is after deadline: " + today.isAfter(deadline)); // false
+        System.out.println("Days until deadline: " + ChronoUnit.DAYS.between(today, deadline)); // 138
     }
 }
 ```
@@ -4218,25 +4222,25 @@ public class LocalTimeExample {
         LocalTime midnight = LocalTime.MIDNIGHT;
         LocalTime maxTime = LocalTime.MAX; // 23:59:59.999999999
 
-        System.out.println("Current time: " + now);
-        System.out.println("Noon: " + noon);
-        System.out.println("Precise time: " + precise);
-        System.out.println("Midnight: " + midnight);
-        System.out.println("Max time: " + maxTime);
+        System.out.println("Current time: " + now); // 14:30:45.123
+        System.out.println("Noon: " + noon); // 12:00
+        System.out.println("Precise time: " + precise); // 14:30:45.123456789
+        System.out.println("Midnight: " + midnight); // 00:00
+        System.out.println("Max time: " + maxTime); // 23:59:59.999999999
 
         // Time operations
         LocalTime later = now.plusHours(2).plusMinutes(30);
         LocalTime earlier = now.minusHours(1).minusMinutes(15);
 
-        System.out.println("2.5 hours later: " + later);
-        System.out.println("1.25 hours earlier: " + earlier);
+        System.out.println("2.5 hours later: " + later); // 17:00:45.123
+        System.out.println("1.25 hours earlier: " + earlier); // 13:15:45.123
 
         // Getting time components
         System.out.println("\nTime Components:");
-        System.out.println("Hour: " + now.getHour());
-        System.out.println("Minute: " + now.getMinute());
-        System.out.println("Second: " + now.getSecond());
-        System.out.println("Nano: " + now.getNano());
+        System.out.println("Hour: " + now.getHour()); // 14
+        System.out.println("Minute: " + now.getMinute()); // 30
+        System.out.println("Second: " + now.getSecond()); // 45
+        System.out.println("Nano: " + now.getNano()); // 123000000
     }
 }
 ```
@@ -4640,7 +4644,7 @@ public class ZoneIdBasics {
     public static void main(String[] args) {
         // System default zone
         ZoneId systemDefault = ZoneId.systemDefault();
-        System.out.println("System default zone: " + systemDefault);
+        System.out.println("System default zone: " + systemDefault); // "America/New_York" (example)
 
         // Creating specific zones
         ZoneId utc = ZoneId.of("UTC");
@@ -4648,19 +4652,17 @@ public class ZoneIdBasics {
         ZoneId tokyo = ZoneId.of("Asia/Tokyo");
         ZoneId london = ZoneId.of("Europe/London");
 
-        System.out.println("UTC: " + utc);
-        System.out.println("New York: " + newYork);
-        System.out.println("Tokyo: " + tokyo);
-        System.out.println("London: " + london);
+        System.out.println("UTC: " + utc); // "UTC"
+        System.out.println("New York: " + newYork); // "America/New_York"
+        System.out.println("Tokyo: " + tokyo); // "Asia/Tokyo"
+        System.out.println("London: " + london); // "Europe/London"
 
         // Zone offsets
         ZoneOffset fixedOffset = ZoneOffset.of("+05:30"); // India Standard Time
         ZoneOffset utcOffset = ZoneOffset.UTC;
 
-        System.out.println("Fixed offset: " + fixedOffset);
-        System.out.println("UTC offset: " + utcOffset);
-
-        // Getting all available zones (first 10)
+        System.out.println("Fixed offset: " + fixedOffset); // "+05:30"
+        System.out.println("UTC offset: " + utcOffset); // "Z"        // Getting all available zones (first 10)
         Set<String> allZones = ZoneId.getAvailableZoneIds();
         System.out.println("\nFirst 10 available zones:");
         allZones.stream().sorted().limit(10).forEach(System.out::println);
@@ -4685,10 +4687,10 @@ public class ZonedDateTimeExample {
         ZonedDateTime systemNow = ZonedDateTime.now();
 
         System.out.println("Current time in different zones:");
-        System.out.println("UTC: " + utcNow);
-        System.out.println("New York: " + nyNow);
-        System.out.println("Tokyo: " + tokyoNow);
-        System.out.println("System: " + systemNow);
+        System.out.println("UTC: " + utcNow); // 2024-08-15T18:30:45.123Z
+        System.out.println("New York: " + nyNow); // 2024-08-15T14:30:45.123-04:00[America/New_York]
+        System.out.println("Tokyo: " + tokyoNow); // 2024-08-16T03:30:45.123+09:00[Asia/Tokyo]
+        System.out.println("System: " + systemNow); // 2024-08-15T14:30:45.123-04:00[America/New_York]
 
         // Creating specific zoned date time
         LocalDateTime localDateTime = LocalDateTime.of(2024, 8, 15, 14, 30);
@@ -4696,8 +4698,8 @@ public class ZonedDateTimeExample {
         ZonedDateTime zonedInTokyo = localDateTime.atZone(ZoneId.of("Asia/Tokyo"));
 
         System.out.println("\nSame local time in different zones:");
-        System.out.println("New York: " + zonedInNY);
-        System.out.println("Tokyo: " + zonedInTokyo);
+        System.out.println("New York: " + zonedInNY); // 2024-08-15T14:30-04:00[America/New_York]
+        System.out.println("Tokyo: " + zonedInTokyo); // 2024-08-15T14:30+09:00[Asia/Tokyo]
 
         // Converting between zones
         ZonedDateTime meetingTimeNY = ZonedDateTime.of(2024, 8, 15, 14, 0, 0, 0,
@@ -5259,6 +5261,819 @@ class BusinessDayCalculator {
         System.out.println("Total days: " + totalDays);
         System.out.println("Business days: " + businessDays);
         System.out.println("Weekend days: " + (totalDays - businessDays));
+    }
+}
+```
+
+# The Problem With Double
+
+## Understanding Floating-Point Precision Issues
+
+The `double` and `float` data types in Java use IEEE 754 floating-point representation, which can lead to precision issues when dealing with decimal numbers. This is particularly problematic in financial calculations where exact precision is required.
+
+### Demonstrating the Problem
+
+```java
+public class DoublePrecisionProblem {
+    public static void main(String[] args) {
+        // Basic precision issues
+        double result1 = 0.1 + 0.2;
+        System.out.println("0.1 + 0.2 = " + result1); // 0.30000000000000004
+        System.out.println("Is 0.1 + 0.2 == 0.3? " + (result1 == 0.3)); // false
+
+        // Financial calculation problems
+        double price = 0.1;
+        double tax = 0.02;
+        double total = price + tax;
+        System.out.println("Price: $" + price); // $0.1
+        System.out.println("Tax: $" + tax); // $0.02
+        System.out.println("Total: $" + total); // $0.12000000000000001
+
+        // Multiplication precision issues
+        double value = 0.1;
+        double result2 = value * 3;
+        System.out.println("0.1 * 3 = " + result2); // 0.30000000000000004
+
+        // Subtraction precision issues
+        double a = 1.0;
+        double b = 0.9;
+        double difference = a - b;
+        System.out.println("1.0 - 0.9 = " + difference); // 0.09999999999999998
+
+        // Cumulative errors in loops
+        System.out.println("\nCumulative errors in loops:");
+        double sum = 0.0;
+        for (int i = 0; i < 10; i++) {
+            sum += 0.1;
+        }
+        System.out.println("Sum of 0.1 ten times: " + sum); // 0.9999999999999999
+        System.out.println("Is sum == 1.0? " + (sum == 1.0)); // false
+    }
+}
+```
+
+### Real-World Financial Problems
+
+```java
+public class FinancialCalculationProblems {
+    public static void main(String[] args) {
+        // Banking calculation example
+        demonstrateBankingProblem();
+
+        // Currency conversion issues
+        demonstrateCurrencyProblem();
+
+        // Interest calculation errors
+        demonstrateInterestProblem();
+    }
+
+    private static void demonstrateBankingProblem() {
+        System.out.println("=== Banking Calculation Problem ===");
+
+        double accountBalance = 100.00;
+        double withdrawalAmount = 99.99;
+        double remainingBalance = accountBalance - withdrawalAmount;
+
+        System.out.println("Account balance: $" + accountBalance); // $100.0
+        System.out.println("Withdrawal: $" + withdrawalAmount); // $99.99
+        System.out.println("Remaining: $" + remainingBalance); // $0.009999999999999787
+
+        // This could cause issues in banking systems
+        if (remainingBalance == 0.01) {
+            System.out.println("Balance is exactly 1 cent");
+        } else {
+            System.out.println("Balance is NOT exactly 1 cent!"); // This executes
+        }
+    }
+
+    private static void demonstrateCurrencyProblem() {
+        System.out.println("\n=== Currency Conversion Problem ===");
+
+        double usdAmount = 123.45;
+        double exchangeRate = 1.18; // USD to EUR
+        double eurAmount = usdAmount * exchangeRate;
+
+        System.out.println("USD: $" + usdAmount); // $123.45
+        System.out.println("Exchange rate: " + exchangeRate); // 1.18
+        System.out.println("EUR: €" + eurAmount); // €145.671 (imprecise)
+
+        // Rounding issues
+        double rounded = Math.round(eurAmount * 100.0) / 100.0;
+        System.out.println("Rounded EUR: €" + rounded); // Still might be imprecise
+    }
+
+    private static void demonstrateInterestProblem() {
+        System.out.println("\n=== Interest Calculation Problem ===");
+
+        double principal = 1000.00;
+        double rate = 0.05; // 5% annual rate
+        double periods = 12; // monthly compounding
+
+        // Compound interest calculation
+        double amount = principal;
+        for (int i = 0; i < periods; i++) {
+            amount += amount * (rate / 12);
+        }
+
+        System.out.println("Principal: $" + principal); // $1000.0
+        System.out.println("Final amount: $" + amount); // Imprecise result
+
+        // Expected vs actual
+        double expected = 1051.16; // Calculated separately
+        System.out.println("Expected: $" + expected); // $1051.16
+        System.out.println("Difference: $" + Math.abs(amount - expected)); // Small but significant
+    }
+}
+```
+
+### Why This Happens
+
+```java
+public class WhyDoubleProblemsOccur {
+    public static void main(String[] args) {
+        // Binary representation limitations
+        System.out.println("=== Binary Representation Issues ===");
+
+        // Some decimal numbers cannot be represented exactly in binary
+        System.out.println("0.1 in binary is infinite: 0.0001100110011...");
+        System.out.println("0.2 in binary is infinite: 0.0011001100110011...");
+        System.out.println("0.3 in binary is infinite: 0.010011001100110011...");
+
+        // Demonstration of representation limits
+        double value = 0.1;
+        System.out.println("Exact representation of 0.1: " + String.format("%.17f", value));
+        // 0.10000000000000001
+
+        // IEEE 754 standard limitations
+        System.out.println("\n=== IEEE 754 Limitations ===");
+        System.out.println("Double precision: 64 bits");
+        System.out.println("Sign: 1 bit, Exponent: 11 bits, Mantissa: 52 bits");
+        System.out.println("Limited precision for decimal fractions");
+
+        // Demonstrating machine epsilon
+        double epsilon = 1.0;
+        while (1.0 + epsilon != 1.0) {
+            epsilon /= 2.0;
+        }
+        epsilon *= 2.0;
+        System.out.println("Machine epsilon for double: " + epsilon); // ~2.22e-16
+    }
+}
+```
+
+### Common Workarounds (That Don't Always Work)
+
+```java
+public class CommonWorkarounds {
+    public static void main(String[] args) {
+        // Workaround 1: Rounding (still has issues)
+        System.out.println("=== Rounding Workaround ===");
+        double result1 = 0.1 + 0.2;
+        double rounded = Math.round(result1 * 100.0) / 100.0;
+        System.out.println("0.1 + 0.2 rounded: " + rounded); // 0.3
+        System.out.println("Is rounded == 0.3? " + (rounded == 0.3)); // true (luck)
+
+        // But rounding has its own issues
+        double problematic = 0.1 + 0.2 + 0.3;
+        double roundedProblematic = Math.round(problematic * 100.0) / 100.0;
+        System.out.println("0.1 + 0.2 + 0.3: " + problematic); // 0.6000000000000001
+        System.out.println("Rounded: " + roundedProblematic); // 0.6
+
+        // Workaround 2: Epsilon comparison (better but complex)
+        System.out.println("\n=== Epsilon Comparison ===");
+        double a = 0.1 + 0.2;
+        double b = 0.3;
+        double epsilon = 1e-10;
+
+        boolean isEqual = Math.abs(a - b) < epsilon;
+        System.out.println("Using epsilon comparison: " + isEqual); // true
+
+        // Workaround 3: Converting to integers (limited scope)
+        System.out.println("\n=== Integer Conversion ===");
+        int cents1 = (int) Math.round(0.1 * 100); // 10 cents
+        int cents2 = (int) Math.round(0.2 * 100); // 20 cents
+        int totalCents = cents1 + cents2; // 30 cents
+        double totalDollars = totalCents / 100.0; // 0.3 dollars
+
+        System.out.println("Using cents: " + totalDollars); // 0.3
+        System.out.println("Is exact? " + (totalDollars == 0.3)); // true
+
+        // But this approach has limitations with complex calculations
+    }
+}
+```
+
+# BigDecimal
+
+## What is BigDecimal?
+
+`BigDecimal` is a class in Java that provides exact decimal arithmetic. It's designed to handle decimal numbers with arbitrary precision, making it ideal for financial calculations, scientific computations, and any scenario where exact decimal precision is required.
+
+### Creating BigDecimal Objects
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class BigDecimalBasics {
+    public static void main(String[] args) {
+        // Creating BigDecimal objects - different methods
+
+        // 1. From String (RECOMMENDED)
+        BigDecimal bd1 = new BigDecimal("0.1");
+        BigDecimal bd2 = new BigDecimal("0.2");
+
+        // 2. Using valueOf for int/long
+        BigDecimal bd3 = BigDecimal.valueOf(100);
+        BigDecimal bd4 = BigDecimal.valueOf(1234567890L);
+
+        // 3. Using valueOf for double (safer than constructor)
+        BigDecimal bd5 = BigDecimal.valueOf(0.1); // Converts through string internally
+
+        // 4. From int/double constructor (AVOID for double)
+        BigDecimal bd6 = new BigDecimal(100); // OK for int
+        BigDecimal bd7 = new BigDecimal(0.1); // AVOID - inherits double precision issues
+
+        System.out.println("From string '0.1': " + bd1); // 0.1
+        System.out.println("From string '0.2': " + bd2); // 0.2
+        System.out.println("From valueOf(100): " + bd3); // 100
+        System.out.println("From valueOf(0.1): " + bd5); // 0.1
+        System.out.println("From double constructor: " + bd7); // 0.1000000000000000055511151231257827021181583404541015625
+
+        // Predefined constants
+        System.out.println("\nPredefined constants:");
+        System.out.println("ZERO: " + BigDecimal.ZERO); // 0
+        System.out.println("ONE: " + BigDecimal.ONE); // 1
+        System.out.println("TEN: " + BigDecimal.TEN); // 10
+    }
+}
+```
+
+### Basic BigDecimal Operations
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class BigDecimalOperations {
+    public static void main(String[] args) {
+        // Basic arithmetic operations
+        BigDecimal a = new BigDecimal("10.25");
+        BigDecimal b = new BigDecimal("3.75");
+
+        // Addition
+        BigDecimal sum = a.add(b);
+        System.out.println("Addition: " + a + " + " + b + " = " + sum); // 14.00
+
+        // Subtraction
+        BigDecimal difference = a.subtract(b);
+        System.out.println("Subtraction: " + a + " - " + b + " = " + difference); // 6.50
+
+        // Multiplication
+        BigDecimal product = a.multiply(b);
+        System.out.println("Multiplication: " + a + " × " + b + " = " + product); // 38.4375
+
+        // Division (requires rounding mode)
+        BigDecimal quotient = a.divide(b, 4, RoundingMode.HALF_UP);
+        System.out.println("Division: " + a + " ÷ " + b + " = " + quotient); // 2.7333
+
+        // Powers
+        BigDecimal squared = a.pow(2);
+        System.out.println("Power: " + a + "² = " + squared); // 105.0625
+
+        // Absolute value
+        BigDecimal negative = new BigDecimal("-15.75");
+        BigDecimal absolute = negative.abs();
+        System.out.println("Absolute: |" + negative + "| = " + absolute); // 15.75
+
+        // Negate
+        BigDecimal negated = a.negate();
+        System.out.println("Negate: -(" + a + ") = " + negated); // -10.25
+    }
+}
+```
+
+### Solving the Double Problem with BigDecimal
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class SolvingDoubleProblem {
+    public static void main(String[] args) {
+        // Problem 1: Basic precision - SOLVED
+        System.out.println("=== Problem 1: Basic Precision ===");
+
+        // With double (problematic)
+        double doubleResult = 0.1 + 0.2;
+        System.out.println("Double: 0.1 + 0.2 = " + doubleResult); // 0.30000000000000004
+
+        // With BigDecimal (exact)
+        BigDecimal bd1 = new BigDecimal("0.1");
+        BigDecimal bd2 = new BigDecimal("0.2");
+        BigDecimal bdResult = bd1.add(bd2);
+        System.out.println("BigDecimal: 0.1 + 0.2 = " + bdResult); // 0.3
+
+        // Problem 2: Financial calculations - SOLVED
+        System.out.println("\n=== Problem 2: Financial Calculations ===");
+
+        BigDecimal price = new BigDecimal("19.99");
+        BigDecimal taxRate = new BigDecimal("0.08"); // 8% tax
+        BigDecimal tax = price.multiply(taxRate);
+        BigDecimal total = price.add(tax);
+
+        System.out.println("Price: $" + price); // $19.99
+        System.out.println("Tax: $" + tax.setScale(2, RoundingMode.HALF_UP)); // $1.60
+        System.out.println("Total: $" + total.setScale(2, RoundingMode.HALF_UP)); // $21.59
+
+        // Problem 3: Currency conversion - SOLVED
+        System.out.println("\n=== Problem 3: Currency Conversion ===");
+
+        BigDecimal usdAmount = new BigDecimal("123.45");
+        BigDecimal exchangeRate = new BigDecimal("1.18");
+        BigDecimal eurAmount = usdAmount.multiply(exchangeRate);
+
+        System.out.println("USD: $" + usdAmount); // $123.45
+        System.out.println("EUR: €" + eurAmount.setScale(2, RoundingMode.HALF_UP)); // €145.67
+
+        // Problem 4: Interest calculation - SOLVED
+        System.out.println("\n=== Problem 4: Interest Calculation ===");
+
+        BigDecimal principal = new BigDecimal("1000.00");
+        BigDecimal monthlyRate = new BigDecimal("0.05").divide(new BigDecimal("12"), 10, RoundingMode.HALF_UP);
+        BigDecimal amount = principal;
+
+        for (int i = 0; i < 12; i++) {
+            BigDecimal interest = amount.multiply(monthlyRate);
+            amount = amount.add(interest);
+        }
+
+        System.out.println("Principal: $" + principal); // $1000.00
+        System.out.println("Final amount: $" + amount.setScale(2, RoundingMode.HALF_UP)); // $1051.16
+    }
+}
+```
+
+### Comparison Operations
+
+```java
+import java.math.BigDecimal;
+
+public class BigDecimalComparison {
+    public static void main(String[] args) {
+        BigDecimal a = new BigDecimal("10.50");
+        BigDecimal b = new BigDecimal("10.5"); // Same value, different scale
+        BigDecimal c = new BigDecimal("15.25");
+
+        // Using compareTo() - RECOMMENDED
+        System.out.println("=== Using compareTo() ===");
+        System.out.println("a.compareTo(b): " + a.compareTo(b)); // 0 (equal values)
+        System.out.println("a.compareTo(c): " + a.compareTo(c)); // -1 (a < c)
+        System.out.println("c.compareTo(a): " + c.compareTo(a)); // 1 (c > a)
+
+        // Comparison methods
+        System.out.println("\n=== Comparison Methods ===");
+        System.out.println("a equals b (value): " + (a.compareTo(b) == 0)); // true
+        System.out.println("a less than c: " + (a.compareTo(c) < 0)); // true
+        System.out.println("c greater than a: " + (c.compareTo(a) > 0)); // true
+
+        // equals() vs compareTo() difference
+        System.out.println("\n=== equals() vs compareTo() ===");
+        System.out.println("a.equals(b): " + a.equals(b)); // false (different scale)
+        System.out.println("a.compareTo(b) == 0: " + (a.compareTo(b) == 0)); // true (same value)
+
+        // Min and Max
+        BigDecimal min = a.min(c);
+        BigDecimal max = a.max(c);
+        System.out.println("\nMin of " + a + " and " + c + ": " + min); // 10.50
+        System.out.println("Max of " + a + " and " + c + ": " + max); // 15.25
+    }
+}
+```
+
+### Scale and Precision
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class ScaleAndPrecision {
+    public static void main(String[] args) {
+        // Understanding scale and precision
+        BigDecimal bd1 = new BigDecimal("123.45");
+        BigDecimal bd2 = new BigDecimal("123.4500");
+        BigDecimal bd3 = new BigDecimal("1234500");
+
+        System.out.println("=== Scale and Precision ===");
+        System.out.println("Value: " + bd1 + ", Scale: " + bd1.scale() + ", Precision: " + bd1.precision());
+        // Value: 123.45, Scale: 2, Precision: 5
+        System.out.println("Value: " + bd2 + ", Scale: " + bd2.scale() + ", Precision: " + bd2.precision());
+        // Value: 123.4500, Scale: 4, Precision: 7
+        System.out.println("Value: " + bd3 + ", Scale: " + bd3.scale() + ", Precision: " + bd3.precision());
+        // Value: 1234500, Scale: 0, Precision: 7
+
+        // Setting scale
+        System.out.println("\n=== Setting Scale ===");
+        BigDecimal original = new BigDecimal("123.456789");
+
+        BigDecimal scaled2 = original.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal scaled4 = original.setScale(4, RoundingMode.HALF_UP);
+        BigDecimal scaled0 = original.setScale(0, RoundingMode.HALF_UP);
+
+        System.out.println("Original: " + original); // 123.456789
+        System.out.println("Scale 2: " + scaled2); // 123.46
+        System.out.println("Scale 4: " + scaled4); // 123.4568
+        System.out.println("Scale 0: " + scaled0); // 123
+
+        // Stripping trailing zeros
+        System.out.println("\n=== Stripping Trailing Zeros ===");
+        BigDecimal withZeros = new BigDecimal("123.4500");
+        BigDecimal stripped = withZeros.stripTrailingZeros();
+
+        System.out.println("With zeros: " + withZeros + " (scale: " + withZeros.scale() + ")"); // 123.4500 (scale: 4)
+        System.out.println("Stripped: " + stripped + " (scale: " + stripped.scale() + ")"); // 123.45 (scale: 2)
+    }
+}
+```
+
+# Exploring BigDecimal Methods
+
+## Comprehensive Method Overview
+
+BigDecimal provides a rich set of methods for precise decimal arithmetic, formatting, and manipulation. Let's explore the most important and commonly used methods.
+
+### Arithmetic Methods
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.math.MathContext;
+
+public class ArithmeticMethods {
+    public static void main(String[] args) {
+        BigDecimal a = new BigDecimal("125.75");
+        BigDecimal b = new BigDecimal("25.25");
+
+        // Basic arithmetic operations
+        System.out.println("=== Basic Arithmetic ===");
+        System.out.println("a = " + a + ", b = " + b);
+        System.out.println("add: " + a.add(b)); // 151.00
+        System.out.println("subtract: " + a.subtract(b)); // 100.50
+        System.out.println("multiply: " + a.multiply(b)); // 3175.1875
+
+        // Division with different approaches
+        System.out.println("\n=== Division Methods ===");
+
+        // Simple division (when exact)
+        BigDecimal c = new BigDecimal("100");
+        BigDecimal d = new BigDecimal("4");
+        System.out.println("Exact division: " + c.divide(d)); // 25
+
+        // Division with scale and rounding
+        BigDecimal result1 = a.divide(b, 3, RoundingMode.HALF_UP);
+        System.out.println("Division with scale 3: " + result1); // 4.980
+
+        // Division with MathContext
+        MathContext mc = new MathContext(5, RoundingMode.HALF_UP);
+        BigDecimal result2 = a.divide(b, mc);
+        System.out.println("Division with MathContext: " + result2); // 4.9802
+
+        // divideAndRemainder
+        BigDecimal dividend = new BigDecimal("127");
+        BigDecimal divisor = new BigDecimal("25");
+        BigDecimal[] divResult = dividend.divideAndRemainder(divisor);
+        System.out.println("127 ÷ 25 = " + divResult[0] + " remainder " + divResult[1]); // 5 remainder 2
+
+        // remainder
+        BigDecimal remainder = dividend.remainder(divisor);
+        System.out.println("127 % 25 = " + remainder); // 2
+
+        // Power operations
+        System.out.println("\n=== Power Operations ===");
+        BigDecimal base = new BigDecimal("2.5");
+        System.out.println(base + "² = " + base.pow(2)); // 6.25
+        System.out.println(base + "³ = " + base.pow(3)); // 15.625
+
+        // Power with MathContext for large exponents
+        BigDecimal largePower = base.pow(10, mc);
+        System.out.println(base + "¹⁰ = " + largePower); // 9536.7 (rounded)
+    }
+}
+```
+
+### Rounding Modes Demonstration
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class RoundingModes {
+    public static void main(String[] args) {
+        BigDecimal value1 = new BigDecimal("2.125"); // Exactly between 2.12 and 2.13
+        BigDecimal value2 = new BigDecimal("2.135"); // Exactly between 2.13 and 2.14
+        BigDecimal negative = new BigDecimal("-2.125");
+
+        System.out.println("Original values: " + value1 + ", " + value2 + ", " + negative);
+        System.out.println();
+
+        // Different rounding modes
+        RoundingMode[] modes = {
+            RoundingMode.UP,
+            RoundingMode.DOWN,
+            RoundingMode.CEILING,
+            RoundingMode.FLOOR,
+            RoundingMode.HALF_UP,
+            RoundingMode.HALF_DOWN,
+            RoundingMode.HALF_EVEN
+        };
+
+        System.out.printf("%-15s %-8s %-8s %-8s%n", "Rounding Mode", value1, value2, negative);
+        System.out.println("------------------------------------------------");
+
+        for (RoundingMode mode : modes) {
+            System.out.printf("%-15s %-8s %-8s %-8s%n",
+                mode.name(),
+                value1.setScale(2, mode),
+                value2.setScale(2, mode),
+                negative.setScale(2, mode)
+            );
+        }
+
+        // Practical examples
+        System.out.println("\n=== Practical Rounding Examples ===");
+
+        // Financial rounding (typically HALF_UP)
+        BigDecimal price = new BigDecimal("19.996");
+        BigDecimal financialRound = price.setScale(2, RoundingMode.HALF_UP);
+        System.out.println("Financial rounding $" + price + " → $" + financialRound); // $19.996 → $20.00
+
+        // Scientific rounding (typically HALF_EVEN for reducing bias)
+        BigDecimal measurement = new BigDecimal("123.45");
+        BigDecimal scientificRound = measurement.setScale(1, RoundingMode.HALF_EVEN);
+        System.out.println("Scientific rounding " + measurement + " → " + scientificRound); // 123.45 → 123.4
+    }
+}
+```
+
+### Utility and Comparison Methods
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class UtilityMethods {
+    public static void main(String[] args) {
+        // Absolute value and sign operations
+        System.out.println("=== Sign Operations ===");
+        BigDecimal positive = new BigDecimal("125.75");
+        BigDecimal negative = new BigDecimal("-125.75");
+        BigDecimal zero = BigDecimal.ZERO;
+
+        System.out.println("abs(" + negative + ") = " + negative.abs()); // 125.75
+        System.out.println("negate(" + positive + ") = " + positive.negate()); // -125.75
+        System.out.println("signum(" + positive + ") = " + positive.signum()); // 1
+        System.out.println("signum(" + negative + ") = " + negative.signum()); // -1
+        System.out.println("signum(" + zero + ") = " + zero.signum()); // 0
+
+        // Min and Max operations
+        System.out.println("\n=== Min/Max Operations ===");
+        BigDecimal a = new BigDecimal("45.67");
+        BigDecimal b = new BigDecimal("123.45");
+
+        System.out.println("min(" + a + ", " + b + ") = " + a.min(b)); // 45.67
+        System.out.println("max(" + a + ", " + b + ") = " + a.max(b)); // 123.45
+
+        // Scale manipulation
+        System.out.println("\n=== Scale Manipulation ===");
+        BigDecimal original = new BigDecimal("123.4500");
+
+        System.out.println("Original: " + original + " (scale: " + original.scale() + ")");
+        System.out.println("stripTrailingZeros: " + original.stripTrailingZeros() +
+                          " (scale: " + original.stripTrailingZeros().scale() + ")");
+
+        // Moving decimal point
+        BigDecimal moveRight = original.movePointRight(2);
+        BigDecimal moveLeft = original.movePointLeft(1);
+
+        System.out.println("movePointRight(2): " + moveRight); // 12345.00
+        System.out.println("movePointLeft(1): " + moveLeft); // 12.34500
+
+        // Scale by power of 10
+        BigDecimal scaled = original.scaleByPowerOfTen(3);
+        System.out.println("scaleByPowerOfTen(3): " + scaled); // 123450.0
+
+        // Unscaled value
+        System.out.println("\n=== Internal Representation ===");
+        BigDecimal decimal = new BigDecimal("123.45");
+        System.out.println("Value: " + decimal); // 123.45
+        System.out.println("Unscaled value: " + decimal.unscaledValue()); // 12345
+        System.out.println("Scale: " + decimal.scale()); // 2
+        System.out.println("Precision: " + decimal.precision()); // 5
+    }
+}
+```
+
+### Conversion Methods
+
+```java
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+public class ConversionMethods {
+    public static void main(String[] args) {
+        BigDecimal decimal = new BigDecimal("123.456");
+
+        // Converting to primitive types
+        System.out.println("=== Primitive Conversions ===");
+        System.out.println("Original: " + decimal);
+        System.out.println("intValue(): " + decimal.intValue()); // 123 (truncated)
+        System.out.println("longValue(): " + decimal.longValue()); // 123
+        System.out.println("floatValue(): " + decimal.floatValue()); // 123.456 (may lose precision)
+        System.out.println("doubleValue(): " + decimal.doubleValue()); // 123.456 (may lose precision)
+
+        // Exact conversions (throw exception if not exact)
+        System.out.println("\n=== Exact Conversions ===");
+
+        BigDecimal exactInt = new BigDecimal("123");
+        BigDecimal exactLong = new BigDecimal("123456789");
+
+        try {
+            System.out.println("intValueExact(): " + exactInt.intValueExact()); // 123
+            System.out.println("longValueExact(): " + exactLong.longValueExact()); // 123456789
+
+            // This would throw ArithmeticException
+            // decimal.intValueExact(); // Has fractional part
+        } catch (ArithmeticException e) {
+            System.out.println("Cannot convert to exact int: " + e.getMessage());
+        }
+
+        // BigInteger conversion
+        System.out.println("\n=== BigInteger Conversion ===");
+        BigDecimal forBigInt = new BigDecimal("123456789012345678901234567890");
+        BigInteger bigInt = forBigInt.toBigInteger();
+        System.out.println("toBigInteger(): " + bigInt);
+
+        try {
+            BigInteger exactBigInt = decimal.toBigIntegerExact();
+            System.out.println("toBigIntegerExact(): " + exactBigInt);
+        } catch (ArithmeticException e) {
+            System.out.println("Cannot convert to exact BigInteger: " + e.getMessage());
+        }
+
+        // String representations
+        System.out.println("\n=== String Representations ===");
+        BigDecimal scientific = new BigDecimal("1.23456E+5");
+
+        System.out.println("toString(): " + scientific.toString()); // 123456
+        System.out.println("toPlainString(): " + scientific.toPlainString()); // 123456
+        System.out.println("toEngineeringString(): " + scientific.toEngineeringString()); // 123.456E+3
+
+        // Large number formatting
+        BigDecimal large = new BigDecimal("1.23456789E+10");
+        System.out.println("\nLarge number representations:");
+        System.out.println("toString(): " + large.toString()); // 1.23456789E+10
+        System.out.println("toPlainString(): " + large.toPlainString()); // 12345678900
+        System.out.println("toEngineeringString(): " + large.toEngineeringString()); // 12.3456789E+9
+    }
+}
+```
+
+### Real-World BigDecimal Applications
+
+```java
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+
+public class RealWorldApplications {
+    public static void main(String[] args) {
+        // Banking application
+        BankingCalculator.demonstrateTransactions();
+
+        // E-commerce pricing
+        ECommercePricing.calculateOrder();
+
+        // Financial calculations
+        FinancialCalculator.calculateCompoundInterest();
+    }
+}
+
+class BankingCalculator {
+    public static void demonstrateTransactions() {
+        System.out.println("=== Banking Transaction Example ===");
+
+        BigDecimal balance = new BigDecimal("1000.00");
+        List<BigDecimal> transactions = List.of(
+            new BigDecimal("-150.75"),    // Withdrawal
+            new BigDecimal("2500.00"),    // Deposit
+            new BigDecimal("-45.99"),     // Purchase
+            new BigDecimal("-12.50")      // Fee
+        );
+
+        System.out.println("Starting balance: $" + balance);
+
+        for (BigDecimal transaction : transactions) {
+            balance = balance.add(transaction);
+            String type = transaction.signum() >= 0 ? "Deposit" : "Withdrawal";
+            System.out.printf("%s: $%s, New balance: $%s%n",
+                type, transaction.abs(), balance);
+        }
+
+        System.out.println("Final balance: $" + balance.setScale(2, RoundingMode.HALF_UP));
+    }
+}
+
+class ECommercePricing {
+    public static void calculateOrder() {
+        System.out.println("\n=== E-Commerce Order Calculation ===");
+
+        // Order items
+        List<OrderItem> items = List.of(
+            new OrderItem("Widget A", new BigDecimal("19.99"), 2),
+            new OrderItem("Widget B", new BigDecimal("45.50"), 1),
+            new OrderItem("Widget C", new BigDecimal("12.75"), 3)
+        );
+
+        BigDecimal subtotal = BigDecimal.ZERO;
+
+        System.out.println("Order Items:");
+        for (OrderItem item : items) {
+            BigDecimal itemTotal = item.price.multiply(BigDecimal.valueOf(item.quantity));
+            subtotal = subtotal.add(itemTotal);
+            System.out.printf("%-10s: $%s × %d = $%s%n",
+                item.name, item.price, item.quantity, itemTotal);
+        }
+
+        // Calculate tax
+        BigDecimal taxRate = new BigDecimal("0.0875"); // 8.75%
+        BigDecimal tax = subtotal.multiply(taxRate).setScale(2, RoundingMode.HALF_UP);
+
+        // Calculate shipping
+        BigDecimal shipping = subtotal.compareTo(new BigDecimal("50.00")) >= 0
+            ? BigDecimal.ZERO
+            : new BigDecimal("5.99");
+
+        BigDecimal total = subtotal.add(tax).add(shipping);
+
+        System.out.println("\nOrder Summary:");
+        System.out.println("Subtotal: $" + subtotal.setScale(2, RoundingMode.HALF_UP));
+        System.out.println("Tax (8.75%): $" + tax);
+        System.out.println("Shipping: $" + shipping);
+        System.out.println("Total: $" + total.setScale(2, RoundingMode.HALF_UP));
+    }
+
+    static class OrderItem {
+        String name;
+        BigDecimal price;
+        int quantity;
+
+        OrderItem(String name, BigDecimal price, int quantity) {
+            this.name = name;
+            this.price = price;
+            this.quantity = quantity;
+        }
+    }
+}
+
+class FinancialCalculator {
+    public static void calculateCompoundInterest() {
+        System.out.println("\n=== Compound Interest Calculation ===");
+
+        BigDecimal principal = new BigDecimal("10000.00");
+        BigDecimal annualRate = new BigDecimal("0.05"); // 5%
+        int compoundingPeriods = 12; // Monthly
+        int years = 5;
+
+        // A = P(1 + r/n)^(nt)
+        BigDecimal rate = annualRate.divide(BigDecimal.valueOf(compoundingPeriods), 10, RoundingMode.HALF_UP);
+        BigDecimal onePlusRate = BigDecimal.ONE.add(rate);
+
+        int totalPeriods = compoundingPeriods * years;
+        BigDecimal amount = principal;
+
+        // Calculate compound interest period by period for accuracy
+        for (int i = 0; i < totalPeriods; i++) {
+            amount = amount.multiply(onePlusRate);
+        }
+
+        amount = amount.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal interest = amount.subtract(principal);
+
+        System.out.println("Principal: $" + principal);
+        System.out.println("Annual rate: " + annualRate.multiply(new BigDecimal("100")) + "%");
+        System.out.println("Compounding: Monthly");
+        System.out.println("Time: " + years + " years");
+        System.out.println();
+        System.out.println("Final amount: $" + amount);
+        System.out.println("Interest earned: $" + interest);
+
+        // Effective annual rate
+        BigDecimal effectiveRate = amount.divide(principal, 6, RoundingMode.HALF_UP)
+                                        .subtract(BigDecimal.ONE)
+                                        .divide(BigDecimal.valueOf(years), 6, RoundingMode.HALF_UP)
+                                        .multiply(new BigDecimal("100"));
+        System.out.println("Effective annual rate: " + effectiveRate.setScale(4, RoundingMode.HALF_UP) + "%");
     }
 }
 ```

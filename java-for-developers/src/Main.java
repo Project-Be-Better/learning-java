@@ -1,6 +1,8 @@
 import com.AccessModifiers.AccessModifier;
 import com.Basics.*;
 
+import java.math.BigDecimal;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -24,6 +26,9 @@ public class Main {
 
         Chapter8Dates chapter8Dates = new Chapter8Dates();
         chapter8Dates.run();
+
+        Chapter10BigDecimal chapter10BigDecimal = new Chapter10BigDecimal();
+        chapter10BigDecimal.run();
 
     }
 }
