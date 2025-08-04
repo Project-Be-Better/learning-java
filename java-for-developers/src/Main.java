@@ -30,5 +30,8 @@ public class Main {
         Chapter10BigDecimal chapter10BigDecimal = new Chapter10BigDecimal();
         chapter10BigDecimal.run();
 
+        Chapter12ExceptionHandling chapter12ExceptionHandling = new Chapter12ExceptionHandling();
+        chapter12ExceptionHandling.run();
+
     }
 }

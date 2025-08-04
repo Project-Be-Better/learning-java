@@ -30,39 +30,56 @@
 18. [Scanner Class](#scanner-class)
 19. [Reading Different Data Types](#reading-different-data-types)
 
+### Exception Handling
+
+20. [Exception Handling Fundamentals](#exception-handling-fundamentals)
+21. [What Is An Exception](#what-is-an-exception)
+22. [Try-Catch Blocks](#try-catch-blocks)
+23. [Multiple Catch Blocks](#multiple-catch-blocks)
+24. [Using OR Within Catch](#using-or-within-catch)
+25. [The Exception Class](#the-exception-class)
+26. [Finally Keyword](#finally-keyword)
+27. [Exception Hierarchy](#exception-hierarchy)
+28. [Unchecked Exceptions](#unchecked-exceptions)
+29. [Checked Exceptions](#checked-exceptions)
+30. [Throw and Throws](#throw-and-throws)
+31. [Throwing Exceptions](#throwing-exceptions)
+32. [When To Use Checked vs Unchecked Exceptions](#when-to-use-checked-vs-unchecked-exceptions)
+33. [Creating Custom Exceptions](#creating-custom-exceptions)
+
 ### Object-Oriented Programming
 
-20. [Java Packages](#java-packages)
-21. [Java Access Modifiers](#java-access-modifiers)
+34. [Java Packages](#java-packages)
+35. [Java Access Modifiers](#java-access-modifiers)
 
 ### Strings
 
-22. [Working with Strings](#working-with-strings)
-23. [How Strings are Stored - String Pool](#how-strings-are-stored---string-pool)
-24. [Strings are Immutable](#strings-are-immutable)
-25. [String Literal vs String Object](#string-literal-vs-string-object)
-26. [Comparing Strings with ==](#comparing-strings-with-==)
-27. [Comparing Strings with .equals()](#comparing-strings-with-equals)
-28. [Useful String Static Methods](#useful-string-static-methods)
+36. [Working with Strings](#working-with-strings)
+37. [How Strings are Stored - String Pool](#how-strings-are-stored---string-pool)
+38. [Strings are Immutable](#strings-are-immutable)
+39. [String Literal vs String Object](#string-literal-vs-string-object)
+40. [Comparing Strings with ==](#comparing-strings-with-==)
+41. [Comparing Strings with .equals()](#comparing-strings-with-equals)
+42. [Useful String Static Methods](#useful-string-static-methods)
 
 ### Dates
 
-29. [LocalDateTime](#localdatetime)
-30. [LocalDate and LocalTime](#localdate-and-localtime)
-31. [Creating Specific Dates](#creating-specific-dates)
-32. [Zone IDs](#zone-ids)
-33. [Other Date Classes](#other-date-classes)
+43. [LocalDateTime](#localdatetime)
+44. [LocalDate and LocalTime](#localdate-and-localtime)
+45. [Creating Specific Dates](#creating-specific-dates)
+46. [Zone IDs](#zone-ids)
+47. [Other Date Classes](#other-date-classes)
 
 ### Big Decimal
 
-34. [The Problem With Double](#the-problem-with-double)
-35. [BigDecimal](#bigdecimal)
-36. [Exploring BigDecimal Methods](#exploring-bigdecimal-methods)
+48. [The Problem With Double](#the-problem-with-double)
+49. [BigDecimal](#bigdecimal)
+50. [Exploring BigDecimal Methods](#exploring-bigdecimal-methods)
 
 ### Practice and Assessment
 
-37. [Practice Problems](#practice-problems)
-38. [Code Reference](#code-reference-combined-usage-of-all-loops)
+51. [Practice Problems](#practice-problems)
+52. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
@@ -1952,6 +1969,3520 @@ public class InputMethodComparison {
     }
 }
 ```
+
+# Exception Handling Fundamentals
+
+## Introduction to Exception Handling
+
+Exception handling is a fundamental programming concept that allows you to gracefully handle runtime errors and unexpected situations in your Java programs. Rather than letting your program crash, exception handling provides a structured way to detect, handle, and recover from errors.
+
+### Why Exception Handling Matters
+
+Exception handling enables you to:
+
+- Prevent program crashes from unexpected errors
+- Provide meaningful error messages to users
+- Implement fallback strategies when operations fail
+- Create robust, production-ready applications
+- Debug and troubleshoot issues more effectively
+
+### Common Scenarios Requiring Exception Handling
+
+```java
+public class CommonExceptionScenarios {
+    public static void main(String[] args) {
+        // File operations - file might not exist
+        // readFile("nonexistent.txt");
+
+        // Network operations - connection might fail
+        // connectToServer("unreachable-server.com");
+
+        // User input - user might enter invalid data
+        // int age = Integer.parseInt("not-a-number");
+
+        // Array access - index might be out of bounds
+        // int[] numbers = {1, 2, 3};
+        // int value = numbers[10]; // IndexOutOfBoundsException
+
+        // Division operations - divisor might be zero
+        // int result = 10 / 0; // ArithmeticException
+
+        System.out.println("These commented examples would cause exceptions");
+    }
+}
+```
+
+## What Is An Exception
+
+An exception is an event that occurs during program execution that disrupts the normal flow of instructions. In Java, exceptions are objects that represent error conditions or unexpected situations.
+
+### Exception Basics
+
+```java
+public class ExceptionBasics {
+    public static void main(String[] args) {
+        System.out.println("Program starts");
+
+        // This will cause an ArithmeticException
+        try {
+            int result = 10 / 0;
+            System.out.println("Result: " + result); // This line never executes
+        } catch (ArithmeticException e) {
+            System.out.println("Error: Cannot divide by zero!"); // Error: Cannot divide by zero!
+        }
+
+        System.out.println("Program continues after exception handling"); // Program continues after exception handling
+    }
+}
+```
+
+### What Happens Without Exception Handling
+
+```java
+public class WithoutExceptionHandling {
+    public static void main(String[] args) {
+        System.out.println("Starting program"); // Starting program
+
+        // This will crash the program
+        int[] numbers = {1, 2, 3};
+        int value = numbers[5]; // ArrayIndexOutOfBoundsException
+
+        System.out.println("This line will never execute"); // Never reached
+    }
+}
+```
+
+### Anatomy of an Exception
+
+```java
+public class ExceptionAnatomy {
+    public static void main(String[] args) {
+        try {
+            String text = null;
+            int length = text.length(); // NullPointerException
+        } catch (NullPointerException e) {
+            // Exception object contains useful information
+            System.out.println("Exception type: " + e.getClass().getSimpleName()); // NullPointerException
+            System.out.println("Exception message: " + e.getMessage()); // null (or implementation-specific message)
+            System.out.println("Stack trace:");
+            e.printStackTrace(); // Prints detailed stack trace
+        }
+    }
+}
+```
+
+### Exception vs Error vs Runtime Issues
+
+```java
+public class ExceptionTypes {
+    public static void main(String[] args) {
+        // 1. Compile-time errors (not exceptions)
+        // int x = "hello"; // Won't compile
+
+        // 2. Runtime exceptions (can be handled)
+        try {
+            int[] arr = new int[5];
+            arr[10] = 100; // ArrayIndexOutOfBoundsException at runtime
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Array index out of bounds: " + e.getMessage());
+            // Array index out of bounds: Index 10 out of bounds for length 5
+        }
+
+        // 3. Logical errors (program runs but produces wrong results)
+        int temperature = 25;
+        if (temperature > 30) { // Logic might be wrong for the intended purpose
+            System.out.println("It's hot");
+        } else {
+            System.out.println("It's not hot"); // It's not hot
+        }
+    }
+}
+```
+
+## Try-Catch Blocks
+
+The try-catch block is the fundamental mechanism for handling exceptions in Java. The `try` block contains code that might throw an exception, while the `catch` block handles the exception if it occurs.
+
+### Basic Try-Catch Syntax
+
+```java
+public class BasicTryCatch {
+    public static void main(String[] args) {
+        // Basic syntax
+        try {
+            // Code that might throw an exception
+            int result = 100 / 0;
+            System.out.println("Result: " + result);
+        } catch (ArithmeticException e) {
+            // Handle the exception
+            System.out.println("Cannot divide by zero!"); // Cannot divide by zero!
+        }
+
+        // Program continues normally
+        System.out.println("Program execution continues"); // Program execution continues
+    }
+}
+```
+
+### Try-Catch with User Input
+
+```java
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
+public class UserInputExceptionHandling {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your age: ");
+        try {
+            int age = scanner.nextInt(); // May throw InputMismatchException
+            System.out.println("Your age is: " + age); // Your age is: 25 (if valid input)
+
+            if (age < 0) {
+                System.out.println("Age cannot be negative");
+            } else if (age > 150) {
+                System.out.println("That seems too old to be realistic");
+            } else {
+                System.out.println("Valid age entered");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input! Please enter a valid number."); // If user enters "abc"
+        }
+
+        scanner.close();
+    }
+}
+```
+
+### File Operations with Try-Catch
+
+```java
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+
+public class FileOperationExceptions {
+    public static void main(String[] args) {
+        String filename = "data.txt";
+
+        try {
+            FileReader fileReader = new FileReader(filename);
+            BufferedReader reader = new BufferedReader(fileReader);
+
+            String line = reader.readLine();
+            System.out.println("First line: " + line); // First line: [content of file]
+
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + filename); // File not found: data.txt
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage()); // Error reading file: [specific error]
+        }
+    }
+}
+```
+
+### Array Operations with Try-Catch
+
+```java
+public class ArrayExceptionHandling {
+    public static void main(String[] args) {
+        int[] numbers = {10, 20, 30, 40, 50};
+
+        // Safe array access
+        for (int i = 0; i <= 10; i++) {
+            try {
+                int value = numbers[i];
+                System.out.println("Index " + i + ": " + value);
+                // Index 0: 10, Index 1: 20, ..., Index 4: 50
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Index " + i + " is out of bounds");
+                // Index 5 is out of bounds, Index 6 is out of bounds, etc.
+            }
+        }
+    }
+}
+```
+
+### String Operations with Try-Catch
+
+```java
+public class StringExceptionHandling {
+    public static void main(String[] args) {
+        String[] testStrings = {"123", "456", "abc", null, "789"};
+
+        for (String str : testStrings) {
+            try {
+                int number = Integer.parseInt(str);
+                int doubled = number * 2;
+                System.out.println(str + " * 2 = " + doubled);
+                // 123 * 2 = 246, 456 * 2 = 912, 789 * 2 = 1578
+            } catch (NumberFormatException e) {
+                System.out.println("'" + str + "' is not a valid number"); // 'abc' is not a valid number
+            } catch (NullPointerException e) {
+                System.out.println("Cannot parse null string"); // Cannot parse null string
+            }
+        }
+    }
+}
+```
+
+## Multiple Catch Blocks
+
+When code can throw different types of exceptions, you can use multiple catch blocks to handle each exception type differently. This allows for more specific error handling and better user experience.
+
+### Basic Multiple Catch Blocks
+
+```java
+public class MultipleCatchBlocks {
+    public static void main(String[] args) {
+        String[] data = {"10", "0", "abc", null};
+
+        for (String item : data) {
+            try {
+                int number = Integer.parseInt(item);
+                int result = 100 / number;
+                System.out.println("100 / " + number + " = " + result);
+                // 100 / 10 = 10
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format: " + item);
+                // Invalid number format: abc
+            } catch (ArithmeticException e) {
+                System.out.println("Cannot divide by zero");
+                // Cannot divide by zero
+            } catch (NullPointerException e) {
+                System.out.println("Cannot parse null value");
+                // Cannot parse null value
+            }
+        }
+    }
+}
+```
+
+### File Processing with Multiple Exceptions
+
+```java
+import java.io.*;
+import java.util.Scanner;
+
+public class FileProcessingExceptions {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter filename: ");
+        String filename = scanner.nextLine(); // user enters: "data.txt"
+
+        try {
+            FileReader fileReader = new FileReader(filename);
+            BufferedReader reader = new BufferedReader(fileReader);
+
+            String line;
+            int lineNumber = 1;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("Line " + lineNumber + ": " + line);
+                lineNumber++;
+            }
+
+            reader.close();
+            System.out.println("File processed successfully");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: File '" + filename + "' was not found");
+            System.out.println("Please check the filename and try again");
+        } catch (SecurityException e) {
+            System.out.println("Error: Permission denied to read file '" + filename + "'");
+        } catch (IOException e) {
+            System.out.println("Error: Problem reading from file '" + filename + "'");
+            System.out.println("Details: " + e.getMessage());
+        }
+
+        scanner.close();
+    }
+}
+```
+
+### Network Operations with Multiple Exceptions
+
+```java
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.net.SocketTimeoutException;
+
+public class NetworkExceptionHandling {
+    public static void main(String[] args) {
+        String[] urls = {
+            "https://www.google.com",
+            "invalid-url",
+            "https://nonexistent-site-12345.com"
+        };
+
+        for (String urlString : urls) {
+            try {
+                URL url = new URL(urlString);
+                var connection = url.openConnection();
+                connection.setConnectTimeout(5000); // 5 seconds
+                connection.connect();
+
+                System.out.println("Successfully connected to: " + urlString);
+                // Successfully connected to: https://www.google.com
+
+            } catch (MalformedURLException e) {
+                System.out.println("Invalid URL format: " + urlString);
+                // Invalid URL format: invalid-url
+            } catch (UnknownHostException e) {
+                System.out.println("Cannot resolve host: " + urlString);
+                // Cannot resolve host: https://nonexistent-site-12345.com
+            } catch (SocketTimeoutException e) {
+                System.out.println("Connection timeout for: " + urlString);
+            } catch (IOException e) {
+                System.out.println("Connection error for " + urlString + ": " + e.getMessage());
+            }
+        }
+    }
+}
+```
+
+### Order of Catch Blocks Matters
+
+```java
+public class CatchBlockOrder {
+    public static void main(String[] args) {
+        try {
+            String text = null;
+            int length = text.length(); // NullPointerException (which extends RuntimeException)
+        }
+        // ✅ Correct order: Most specific first
+        catch (NullPointerException e) {
+            System.out.println("Null pointer exception"); // This executes
+        }
+        catch (RuntimeException e) {
+            System.out.println("Runtime exception"); // More general
+        }
+        catch (Exception e) {
+            System.out.println("General exception"); // Most general
+        }
+
+        // ❌ This would cause compilation error:
+        /*
+        try {
+            // some code
+        } catch (Exception e) {          // Too general first
+            // handle
+        } catch (NullPointerException e) { // Unreachable code!
+            // This will never execute
+        }
+        */
+    }
+}
+```
+
+### Practical Calculator with Multiple Exceptions
+
+```java
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
+public class CalculatorExceptions {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.print("Enter first number: ");
+            double num1 = scanner.nextDouble(); // 10.5
+
+            System.out.print("Enter operator (+, -, *, /): ");
+            char operator = scanner.next().charAt(0); // /
+
+            System.out.print("Enter second number: ");
+            double num2 = scanner.nextDouble(); // 0
+
+            double result = performOperation(num1, operator, num2);
+            System.out.printf("%.2f %c %.2f = %.2f%n", num1, operator, num2, result);
+
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input: Please enter valid numbers");
+        } catch (ArithmeticException e) {
+            System.out.println("Math error: " + e.getMessage());
+            // Math error: Cannot divide by zero
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid operator: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+        }
+
+        scanner.close();
+    }
+
+    private static double performOperation(double a, char op, double b) {
+        switch (op) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/':
+                if (b == 0) {
+                    throw new ArithmeticException("Cannot divide by zero");
+                }
+                return a / b;
+            default:
+                throw new IllegalArgumentException("Unsupported operator: " + op);
+        }
+    }
+}
+```
+
+## Using OR Within Catch
+
+Java 7 introduced the ability to catch multiple exception types in a single catch block using the pipe (`|`) operator. This feature, called multi-catch, reduces code duplication when handling different exceptions in the same way.
+
+### Basic Multi-Catch Syntax
+
+```java
+public class MultiCatchBasics {
+    public static void main(String[] args) {
+        String[] testData = {"123", "abc", null, "0"};
+
+        for (String data : testData) {
+            try {
+                int number = Integer.parseInt(data);
+                int result = 100 / number;
+                System.out.println("100 / " + number + " = " + result); // 100 / 123 = 0
+            } catch (NumberFormatException | ArithmeticException e) {
+                System.out.println("Invalid operation with data: " + data);
+                // Invalid operation with data: abc
+                // Invalid operation with data: 0
+            } catch (NullPointerException e) {
+                System.out.println("Null data encountered"); // Null data encountered
+            }
+        }
+    }
+}
+```
+
+### File Operations with Multi-Catch
+
+```java
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class FileMultiCatch {
+    public static void main(String[] args) {
+        String[] filenames = {"existing.txt", "readonly.txt", "nonexistent.txt"};
+
+        for (String filename : filenames) {
+            try {
+                // Try to read and process file
+                String content = Files.readString(Paths.get(filename));
+                System.out.println("File " + filename + " content: " + content.substring(0, Math.min(50, content.length())));
+
+            } catch (FileNotFoundException | SecurityException e) {
+                System.out.println("Cannot access file " + filename + ": " + e.getClass().getSimpleName());
+                // Cannot access file nonexistent.txt: FileNotFoundException
+            } catch (IOException e) {
+                System.out.println("IO error reading " + filename + ": " + e.getMessage());
+            }
+        }
+    }
+}
+```
+
+### Network and Parsing Multi-Catch
+
+```java
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.io.IOException;
+
+public class NetworkParsingMultiCatch {
+    public static void main(String[] args) {
+        String[] urlStrings = {
+            "https://api.github.com/users/octocat",
+            "invalid-url-format",
+            "https://httpbin.org/status/500"
+        };
+
+        for (String urlString : urlStrings) {
+            try {
+                URL url = new URL(urlString);
+                var connection = url.openConnection();
+
+                // Simulate parsing response
+                String response = "mock response data";
+                int statusCode = Integer.parseInt(response.substring(0, 3)); // This might fail
+
+                System.out.println("Successfully processed: " + urlString);
+
+            } catch (MalformedURLException | NumberFormatException e) {
+                System.out.println("Format error processing " + urlString + ": " + e.getClass().getSimpleName());
+                // Format error processing invalid-url-format: MalformedURLException
+            } catch (IOException e) {
+                System.out.println("Network error for " + urlString + ": " + e.getMessage());
+            }
+        }
+    }
+}
+```
+
+### Database Operations Multi-Catch
+
+```java
+import java.sql.*;
+
+public class DatabaseMultiCatch {
+    public static void main(String[] args) {
+        String[] queries = {
+            "SELECT * FROM users WHERE id = 1",
+            "INVALID SQL QUERY",
+            "SELECT * FROM nonexistent_table"
+        };
+
+        String dbUrl = "jdbc:h2:mem:testdb";
+
+        for (String query : queries) {
+            try (Connection conn = DriverManager.getConnection(dbUrl);
+                 Statement stmt = conn.createStatement()) {
+
+                ResultSet rs = stmt.executeQuery(query);
+                System.out.println("Query executed successfully: " + query.substring(0, 20) + "...");
+
+            } catch (SQLException | IllegalArgumentException e) {
+                System.out.println("Database error with query '" + query + "': " + e.getClass().getSimpleName());
+                // Database error with query 'INVALID SQL QUERY': SQLException
+            }
+        }
+    }
+}
+```
+
+### Multi-Catch vs Traditional Approach
+
+```java
+public class MultiCatchComparison {
+    public static void main(String[] args) {
+        String input = "abc123";
+
+        // Traditional approach - code duplication
+        try {
+            int number = Integer.parseInt(input);
+            double sqrt = Math.sqrt(number);
+            if (sqrt < 0) throw new IllegalArgumentException("Negative sqrt");
+        } catch (NumberFormatException e) {
+            System.out.println("Error processing input: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error processing input: " + e.getMessage());
+        }
+
+        // Multi-catch approach - cleaner
+        try {
+            int number = Integer.parseInt(input);
+            double sqrt = Math.sqrt(number);
+            if (sqrt < 0) throw new IllegalArgumentException("Negative sqrt");
+        } catch (NumberFormatException | IllegalArgumentException e) {
+            System.out.println("Error processing input: " + e.getMessage());
+            // Error processing input: For input string: "abc123"
+        }
+    }
+}
+```
+
+### Advanced Multi-Catch with Custom Processing
+
+```java
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class AdvancedMultiCatch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter a mathematical expression (e.g., 10/2): ");
+        String expression = scanner.nextLine(); // "10/0" or "abc/def"
+
+        try {
+            double result = evaluateExpression(expression);
+            System.out.println("Result: " + result);
+
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            System.out.println("Invalid expression format. Please use format: number/number");
+            System.out.println("Error type: " + e.getClass().getSimpleName());
+            // Error type: NumberFormatException (for "abc/def")
+        } catch (ArithmeticException e) {
+            System.out.println("Mathematical error: " + e.getMessage());
+            // Mathematical error: Division by zero (for "10/0")
+        }
+
+        scanner.close();
+    }
+
+    private static double evaluateExpression(String expression) {
+        String[] parts = expression.split("/");
+
+        if (parts.length != 2) {
+            throw new ArrayIndexOutOfBoundsException("Expression must contain exactly one '/' operator");
+        }
+
+        double num1 = Double.parseDouble(parts[0].trim());
+        double num2 = Double.parseDouble(parts[1].trim());
+
+        if (num2 == 0) {
+            throw new ArithmeticException("Division by zero");
+        }
+
+        return num1 / num2;
+    }
+}
+```
+
+### Multi-Catch Limitations and Best Practices
+
+```java
+public class MultiCatchLimitations {
+    public static void main(String[] args) {
+        // ✅ Good: Related exceptions that need same handling
+        try {
+            // some operation
+            throw new IllegalArgumentException("test");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            // Both are programming errors that should be handled similarly
+            System.out.println("Invalid program state: " + e.getMessage());
+            // Invalid program state: test
+        }
+
+        // ❌ Avoid: Unrelated exceptions in multi-catch
+        /*
+        try {
+            // some operation
+        } catch (IOException | IllegalArgumentException e) {
+            // These are very different types of errors
+            // Better to handle them separately
+        }
+        */
+
+        // ✅ Good: Separate handling for different error types
+        try {
+            // file operation that might fail
+            throw new java.io.FileNotFoundException("File not found");
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("File issue: " + e.getMessage()); // File issue: File not found
+        } catch (IllegalArgumentException e) {
+            System.out.println("Program logic issue: " + e.getMessage());
+        }
+    }
+}
+```
+
+## The Exception Class
+
+The `Exception` class is the superclass of all exceptions in Java. Understanding the Exception class hierarchy and its methods is crucial for effective exception handling and debugging.
+
+### Exception Class Hierarchy
+
+```java
+public class ExceptionHierarchy {
+    public static void main(String[] args) {
+        // Demonstrate different exception types and their hierarchy
+        Exception[] exceptions = {
+            new Exception("Generic exception"),
+            new RuntimeException("Runtime exception"),
+            new IllegalArgumentException("Illegal argument"),
+            new NullPointerException("Null pointer"),
+            new NumberFormatException("Number format error"),
+            new java.io.IOException("IO exception"),
+            new java.io.FileNotFoundException("File not found")
+        };
+
+        for (Exception e : exceptions) {
+            System.out.println("Exception: " + e.getClass().getSimpleName());
+            System.out.println("  Message: " + e.getMessage());
+            System.out.println("  Superclass: " + e.getClass().getSuperclass().getSimpleName());
+            System.out.println("  Is RuntimeException: " + (e instanceof RuntimeException));
+            System.out.println();
+        }
+
+        /*
+        Output shows hierarchy:
+        Exception: Exception
+          Message: Generic exception
+          Superclass: Throwable
+          Is RuntimeException: false
+
+        Exception: RuntimeException
+          Message: Runtime exception
+          Superclass: Exception
+          Is RuntimeException: true
+
+        Exception: IllegalArgumentException
+          Message: Illegal argument
+          Superclass: RuntimeException
+          Is RuntimeException: true
+        ...
+        */
+    }
+}
+```
+
+### Essential Exception Methods
+
+```java
+import java.io.FileReader;
+import java.io.IOException;
+
+public class ExceptionMethods {
+    public static void main(String[] args) {
+        try {
+            // This will throw a FileNotFoundException
+            FileReader file = new FileReader("nonexistent.txt");
+        } catch (Exception e) {
+            // Demonstrate all important Exception methods
+
+            System.out.println("=== Exception Information ===");
+
+            // getMessage() - returns the detail message
+            System.out.println("Message: " + e.getMessage());
+            // Message: nonexistent.txt (The system cannot find the file specified)
+
+            // getClass() - returns the runtime class
+            System.out.println("Exception Type: " + e.getClass().getName());
+            // Exception Type: java.io.FileNotFoundException
+
+            System.out.println("Simple Name: " + e.getClass().getSimpleName());
+            // Simple Name: FileNotFoundException
+
+            // toString() - returns class name and message
+            System.out.println("toString(): " + e.toString());
+            // toString(): java.io.FileNotFoundException: nonexistent.txt
+
+            // getLocalizedMessage() - returns localized message
+            System.out.println("Localized Message: " + e.getLocalizedMessage());
+
+            // getCause() - returns the cause of the exception
+            System.out.println("Cause: " + e.getCause());
+            // Cause: null (no underlying cause)
+
+            // printStackTrace() - prints the stack trace
+            System.out.println("\n=== Stack Trace ===");
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Custom Exception with Full Information
+
+```java
+public class CustomExceptionDemo {
+    public static void main(String[] args) {
+        try {
+            validateAge(-5);
+        } catch (InvalidAgeException e) {
+            System.out.println("=== Custom Exception Details ===");
+            System.out.println("Message: " + e.getMessage()); // Message: Age cannot be negative: -5
+            System.out.println("Invalid Value: " + e.getInvalidValue()); // Invalid Value: -5
+            System.out.println("Suggestion: " + e.getSuggestion()); // Suggestion: Please enter an age between 0 and 150
+            System.out.println();
+            e.printStackTrace();
+        }
+    }
+
+    public static void validateAge(int age) throws InvalidAgeException {
+        if (age < 0) {
+            throw new InvalidAgeException("Age cannot be negative: " + age, age, "Please enter an age between 0 and 150");
+        }
+        if (age > 150) {
+            throw new InvalidAgeException("Age too high: " + age, age, "Please enter a realistic age");
+        }
+        System.out.println("Valid age: " + age);
+    }
+}
+
+// Custom exception class with additional information
+class InvalidAgeException extends Exception {
+    private final int invalidValue;
+    private final String suggestion;
+
+    public InvalidAgeException(String message, int invalidValue, String suggestion) {
+        super(message);
+        this.invalidValue = invalidValue;
+        this.suggestion = suggestion;
+    }
+
+    public int getInvalidValue() {
+        return invalidValue;
+    }
+
+    public String getSuggestion() {
+        return suggestion;
+    }
+}
+```
+
+### Exception Chaining and Cause
+
+```java
+import java.io.IOException;
+
+public class ExceptionChaining {
+    public static void main(String[] args) {
+        try {
+            processFile("important.txt");
+        } catch (DataProcessingException e) {
+            System.out.println("=== Exception Chain ===");
+            System.out.println("Main exception: " + e.getMessage());
+            // Main exception: Failed to process file: important.txt
+
+            System.out.println("Original cause: " + e.getCause().getMessage());
+            // Original cause: File processing error
+
+            System.out.println("Root cause type: " + e.getCause().getCause().getClass().getSimpleName());
+            // Root cause type: IOException
+
+            // Print full chain
+            System.out.println("\n=== Full Exception Chain ===");
+            Throwable current = e;
+            int level = 0;
+            while (current != null) {
+                System.out.println("Level " + level + ": " + current.getClass().getSimpleName() + " - " + current.getMessage());
+                current = current.getCause();
+                level++;
+            }
+
+            /*
+            Level 0: DataProcessingException - Failed to process file: important.txt
+            Level 1: FileOperationException - File processing error
+            Level 2: IOException - Simulated IO error
+            */
+        }
+    }
+
+    public static void processFile(String filename) throws DataProcessingException {
+        try {
+            readFile(filename);
+        } catch (FileOperationException e) {
+            // Wrap the exception with more context
+            throw new DataProcessingException("Failed to process file: " + filename, e);
+        }
+    }
+
+    public static void readFile(String filename) throws FileOperationException {
+        try {
+            // Simulate file reading that fails
+            throw new IOException("Simulated IO error");
+        } catch (IOException e) {
+            // Wrap the IOException
+            throw new FileOperationException("File processing error", e);
+        }
+    }
+}
+
+// Custom exception classes
+class DataProcessingException extends Exception {
+    public DataProcessingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+
+class FileOperationException extends Exception {
+    public FileOperationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+```
+
+### Exception State and Information
+
+```java
+import java.util.Date;
+
+public class ExceptionState {
+    public static void main(String[] args) {
+        try {
+            simulateError();
+        } catch (DetailedException e) {
+            System.out.println("=== Detailed Exception Information ===");
+            System.out.println("Timestamp: " + e.getTimestamp()); // Timestamp: [current time]
+            System.out.println("Thread: " + e.getThreadName()); // Thread: main
+            System.out.println("Method: " + e.getMethodName()); // Method: simulateError
+            System.out.println("Error Code: " + e.getErrorCode()); // Error Code: ERR_001
+            System.out.println("Severity: " + e.getSeverity()); // Severity: HIGH
+            System.out.println();
+
+            // Stack trace analysis
+            StackTraceElement[] stackTrace = e.getStackTrace();
+            System.out.println("=== Stack Trace Analysis ===");
+            for (int i = 0; i < Math.min(3, stackTrace.length); i++) {
+                StackTraceElement element = stackTrace[i];
+                System.out.printf("Frame %d: %s.%s() line %d%n",
+                    i, element.getClassName(), element.getMethodName(), element.getLineNumber());
+            }
+        }
+    }
+
+    public static void simulateError() throws DetailedException {
+        throw new DetailedException("Simulated error for demonstration", "ERR_001", "HIGH");
+    }
+}
+
+// Enhanced exception with additional state information
+class DetailedException extends Exception {
+    private final Date timestamp;
+    private final String threadName;
+    private final String methodName;
+    private final String errorCode;
+    private final String severity;
+
+    public DetailedException(String message, String errorCode, String severity) {
+        super(message);
+        this.timestamp = new Date();
+        this.threadName = Thread.currentThread().getName();
+        this.methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        this.errorCode = errorCode;
+        this.severity = severity;
+    }
+
+    public Date getTimestamp() { return timestamp; }
+    public String getThreadName() { return threadName; }
+    public String getMethodName() { return methodName; }
+    public String getErrorCode() { return errorCode; }
+    public String getSeverity() { return severity; }
+}
+```
+
+## Finally Keyword
+
+The `finally` block is a crucial part of exception handling that ensures certain code executes regardless of whether an exception occurs or not. It's commonly used for cleanup operations like closing files, database connections, or releasing resources.
+
+### Basic Finally Block
+
+```java
+import java.util.Scanner;
+
+public class BasicFinally {
+    public static void main(String[] args) {
+        Scanner scanner = null;
+
+        try {
+            scanner = new Scanner(System.in);
+            System.out.print("Enter a number: ");
+            int number = scanner.nextInt(); // May throw InputMismatchException
+            System.out.println("You entered: " + number); // You entered: 42
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage()); // Error: [exception message]
+
+        } finally {
+            // This block ALWAYS executes
+            System.out.println("Finally block executed"); // Finally block executed
+
+            if (scanner != null) {
+                scanner.close();
+                System.out.println("Scanner closed"); // Scanner closed
+            }
+        }
+
+        System.out.println("Program continues"); // Program continues
+    }
+}
+```
+
+### Finally with File Operations
+
+```java
+import java.io.*;
+
+public class FileOperationsFinally {
+    public static void main(String[] args) {
+        String filename = "test.txt";
+        FileWriter writer = null;
+        BufferedWriter bufferedWriter = null;
+
+        try {
+            writer = new FileWriter(filename);
+            bufferedWriter = new BufferedWriter(writer);
+
+            bufferedWriter.write("Hello, World!"); // May throw IOException
+            bufferedWriter.write("\nSecond line");
+
+            System.out.println("File written successfully"); // File written successfully
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+
+        } finally {
+            // Cleanup resources - this ALWAYS executes
+            System.out.println("Cleaning up resources..."); // Cleaning up resources...
+
+            try {
+                if (bufferedWriter != null) {
+                    bufferedWriter.close();
+                    System.out.println("BufferedWriter closed"); // BufferedWriter closed
+                }
+            } catch (IOException e) {
+                System.out.println("Error closing BufferedWriter: " + e.getMessage());
+            }
+
+            try {
+                if (writer != null) {
+                    writer.close();
+                    System.out.println("FileWriter closed"); // FileWriter closed
+                }
+            } catch (IOException e) {
+                System.out.println("Error closing FileWriter: " + e.getMessage());
+            }
+        }
+    }
+}
+```
+
+### Finally vs Try-with-Resources
+
+```java
+import java.io.*;
+
+public class FinallyVsTryWithResources {
+    public static void main(String[] args) {
+        // Traditional approach with finally
+        traditionalApproach("traditional.txt");
+
+        // Modern approach with try-with-resources
+        modernApproach("modern.txt");
+    }
+
+    public static void traditionalApproach(String filename) {
+        System.out.println("=== Traditional Finally Approach ===");
+
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(filename);
+            writer.write("Traditional approach content");
+            System.out.println("Traditional file written"); // Traditional file written
+
+        } catch (IOException e) {
+            System.out.println("Error in traditional approach: " + e.getMessage());
+
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                    System.out.println("Traditional writer closed"); // Traditional writer closed
+                } catch (IOException e) {
+                    System.out.println("Error closing traditional writer: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public static void modernApproach(String filename) {
+        System.out.println("\n=== Modern Try-with-Resources Approach ===");
+
+        // Resources are automatically closed
+        try (FileWriter writer = new FileWriter(filename)) {
+            writer.write("Modern approach content");
+            System.out.println("Modern file written"); // Modern file written
+
+        } catch (IOException e) {
+            System.out.println("Error in modern approach: " + e.getMessage());
+        }
+        // No finally needed - FileWriter is automatically closed
+        System.out.println("Modern writer automatically closed"); // Modern writer automatically closed
+    }
+}
+```
+
+### Finally with Multiple Return Points
+
+```java
+public class FinallyWithReturns {
+    public static void main(String[] args) {
+        System.out.println("Result 1: " + testMethod(5)); // Result 1: Finally executed - Value: 5
+        System.out.println("Result 2: " + testMethod(-3)); // Result 2: Finally executed - Value: -3
+        System.out.println("Result 3: " + testMethod(0)); // Result 3: Finally executed - Value: 0
+    }
+
+    public static String testMethod(int value) {
+        try {
+            if (value < 0) {
+                System.out.println("Negative value detected");
+                return "Negative";
+            }
+
+            if (value == 0) {
+                throw new IllegalArgumentException("Zero not allowed");
+            }
+
+            System.out.println("Positive value: " + value);
+            return "Positive";
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("Exception caught: " + e.getMessage());
+            return "Exception";
+
+        } finally {
+            // This ALWAYS executes, regardless of return statements
+            System.out.println("Finally executed - Value: " + value);
+        }
+    }
+}
+```
+
+### Finally for Resource Management
+
+```java
+import java.sql.*;
+
+public class DatabaseFinally {
+    public static void main(String[] args) {
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            // Simulate database connection
+            connection = DriverManager.getConnection("jdbc:h2:mem:testdb");
+            statement = connection.createStatement();
+
+            // Create and populate table
+            statement.execute("CREATE TABLE users (id INT, name VARCHAR(50))");
+            statement.execute("INSERT INTO users VALUES (1, 'Alice'), (2, 'Bob')");
+
+            // Query data
+            resultSet = statement.executeQuery("SELECT * FROM users");
+
+            System.out.println("=== Query Results ===");
+            while (resultSet.next()) {
+                System.out.println("ID: " + resultSet.getInt("id") +
+                                 ", Name: " + resultSet.getString("name"));
+                // ID: 1, Name: Alice
+                // ID: 2, Name: Bob
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+
+        } finally {
+            // Cleanup database resources in reverse order
+            System.out.println("Cleaning up database resources...");
+
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                    System.out.println("ResultSet closed"); // ResultSet closed
+                } catch (SQLException e) {
+                    System.out.println("Error closing ResultSet: " + e.getMessage());
+                }
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                    System.out.println("Statement closed"); // Statement closed
+                } catch (SQLException e) {
+                    System.out.println("Error closing Statement: " + e.getMessage());
+                }
+            }
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                    System.out.println("Connection closed"); // Connection closed
+                } catch (SQLException e) {
+                    System.out.println("Error closing Connection: " + e.getMessage());
+                }
+            }
+        }
+    }
+}
+```
+
+### Finally with Exception in Finally Block
+
+```java
+public class FinallyExceptionHandling {
+    public static void main(String[] args) {
+        System.out.println("=== Finally Block Exception Example ===");
+
+        try {
+            riskyMethod();
+        } catch (Exception e) {
+            System.out.println("Caught in main: " + e.getMessage());
+            // Caught in main: Exception in finally block
+        }
+    }
+
+    public static void riskyMethod() throws Exception {
+        try {
+            System.out.println("In try block"); // In try block
+            throw new RuntimeException("Original exception");
+
+        } catch (RuntimeException e) {
+            System.out.println("In catch block: " + e.getMessage()); // In catch block: Original exception
+
+        } finally {
+            System.out.println("In finally block"); // In finally block
+
+            // Exception in finally block suppresses the original exception
+            throw new Exception("Exception in finally block");
+        }
+    }
+}
+```
+
+### Best Practices with Finally
+
+```java
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FinallyBestPractices {
+    public static void main(String[] args) {
+        // ✅ Good: Simple resource management
+        demonstrateGoodPractice();
+
+        // ❌ Avoid: Complex logic in finally
+        // demonstratePoorPractice();
+    }
+
+    public static void demonstrateGoodPractice() {
+        System.out.println("=== Good Finally Practice ===");
+
+        List<String> lines = new ArrayList<>();
+        BufferedReader reader = null;
+
+        try {
+            reader = new BufferedReader(new FileReader("data.txt"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+            System.out.println("File read successfully, lines: " + lines.size());
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+            // Error reading file: data.txt (The system cannot find the file specified)
+
+        } finally {
+            // ✅ Good: Simple, focused cleanup
+            if (reader != null) {
+                try {
+                    reader.close();
+                    System.out.println("Reader closed successfully"); // Reader closed successfully
+                } catch (IOException e) {
+                    System.out.println("Warning: Error closing reader: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    /*
+    // ❌ Poor practice - don't do this
+    public static void demonstratePoorPractice() {
+        try {
+            // some operation
+        } finally {
+            // ❌ Don't put complex business logic in finally
+            // ❌ Don't throw exceptions from finally
+            // ❌ Don't modify return values in finally
+        }
+    }
+    */
+}
+```
+
+## Exception Hierarchy
+
+Understanding Java's exception hierarchy is crucial for effective exception handling. The hierarchy determines which exceptions you must handle and which ones you can optionally handle.
+
+### The Complete Exception Hierarchy
+
+```java
+public class ExceptionHierarchyDemo {
+    public static void main(String[] args) {
+        // Demonstrate the exception hierarchy
+        System.out.println("=== Java Exception Hierarchy ===");
+        System.out.println("Throwable");
+        System.out.println("├── Error (Unchecked)");
+        System.out.println("│   ├── OutOfMemoryError");
+        System.out.println("│   ├── StackOverflowError");
+        System.out.println("│   └── VirtualMachineError");
+        System.out.println("└── Exception");
+        System.out.println("    ├── RuntimeException (Unchecked)");
+        System.out.println("    │   ├── NullPointerException");
+        System.out.println("    │   ├── IllegalArgumentException");
+        System.out.println("    │   ├── ArrayIndexOutOfBoundsException");
+        System.out.println("    │   └── NumberFormatException");
+        System.out.println("    └── Checked Exceptions");
+        System.out.println("        ├── IOException");
+        System.out.println("        ├── SQLException");
+        System.out.println("        └── ClassNotFoundException");
+
+        // Demonstrate hierarchy in practice
+        demonstrateHierarchy();
+    }
+
+    public static void demonstrateHierarchy() {
+        System.out.println("\n=== Hierarchy in Practice ===");
+
+        // Create instances of different exception types
+        Throwable[] exceptions = {
+            new Error("System error"),
+            new Exception("Generic exception"),
+            new RuntimeException("Runtime exception"),
+            new IllegalArgumentException("Invalid argument"),
+            new NullPointerException("Null reference"),
+            new java.io.IOException("IO error"),
+            new java.sql.SQLException("Database error")
+        };
+
+        for (Throwable throwable : exceptions) {
+            analyzeException(throwable);
+        }
+    }
+
+    public static void analyzeException(Throwable throwable) {
+        System.out.println("\nAnalyzing: " + throwable.getClass().getSimpleName());
+        System.out.println("  Is Error: " + (throwable instanceof Error));
+        System.out.println("  Is Exception: " + (throwable instanceof Exception));
+        System.out.println("  Is RuntimeException: " + (throwable instanceof RuntimeException));
+        System.out.println("  Must be handled: " + mustBeHandled(throwable));
+
+        // Show inheritance chain
+        Class<?> current = throwable.getClass();
+        System.out.print("  Inheritance: ");
+        while (current != null && !current.equals(Object.class)) {
+            System.out.print(current.getSimpleName());
+            current = current.getSuperclass();
+            if (current != null && !current.equals(Object.class)) {
+                System.out.print(" → ");
+            }
+        }
+        System.out.println();
+    }
+
+    public static boolean mustBeHandled(Throwable throwable) {
+        // Checked exceptions must be handled
+        return (throwable instanceof Exception) &&
+               !(throwable instanceof RuntimeException) &&
+               !(throwable instanceof Error);
+    }
+}
+```
+
+### Catching Based on Hierarchy
+
+```java
+import java.io.IOException;
+import java.io.FileNotFoundException;
+
+public class HierarchyCatching {
+    public static void main(String[] args) {
+        // Demonstrate catching based on hierarchy
+        testFileOperations();
+        testRuntimeExceptions();
+        testGeneralExceptions();
+    }
+
+    public static void testFileOperations() {
+        System.out.println("=== File Operations Exception Hierarchy ===");
+
+        try {
+            // This could throw FileNotFoundException (extends IOException)
+            throw new FileNotFoundException("File not found: config.txt");
+
+        } catch (FileNotFoundException e) {
+            // Catches FileNotFoundException specifically
+            System.out.println("File not found: " + e.getMessage());
+            // File not found: File not found: config.txt
+
+        } catch (IOException e) {
+            // Would catch other IOExceptions but not FileNotFoundException
+            // (because FileNotFoundException was caught above)
+            System.out.println("IO error: " + e.getMessage());
+        }
+    }
+
+    public static void testRuntimeExceptions() {
+        System.out.println("\n=== Runtime Exception Hierarchy ===");
+
+        String[] testCases = {"123", "abc", null};
+
+        for (String testCase : testCases) {
+            try {
+                int length = testCase.length(); // May throw NullPointerException
+                int number = Integer.parseInt(testCase); // May throw NumberFormatException
+                System.out.println("Success: " + testCase + " → " + number);
+                // Success: 123 → 123
+
+            } catch (NullPointerException e) {
+                System.out.println("Null value encountered"); // Null value encountered
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format: " + testCase); // Invalid number format: abc
+
+            } catch (RuntimeException e) {
+                // Catches any other RuntimeException not caught above
+                System.out.println("Other runtime error: " + e.getClass().getSimpleName());
+            }
+        }
+    }
+
+    public static void testGeneralExceptions() {
+        System.out.println("\n=== General Exception Handling ===");
+
+        try {
+            // Simulate various exceptions
+            simulateException("runtime");
+
+        } catch (RuntimeException e) {
+            System.out.println("Runtime exception: " + e.getMessage());
+            // Runtime exception: Simulated runtime exception
+
+        } catch (Exception e) {
+            System.out.println("General exception: " + e.getMessage());
+
+        } catch (Throwable e) {
+            // Catches everything including Errors (rarely used)
+            System.out.println("Throwable: " + e.getMessage());
+        }
+    }
+
+    public static void simulateException(String type) {
+        switch (type) {
+            case "runtime":
+                throw new RuntimeException("Simulated runtime exception");
+            case "checked":
+                // Would need throws declaration for checked exceptions
+                // throw new IOException("Simulated IO exception");
+                break;
+            case "error":
+                throw new Error("Simulated error");
+            default:
+                throw new IllegalArgumentException("Unknown type: " + type);
+        }
+    }
+}
+```
+
+### Custom Exception Hierarchy
+
+```java
+// Create a custom exception hierarchy for a banking application
+public class BankingExceptionHierarchy {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount("12345", 1000.0);
+
+        // Test various banking operations
+        testBankingOperations(account);
+    }
+
+    public static void testBankingOperations(BankAccount account) {
+        String[] operations = {
+            "withdraw:500",    // Valid
+            "withdraw:2000",   // Insufficient funds
+            "withdraw:-100",   // Invalid amount
+            "deposit:abc"      // Invalid format
+        };
+
+        for (String operation : operations) {
+            try {
+                String[] parts = operation.split(":");
+                String action = parts[0];
+                String amountStr = parts[1];
+
+                if ("withdraw".equals(action)) {
+                    double amount = Double.parseDouble(amountStr);
+                    account.withdraw(amount);
+                    System.out.println("Withdrawal successful: $" + amount);
+                    // Withdrawal successful: $500.0
+                } else if ("deposit".equals(action)) {
+                    double amount = Double.parseDouble(amountStr);
+                    account.deposit(amount);
+                    System.out.println("Deposit successful: $" + amount);
+                }
+
+            } catch (InsufficientFundsException e) {
+                System.out.println("Banking error: " + e.getMessage() +
+                                 " (Available: $" + e.getAvailableAmount() + ")");
+                // Banking error: Insufficient funds for withdrawal: $2000.0 (Available: $500.0)
+
+            } catch (InvalidAmountException e) {
+                System.out.println("Invalid amount: " + e.getMessage());
+                // Invalid amount: Amount must be positive: -100.0
+
+            } catch (BankingException e) {
+                System.out.println("Banking operation failed: " + e.getMessage());
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format in operation: " + operation);
+                // Invalid number format in operation: deposit:abc
+
+            } catch (Exception e) {
+                System.out.println("Unexpected error: " + e.getMessage());
+            }
+        }
+
+        System.out.println("Final balance: $" + account.getBalance()); // Final balance: $500.0
+    }
+}
+
+// Custom exception hierarchy
+class BankingException extends Exception {
+    public BankingException(String message) {
+        super(message);
+    }
+
+    public BankingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+
+class AccountException extends BankingException {
+    private final String accountNumber;
+
+    public AccountException(String message, String accountNumber) {
+        super(message);
+        this.accountNumber = accountNumber;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+}
+
+class InsufficientFundsException extends AccountException {
+    private final double requestedAmount;
+    private final double availableAmount;
+
+    public InsufficientFundsException(String accountNumber, double requestedAmount, double availableAmount) {
+        super("Insufficient funds for withdrawal: $" + requestedAmount, accountNumber);
+        this.requestedAmount = requestedAmount;
+        this.availableAmount = availableAmount;
+    }
+
+    public double getRequestedAmount() { return requestedAmount; }
+    public double getAvailableAmount() { return availableAmount; }
+}
+
+class InvalidAmountException extends BankingException {
+    private final double invalidAmount;
+
+    public InvalidAmountException(double amount) {
+        super("Amount must be positive: " + amount);
+        this.invalidAmount = amount;
+    }
+
+    public double getInvalidAmount() { return invalidAmount; }
+}
+
+// Supporting class
+class BankAccount {
+    private final String accountNumber;
+    private double balance;
+
+    public BankAccount(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+
+    public void withdraw(double amount) throws BankingException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(amount);
+        }
+        if (amount > balance) {
+            throw new InsufficientFundsException(accountNumber, amount, balance);
+        }
+        balance -= amount;
+    }
+
+    public void deposit(double amount) throws BankingException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(amount);
+        }
+        balance += amount;
+    }
+
+    public double getBalance() { return balance; }
+}
+```
+
+## Unchecked Exceptions
+
+Unchecked exceptions are exceptions that the compiler doesn't force you to handle. They extend `RuntimeException` and typically represent programming errors or conditions that can be avoided with proper coding practices.
+
+### Common Unchecked Exceptions
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class CommonUncheckedExceptions {
+    public static void main(String[] args) {
+        // Demonstrate common unchecked exceptions
+        demonstrateNullPointerException();
+        demonstrateArrayIndexOutOfBounds();
+        demonstrateIllegalArgumentException();
+        demonstrateNumberFormatException();
+        demonstrateClassCastException();
+    }
+
+    public static void demonstrateNullPointerException() {
+        System.out.println("=== NullPointerException ===");
+
+        String text = null;
+        try {
+            int length = text.length(); // NullPointerException
+        } catch (NullPointerException e) {
+            System.out.println("Null pointer error: " + e.getMessage());
+            // Null pointer error: null (or implementation-specific message)
+        }
+
+        // How to avoid:
+        String safeText = "Hello";
+        if (safeText != null) {
+            System.out.println("Safe length: " + safeText.length()); // Safe length: 5
+        }
+    }
+
+    public static void demonstrateArrayIndexOutOfBounds() {
+        System.out.println("\n=== ArrayIndexOutOfBoundsException ===");
+
+        int[] numbers = {1, 2, 3, 4, 5};
+
+        try {
+            int value = numbers[10]; // ArrayIndexOutOfBoundsException
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Array index error: " + e.getMessage());
+            // Array index error: Index 10 out of bounds for length 5
+        }
+
+        // How to avoid:
+        int index = 2;
+        if (index >= 0 && index < numbers.length) {
+            System.out.println("Safe access: " + numbers[index]); // Safe access: 3
+        }
+    }
+
+    public static void demonstrateIllegalArgumentException() {
+        System.out.println("\n=== IllegalArgumentException ===");
+
+        try {
+            calculateSquareRoot(-25); // IllegalArgumentException
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid argument: " + e.getMessage());
+            // Invalid argument: Cannot calculate square root of negative number: -25.0
+        }
+
+        // Proper usage:
+        double result = calculateSquareRoot(25);
+        System.out.println("Square root of 25: " + result); // Square root of 25: 5.0
+    }
+
+    public static void demonstrateNumberFormatException() {
+        System.out.println("\n=== NumberFormatException ===");
+
+        String[] inputs = {"123", "abc", "45.67", ""};
+
+        for (String input : inputs) {
+            try {
+                int number = Integer.parseInt(input);
+                System.out.println("Parsed: " + input + " → " + number); // Parsed: 123 → 123
+            } catch (NumberFormatException e) {
+                System.out.println("Cannot parse: '" + input + "' - " + e.getMessage());
+                // Cannot parse: 'abc' - For input string: "abc"
+                // Cannot parse: '45.67' - For input string: "45.67"
+                // Cannot parse: '' - For input string: ""
+            }
+        }
+    }
+
+    public static void demonstrateClassCastException() {
+        System.out.println("\n=== ClassCastException ===");
+
+        List<Object> objects = new ArrayList<>();
+        objects.add("Hello");
+        objects.add(42);
+        objects.add(3.14);
+
+        for (Object obj : objects) {
+            try {
+                String str = (String) obj; // ClassCastException for non-String objects
+                System.out.println("String: " + str); // String: Hello
+            } catch (ClassCastException e) {
+                System.out.println("Cannot cast " + obj.getClass().getSimpleName() +
+                                 " to String: " + obj);
+                // Cannot cast Integer to String: 42
+                // Cannot cast Double to String: 3.14
+            }
+        }
+    }
+
+    public static double calculateSquareRoot(double value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("Cannot calculate square root of negative number: " + value);
+        }
+        return Math.sqrt(value);
+    }
+}
+```
+
+### Best Practices for Unchecked Exceptions
+
+```java
+import java.util.List;
+import java.util.ArrayList;
+
+public class UncheckedExceptionBestPractices {
+    public static void main(String[] args) {
+        // Demonstrate best practices for handling unchecked exceptions
+        testValidationBestPractices();
+        testCollectionBestPractices();
+        testStringBestPractices();
+    }
+
+    public static void testValidationBestPractices() {
+        System.out.println("=== Input Validation Best Practices ===");
+
+        // ✅ Good: Validate inputs early
+        try {
+            validateAndProcessAge(25);
+            System.out.println("Age 25 processed successfully"); // Age 25 processed successfully
+
+            validateAndProcessAge(-5); // Will throw exception
+        } catch (IllegalArgumentException e) {
+            System.out.println("Validation error: " + e.getMessage());
+            // Validation error: Age must be between 0 and 150: -5
+        }
+    }
+
+    public static void testCollectionBestPractices() {
+        System.out.println("\n=== Collection Safety Best Practices ===");
+
+        List<String> names = new ArrayList<>();
+        names.add("Alice");
+        names.add("Bob");
+        names.add("Charlie");
+
+        // ✅ Good: Safe collection access
+        String name = safeGetFromList(names, 1);
+        System.out.println("Safe access result: " + name); // Safe access result: Bob
+
+        String invalidName = safeGetFromList(names, 10);
+        System.out.println("Invalid index result: " + invalidName); // Invalid index result: null
+    }
+
+    public static void testStringBestPractices() {
+        System.out.println("\n=== String Safety Best Practices ===");
+
+        String[] testStrings = {"Hello", null, "", "World"};
+
+        for (String str : testStrings) {
+            String result = safeStringOperation(str);
+            System.out.println("String '" + str + "' → '" + result + "'");
+            // String 'Hello' → 'HELLO'
+            // String 'null' → 'NULL_INPUT'
+            // String '' → 'EMPTY_INPUT'
+            // String 'World' → 'WORLD'
+        }
+    }
+
+    // ✅ Good: Early validation with meaningful error messages
+    public static void validateAndProcessAge(int age) {
+        if (age < 0 || age > 150) {
+            throw new IllegalArgumentException("Age must be between 0 and 150: " + age);
+        }
+
+        // Process age...
+        System.out.println("Processing age: " + age);
+    }
+
+    // ✅ Good: Safe collection access
+    public static <T> T safeGetFromList(List<T> list, int index) {
+        if (list == null) {
+            return null;
+        }
+
+        if (index < 0 || index >= list.size()) {
+            return null;
+        }
+
+        return list.get(index);
+    }
+
+    // ✅ Good: Null-safe string operations
+    public static String safeStringOperation(String input) {
+        if (input == null) {
+            return "NULL_INPUT";
+        }
+
+        if (input.isEmpty()) {
+            return "EMPTY_INPUT";
+        }
+
+        return input.toUpperCase();
+    }
+}
+```
+
+### When to Catch Unchecked Exceptions
+
+```java
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
+public class WhenToCatchUnchecked {
+    public static void main(String[] args) {
+        // Example 1: User input - should catch to provide better UX
+        handleUserInput();
+
+        // Example 2: External data processing - should catch for robustness
+        processExternalData();
+
+        // Example 3: Configuration parsing - should catch and provide defaults
+        loadConfiguration();
+    }
+
+    public static void handleUserInput() {
+        System.out.println("=== User Input Handling ===");
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your age: ");
+
+        try {
+            // User might enter non-numeric input
+            int age = scanner.nextInt(); // InputMismatchException (unchecked)
+
+            if (age < 0 || age > 150) {
+                throw new IllegalArgumentException("Invalid age range");
+            }
+
+            System.out.println("Your age: " + age); // Your age: 25
+
+        } catch (InputMismatchException e) {
+            System.out.println("Please enter a valid number");
+            scanner.nextLine(); // Clear invalid input
+        } catch (IllegalArgumentException e) {
+            System.out.println("Age must be between 0 and 150");
+        }
+
+        scanner.close();
+    }
+
+    public static void processExternalData() {
+        System.out.println("\n=== External Data Processing ===");
+
+        // Simulate processing data from external source
+        String[] externalData = {"123", "456", "invalid", "789", null};
+        List<Integer> validNumbers = new ArrayList<>();
+
+        for (String data : externalData) {
+            try {
+                // External data might be invalid
+                if (data != null) {
+                    int number = Integer.parseInt(data); // NumberFormatException (unchecked)
+                    validNumbers.add(number);
+                }
+            } catch (NumberFormatException e) {
+                // Log and continue processing other data
+                System.out.println("Skipping invalid data: " + data);
+                // Skipping invalid data: invalid
+            }
+        }
+
+        System.out.println("Valid numbers found: " + validNumbers);
+        // Valid numbers found: [123, 456, 789]
+    }
+
+    public static void loadConfiguration() {
+        System.out.println("\n=== Configuration Loading ===");
+
+        // Simulate loading configuration with potential parsing errors
+        String[] configValues = {"timeout=5000", "retries=abc", "maxSize="};
+
+        int timeout = getConfigInt("timeout", configValues, 3000);
+        int retries = getConfigInt("retries", configValues, 3);
+        int maxSize = getConfigInt("maxSize", configValues, 1000);
+
+        System.out.println("Configuration loaded:");
+        System.out.println("  Timeout: " + timeout + "ms"); // Timeout: 5000ms
+        System.out.println("  Retries: " + retries); // Retries: 3 (default)
+        System.out.println("  Max Size: " + maxSize); // Max Size: 1000 (default)
+    }
+
+    public static int getConfigInt(String key, String[] config, int defaultValue) {
+        for (String configLine : config) {
+            if (configLine.startsWith(key + "=")) {
+                try {
+                    String value = configLine.substring(key.length() + 1);
+                    return Integer.parseInt(value); // NumberFormatException (unchecked)
+                } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                    System.out.println("Invalid config for " + key + ", using default: " + defaultValue);
+                    // Invalid config for retries, using default: 3
+                    // Invalid config for maxSize, using default: 1000
+                }
+            }
+        }
+        return defaultValue;
+    }
+}
+```
+
+## Checked Exceptions
+
+Checked exceptions are exceptions that must be handled at compile time. They extend `Exception` but not `RuntimeException`. The compiler forces you to either handle them with try-catch or declare them in the method signature with `throws`.
+
+### Common Checked Exceptions
+
+```java
+import java.io.*;
+import java.sql.*;
+import java.net.*;
+
+public class CommonCheckedExceptions {
+    public static void main(String[] args) {
+        // Demonstrate common checked exceptions
+        demonstrateIOException();
+        demonstrateSQLException();
+        demonstrateClassNotFoundException();
+        demonstrateInterruptedException();
+    }
+
+    // IOException and its subclasses
+    public static void demonstrateIOException() {
+        System.out.println("=== IOException Examples ===");
+
+        // File operations
+        try {
+            FileReader file = new FileReader("nonexistent.txt"); // FileNotFoundException
+            BufferedReader reader = new BufferedReader(file);
+            String line = reader.readLine(); // IOException
+            System.out.println("Read: " + line);
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+            // File not found: nonexistent.txt (The system cannot find the file specified)
+        } catch (IOException e) {
+            System.out.println("IO error: " + e.getMessage());
+        }
+
+        // Network operations
+        try {
+            URL url = new URL("https://www.example.com");
+            InputStream stream = url.openStream(); // IOException
+            System.out.println("Connection opened successfully");
+            stream.close();
+        } catch (MalformedURLException e) {
+            System.out.println("Invalid URL: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Network error: " + e.getMessage());
+        }
+    }
+
+    public static void demonstrateSQLException() {
+        System.out.println("\n=== SQLException Examples ===");
+
+        try {
+            // Database operations (simulated)
+            Connection conn = DriverManager.getConnection("jdbc:invalid:url"); // SQLException
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users");
+
+            while (rs.next()) {
+                System.out.println("User: " + rs.getString("name"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+            // Database error: No suitable driver found for jdbc:invalid:url
+        }
+    }
+
+    public static void demonstrateClassNotFoundException() {
+        System.out.println("\n=== ClassNotFoundException Examples ===");
+
+        try {
+            // Dynamically load class
+            Class<?> clazz = Class.forName("com.nonexistent.MyClass"); // ClassNotFoundException
+            Object instance = clazz.getDeclaredConstructor().newInstance();
+            System.out.println("Class loaded: " + clazz.getName());
+
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found: " + e.getMessage());
+            // Class not found: com.nonexistent.MyClass
+        } catch (Exception e) {
+            System.out.println("Other error: " + e.getMessage());
+        }
+    }
+
+    public static void demonstrateInterruptedException() {
+        System.out.println("\n=== InterruptedException Examples ===");
+
+        try {
+            System.out.println("Starting sleep...");
+            Thread.sleep(1000); // InterruptedException
+            System.out.println("Sleep completed"); // Sleep completed
+        } catch (InterruptedException e) {
+            System.out.println("Sleep interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt(); // Restore interrupt status
+        }
+    }
+}
+```
+
+### Handling vs Propagating Checked Exceptions
+
+```java
+import java.io.*;
+import java.util.Properties;
+
+public class CheckedExceptionHandling {
+    public static void main(String[] args) {
+        // Example 1: Handle the exception at this level
+        loadConfigurationWithHandling();
+
+        // Example 2: Propagate the exception to caller
+        try {
+            String config = loadConfigurationWithPropagation();
+            System.out.println("Configuration loaded: " + config.length() + " characters");
+        } catch (IOException e) {
+            System.out.println("Failed to load configuration: " + e.getMessage());
+            // Failed to load configuration: config.properties (The system cannot find the file specified)
+        }
+    }
+
+    // Approach 1: Handle checked exception within the method
+    public static Properties loadConfigurationWithHandling() {
+        System.out.println("=== Handling Checked Exception Locally ===");
+
+        Properties props = new Properties();
+
+        try (FileInputStream fis = new FileInputStream("config.properties")) {
+            props.load(fis); // IOException
+            System.out.println("Configuration loaded successfully");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Config file not found, using defaults: " + e.getMessage());
+            // Config file not found, using defaults: config.properties (The system cannot find the file specified)
+
+            // Set default values
+            props.setProperty("timeout", "5000");
+            props.setProperty("retries", "3");
+
+        } catch (IOException e) {
+            System.out.println("Error reading config file, using defaults: " + e.getMessage());
+
+            // Set default values
+            props.setProperty("timeout", "5000");
+            props.setProperty("retries", "3");
+        }
+
+        return props;
+    }
+
+    // Approach 2: Propagate checked exception to caller
+    public static String loadConfigurationWithPropagation() throws IOException {
+        System.out.println("\n=== Propagating Checked Exception ===");
+
+        // Let the caller handle the IOException
+        try (FileReader reader = new FileReader("config.properties");
+             BufferedReader buffered = new BufferedReader(reader)) {
+
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            while ((line = buffered.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+
+            return content.toString();
+        }
+        // IOException is propagated to the caller
+    }
+}
+```
+
+### Try-with-Resources for Checked Exceptions
+
+```java
+import java.io.*;
+import java.sql.*;
+import java.util.Scanner;
+
+public class TryWithResourcesChecked {
+    public static void main(String[] args) {
+        // Demonstrate try-with-resources with checked exceptions
+        demonstrateFileOperations();
+        demonstrateDatabaseOperations();
+        demonstrateMultipleResources();
+    }
+
+    public static void demonstrateFileOperations() {
+        System.out.println("=== File Operations with Try-with-Resources ===");
+
+        // Traditional approach
+        traditionalFileHandling();
+
+        // Modern approach with try-with-resources
+        modernFileHandling();
+    }
+
+    public static void traditionalFileHandling() {
+        System.out.println("Traditional approach:");
+
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter("output.txt");
+            writer.write("Hello, traditional world!");
+            System.out.println("File written successfully"); // File written successfully
+
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                    System.out.println("File closed"); // File closed
+                } catch (IOException e) {
+                    System.out.println("Error closing file: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public static void modernFileHandling() {
+        System.out.println("\nModern approach:");
+
+        // Resources automatically closed, even if exception occurs
+        try (FileWriter writer = new FileWriter("output_modern.txt")) {
+            writer.write("Hello, modern world!");
+            System.out.println("Modern file written successfully"); // Modern file written successfully
+
+        } catch (IOException e) {
+            System.out.println("Error with modern file handling: " + e.getMessage());
+        }
+        // FileWriter automatically closed here
+        System.out.println("Modern file automatically closed"); // Modern file automatically closed
+    }
+
+    public static void demonstrateDatabaseOperations() {
+        System.out.println("\n=== Database Operations with Try-with-Resources ===");
+
+        String url = "jdbc:h2:mem:testdb";
+
+        // Multiple resources managed automatically
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement stmt = conn.createStatement()) {
+
+            // Setup test data
+            stmt.execute("CREATE TABLE users (id INT, name VARCHAR(50))");
+            stmt.execute("INSERT INTO users VALUES (1, 'Alice'), (2, 'Bob')");
+
+            // Query and display results
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM users")) {
+                System.out.println("Database query results:");
+                while (rs.next()) {
+                    System.out.println("  ID: " + rs.getInt("id") + ", Name: " + rs.getString("name"));
+                    // ID: 1, Name: Alice
+                    // ID: 2, Name: Bob
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+        // All database resources automatically closed
+        System.out.println("Database resources automatically closed");
+    }
+
+    public static void demonstrateMultipleResources() {
+        System.out.println("\n=== Multiple Resources Management ===");
+
+        // Copy file content using multiple resources
+        try (FileReader reader = new FileReader("output.txt");
+             FileWriter writer = new FileWriter("copy.txt");
+             BufferedReader buffered = new BufferedReader(reader)) {
+
+            String line;
+            while ((line = buffered.readLine()) != null) {
+                writer.write(line + "\n");
+            }
+
+            System.out.println("File copied successfully"); // File copied successfully
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Source file not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error during file copy: " + e.getMessage());
+        }
+        // All resources (reader, writer, buffered) automatically closed
+        System.out.println("All copy resources automatically closed");
+    }
+}
+```
+
+### Custom Checked Exceptions
+
+```java
+import java.io.IOException;
+
+public class CustomCheckedExceptions {
+    public static void main(String[] args) {
+        UserService userService = new UserService();
+
+        // Test user operations with custom checked exceptions
+        testUserOperations(userService);
+    }
+
+    public static void testUserOperations(UserService service) {
+        String[] testEmails = {
+            "valid@example.com",
+            "invalid-email",
+            "existing@example.com",
+            "blocked@spam.com"
+        };
+
+        for (String email : testEmails) {
+            try {
+                User user = service.createUser(email, "password123");
+                System.out.println("User created: " + user.getEmail());
+                // User created: valid@example.com
+
+            } catch (InvalidEmailException e) {
+                System.out.println("Email validation failed: " + e.getMessage());
+                System.out.println("  Invalid email: " + e.getInvalidEmail());
+                // Email validation failed: Email format is invalid: invalid-email
+                //   Invalid email: invalid-email
+
+            } catch (UserAlreadyExistsException e) {
+                System.out.println("User registration failed: " + e.getMessage());
+                System.out.println("  Existing user: " + e.getExistingEmail());
+                // User registration failed: User already exists: existing@example.com
+                //   Existing user: existing@example.com
+
+            } catch (UserRegistrationException e) {
+                System.out.println("Registration error: " + e.getMessage());
+                System.out.println("  Error code: " + e.getErrorCode());
+                // Registration error: Email domain is blocked: blocked@spam.com
+                //   Error code: BLOCKED_DOMAIN
+
+            } catch (Exception e) {
+                System.out.println("Unexpected error: " + e.getMessage());
+            }
+        }
+    }
+}
+
+// Custom checked exception hierarchy
+class UserRegistrationException extends Exception {
+    private final String errorCode;
+
+    public UserRegistrationException(String message, String errorCode) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
+    public UserRegistrationException(String message, String errorCode, Throwable cause) {
+        super(message, cause);
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+}
+
+class InvalidEmailException extends UserRegistrationException {
+    private final String invalidEmail;
+
+    public InvalidEmailException(String invalidEmail) {
+        super("Email format is invalid: " + invalidEmail, "INVALID_FORMAT");
+        this.invalidEmail = invalidEmail;
+    }
+
+    public String getInvalidEmail() {
+        return invalidEmail;
+    }
+}
+
+class UserAlreadyExistsException extends UserRegistrationException {
+    private final String existingEmail;
+
+    public UserAlreadyExistsException(String existingEmail) {
+        super("User already exists: " + existingEmail, "USER_EXISTS");
+        this.existingEmail = existingEmail;
+    }
+
+    public String getExistingEmail() {
+        return existingEmail;
+    }
+}
+
+// Supporting classes
+class UserService {
+    public User createUser(String email, String password) throws UserRegistrationException {
+        // Validate email format
+        if (!isValidEmail(email)) {
+            throw new InvalidEmailException(email);
+        }
+
+        // Check if user already exists
+        if (userExists(email)) {
+            throw new UserAlreadyExistsException(email);
+        }
+
+        // Check for blocked domains
+        if (isBlockedDomain(email)) {
+            throw new UserRegistrationException("Email domain is blocked: " + email, "BLOCKED_DOMAIN");
+        }
+
+        // Create and return new user
+        return new User(email, password);
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.contains("@") && email.contains(".");
+    }
+
+    private boolean userExists(String email) {
+        return email.equals("existing@example.com");
+    }
+
+    private boolean isBlockedDomain(String email) {
+        return email.endsWith("@spam.com");
+    }
+}
+
+class User {
+    private final String email;
+    private final String password;
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public String getEmail() { return email; }
+}
+```
+
+## Throw and Throws
+
+The `throw` and `throws` keywords are fundamental to Java's exception handling mechanism. `throw` is used to explicitly throw an exception, while `throws` is used to declare that a method might throw certain exceptions.
+
+### Using `throw` to Throw Exceptions
+
+```java
+import java.util.Scanner;
+
+public class ThrowKeywordDemo {
+    public static void main(String[] args) {
+        // Demonstrate throwing exceptions explicitly
+        testAgeValidation();
+        testDivisionOperation();
+        testPasswordValidation();
+    }
+
+    public static void testAgeValidation() {
+        System.out.println("=== Age Validation with throw ===");
+
+        int[] testAges = {25, -5, 200, 0};
+
+        for (int age : testAges) {
+            try {
+                validateAge(age);
+                System.out.println("Valid age: " + age); // Valid age: 25, Valid age: 0
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid age " + age + ": " + e.getMessage());
+                // Invalid age -5: Age cannot be negative: -5
+                // Invalid age 200: Age cannot exceed 150: 200
+            }
+        }
+    }
+
+    public static void testDivisionOperation() {
+        System.out.println("\n=== Division Operation with throw ===");
+
+        double[][] testCases = {{10, 2}, {15, 0}, {-8, 4}};
+
+        for (double[] testCase : testCases) {
+            try {
+                double result = safeDivide(testCase[0], testCase[1]);
+                System.out.println(testCase[0] + " / " + testCase[1] + " = " + result);
+                // 10.0 / 2.0 = 5.0
+                // -8.0 / 4.0 = -2.0
+            } catch (ArithmeticException e) {
+                System.out.println("Division error: " + e.getMessage());
+                // Division error: Cannot divide by zero
+            }
+        }
+    }
+
+    public static void testPasswordValidation() {
+        System.out.println("\n=== Password Validation with throw ===");
+
+        String[] passwords = {"SecurePass123!", "weak", "NOLOWERCASE123!", "nouppercase123!"};
+
+        for (String password : passwords) {
+            try {
+                validatePassword(password);
+                System.out.println("Password accepted: " + password); // Password accepted: SecurePass123!
+            } catch (SecurityException e) {
+                System.out.println("Password rejected '" + password + "': " + e.getMessage());
+                // Password rejected 'weak': Password too short: minimum 8 characters required
+                // Password rejected 'NOLOWERCASE123!': Password must contain lowercase letters
+                // Password rejected 'nouppercase123!': Password must contain uppercase letters
+            }
+        }
+    }
+
+    // Method that throws exceptions using 'throw'
+    public static void validateAge(int age) {
+        if (age < 0) {
+            throw new IllegalArgumentException("Age cannot be negative: " + age);
+        }
+        if (age > 150) {
+            throw new IllegalArgumentException("Age cannot exceed 150: " + age);
+        }
+        // Valid age - no exception thrown
+    }
+
+    public static double safeDivide(double dividend, double divisor) {
+        if (divisor == 0) {
+            throw new ArithmeticException("Cannot divide by zero");
+        }
+        return dividend / divisor;
+    }
+
+    public static void validatePassword(String password) {
+        if (password.length() < 8) {
+            throw new SecurityException("Password too short: minimum 8 characters required");
+        }
+
+        boolean hasUpper = false, hasLower = false, hasDigit = false, hasSpecial = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isLowerCase(c)) hasLower = true;
+            else if (Character.isDigit(c)) hasDigit = true;
+            else if (!Character.isLetterOrDigit(c)) hasSpecial = true;
+        }
+
+        if (!hasUpper) throw new SecurityException("Password must contain uppercase letters");
+        if (!hasLower) throw new SecurityException("Password must contain lowercase letters");
+        if (!hasDigit) throw new SecurityException("Password must contain digits");
+        if (!hasSpecial) throw new SecurityException("Password must contain special characters");
+    }
+}
+```
+
+### Using `throws` to Declare Exceptions
+
+```java
+import java.io.*;
+import java.sql.*;
+
+public class ThrowsKeywordDemo {
+    public static void main(String[] args) {
+        // Methods with throws declarations must be handled by caller
+        FileManager fileManager = new FileManager();
+
+        // Example 1: Handle IOException from file operations
+        try {
+            String content = fileManager.readFile("data.txt");
+            System.out.println("File content: " + content);
+        } catch (IOException e) {
+            System.out.println("File operation failed: " + e.getMessage());
+            // File operation failed: data.txt (The system cannot find the file specified)
+        }
+
+        // Example 2: Handle multiple exceptions
+        DatabaseManager dbManager = new DatabaseManager();
+        try {
+            dbManager.connectAndQuery("SELECT * FROM users");
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+            // Database error: No suitable driver found for jdbc:invalid:database
+        } catch (ClassNotFoundException e) {
+            System.out.println("Driver not found: " + e.getMessage());
+        }
+    }
+}
+
+class FileManager {
+    // Method declares it might throw IOException
+    public String readFile(String filename) throws IOException {
+        // Checked exception must be declared with throws
+        FileReader reader = new FileReader(filename); // May throw FileNotFoundException
+        BufferedReader buffered = new BufferedReader(reader);
+
+        StringBuilder content = new StringBuilder();
+        String line;
+
+        while ((line = buffered.readLine()) != null) { // May throw IOException
+            content.append(line).append("\n");
+        }
+
+        buffered.close();
+        return content.toString();
+    }
+
+    // Method that throws multiple exceptions
+    public void writeFile(String filename, String content) throws IOException, SecurityException {
+        // Check permissions first
+        if (filename.startsWith("/system/")) {
+            throw new SecurityException("Cannot write to system directory");
+        }
+
+        FileWriter writer = new FileWriter(filename); // May throw IOException
+        writer.write(content);
+        writer.close();
+    }
+
+    // Method that doesn't declare RuntimeExceptions (unchecked)
+    public void validateFilename(String filename) {
+        if (filename == null || filename.trim().isEmpty()) {
+            // RuntimeExceptions don't need to be declared
+            throw new IllegalArgumentException("Filename cannot be null or empty");
+        }
+    }
+}
+
+class DatabaseManager {
+    // Method declaring multiple checked exceptions
+    public void connectAndQuery(String sql) throws SQLException, ClassNotFoundException {
+        // Load database driver
+        Class.forName("com.mysql.cj.jdbc.Driver"); // May throw ClassNotFoundException
+
+        // Connect to database
+        Connection conn = DriverManager.getConnection("jdbc:invalid:database"); // May throw SQLException
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql); // May throw SQLException
+
+        // Process results...
+        rs.close();
+        stmt.close();
+        conn.close();
+    }
+
+    // Method that handles some exceptions internally and propagates others
+    public void safeConnect() throws SQLException {
+        try {
+            Class.forName("com.h2.Driver"); // Handle ClassNotFoundException internally
+            Connection conn = DriverManager.getConnection("jdbc:h2:mem:testdb");
+            System.out.println("Database connected successfully"); // Database connected successfully
+            conn.close();
+        } catch (ClassNotFoundException e) {
+            // Handle internally - convert to RuntimeException
+            throw new RuntimeException("Database driver not found", e);
+        }
+        // SQLException is still propagated to caller
+    }
+}
+```
+
+### Exception Propagation Chain
+
+```java
+import java.io.IOException;
+
+public class ExceptionPropagation {
+    public static void main(String[] args) {
+        // Demonstrate exception propagation through call chain
+        try {
+            method1();
+        } catch (CustomBusinessException e) {
+            System.out.println("Caught in main: " + e.getMessage());
+            System.out.println("Business error code: " + e.getErrorCode());
+            // Caught in main: Business operation failed: File processing error
+            // Business error code: PROC_001
+
+            // Show the full exception chain
+            Throwable cause = e.getCause();
+            while (cause != null) {
+                System.out.println("Caused by: " + cause.getClass().getSimpleName() + " - " + cause.getMessage());
+                cause = cause.getCause();
+            }
+            // Caused by: ProcessingException - File processing error
+            // Caused by: IOException - Simulated file error
+        }
+    }
+
+    // Level 1: Business layer
+    public static void method1() throws CustomBusinessException {
+        try {
+            method2();
+        } catch (ProcessingException e) {
+            // Wrap and re-throw with business context
+            throw new CustomBusinessException("Business operation failed: " + e.getMessage(), "PROC_001", e);
+        }
+    }
+
+    // Level 2: Service layer
+    public static void method2() throws ProcessingException {
+        try {
+            method3();
+        } catch (IOException e) {
+            // Wrap and re-throw with processing context
+            throw new ProcessingException("File processing error", e);
+        }
+    }
+
+    // Level 3: Data access layer
+    public static void method3() throws IOException {
+        // Simulate a low-level IOException
+        throw new IOException("Simulated file error");
+    }
+}
+
+// Custom exception classes
+class CustomBusinessException extends Exception {
+    private final String errorCode;
+
+    public CustomBusinessException(String message, String errorCode, Throwable cause) {
+        super(message, cause);
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() { return errorCode; }
+}
+
+class ProcessingException extends Exception {
+    public ProcessingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+```
+
+## Throwing Exceptions
+
+Creating and throwing custom exceptions allows you to build robust error handling systems that provide meaningful feedback and enable proper recovery strategies.
+
+### Creating and Throwing Custom Exceptions
+
+```java
+import java.time.LocalDate;
+import java.util.regex.Pattern;
+
+public class ThrowingCustomExceptions {
+    public static void main(String[] args) {
+        BankingSystem bank = new BankingSystem();
+
+        // Test account operations
+        testAccountOperations(bank);
+
+        // Test loan applications
+        testLoanApplications(bank);
+    }
+
+    public static void testAccountOperations(BankingSystem bank) {
+        System.out.println("=== Banking Operations ===");
+
+        try {
+            Account account = bank.createAccount("John Doe", "john@example.com", 25);
+            System.out.println("Account created: " + account.getAccountNumber());
+            // Account created: ACC-20240804-001
+
+            bank.deposit(account, 1000.0);
+            System.out.println("Deposit successful, balance: $" + account.getBalance());
+            // Deposit successful, balance: $1000.0
+
+            bank.withdraw(account, 500.0);
+            System.out.println("Withdrawal successful, balance: $" + account.getBalance());
+            // Withdrawal successful, balance: $500.0
+
+            // This will throw an exception
+            bank.withdraw(account, 1000.0);
+
+        } catch (InvalidAccountDataException e) {
+            System.out.println("Account data error: " + e.getMessage());
+            System.out.println("Field: " + e.getInvalidField());
+            System.out.println("Value: " + e.getInvalidValue());
+
+        } catch (InsufficientFundsException e) {
+            System.out.println("Transaction failed: " + e.getMessage());
+            System.out.println("Requested: $" + e.getRequestedAmount());
+            System.out.println("Available: $" + e.getAvailableBalance());
+            // Transaction failed: Insufficient funds for withdrawal
+            // Requested: $1000.0
+            // Available: $500.0
+
+        } catch (BankingException e) {
+            System.out.println("Banking error: " + e.getMessage());
+        }
+    }
+
+    public static void testLoanApplications(BankingSystem bank) {
+        System.out.println("\n=== Loan Applications ===");
+
+        Object[][] loanApplications = {
+            {"Alice Smith", "alice@example.com", 30, 75000.0, 25000.0},  // Valid
+            {"Bob Jones", "invalid-email", 25, 50000.0, 100000.0},       // Invalid email
+            {"Charlie Brown", "charlie@example.com", 17, 30000.0, 5000.0}, // Too young
+            {"Diana Prince", "diana@example.com", 35, 30000.0, 200000.0}  // Amount too high
+        };
+
+        for (Object[] data : loanApplications) {
+            try {
+                String name = (String) data[0];
+                String email = (String) data[1];
+                int age = (Integer) data[2];
+                double income = (Double) data[3];
+                double loanAmount = (Double) data[4];
+
+                LoanApplication loan = bank.applyForLoan(name, email, age, income, loanAmount);
+                System.out.println("Loan approved: " + loan.getApplicationId() + " for $" + loanAmount);
+                // Loan approved: LOAN-20240804-001 for $25000.0
+
+            } catch (InvalidAccountDataException e) {
+                System.out.println("Application rejected - Invalid data: " + e.getMessage());
+                // Application rejected - Invalid data: Invalid email format: invalid-email
+
+            } catch (LoanEligibilityException e) {
+                System.out.println("Application rejected - Eligibility: " + e.getMessage());
+                System.out.println("Reason: " + e.getRejectionReason());
+                // Application rejected - Eligibility: Loan application rejected: Age requirement not met
+                // Reason: MINIMUM_AGE_NOT_MET
+
+            } catch (BankingException e) {
+                System.out.println("Application error: " + e.getMessage());
+            }
+        }
+    }
+}
+
+// Custom exception hierarchy for banking system
+class BankingException extends Exception {
+    private final String errorCode;
+    private final LocalDate timestamp;
+
+    public BankingException(String message, String errorCode) {
+        super(message);
+        this.errorCode = errorCode;
+        this.timestamp = LocalDate.now();
+    }
+
+    public BankingException(String message, String errorCode, Throwable cause) {
+        super(message, cause);
+        this.errorCode = errorCode;
+        this.timestamp = LocalDate.now();
+    }
+
+    public String getErrorCode() { return errorCode; }
+    public LocalDate getTimestamp() { return timestamp; }
+}
+
+class InvalidAccountDataException extends BankingException {
+    private final String invalidField;
+    private final String invalidValue;
+
+    public InvalidAccountDataException(String field, String value, String message) {
+        super(message, "INVALID_DATA");
+        this.invalidField = field;
+        this.invalidValue = value;
+    }
+
+    public String getInvalidField() { return invalidField; }
+    public String getInvalidValue() { return invalidValue; }
+}
+
+class InsufficientFundsException extends BankingException {
+    private final double requestedAmount;
+    private final double availableBalance;
+
+    public InsufficientFundsException(double requested, double available) {
+        super("Insufficient funds for withdrawal", "INSUFFICIENT_FUNDS");
+        this.requestedAmount = requested;
+        this.availableBalance = available;
+    }
+
+    public double getRequestedAmount() { return requestedAmount; }
+    public double getAvailableBalance() { return availableBalance; }
+}
+
+class LoanEligibilityException extends BankingException {
+    private final String rejectionReason;
+
+    public LoanEligibilityException(String message, String reason) {
+        super(message, "LOAN_REJECTED");
+        this.rejectionReason = reason;
+    }
+
+    public String getRejectionReason() { return rejectionReason; }
+}
+
+// Banking system implementation
+class BankingSystem {
+    private static int accountCounter = 1;
+    private static int loanCounter = 1;
+
+    public Account createAccount(String name, String email, int age) throws InvalidAccountDataException {
+        // Validate input data
+        if (name == null || name.trim().isEmpty()) {
+            throw new InvalidAccountDataException("name", name, "Name cannot be empty");
+        }
+
+        if (!isValidEmail(email)) {
+            throw new InvalidAccountDataException("email", email, "Invalid email format: " + email);
+        }
+
+        if (age < 18) {
+            throw new InvalidAccountDataException("age", String.valueOf(age), "Minimum age is 18: " + age);
+        }
+
+        String accountNumber = "ACC-" + LocalDate.now().toString().replace("-", "") + "-" +
+                              String.format("%03d", accountCounter++);
+        return new Account(accountNumber, name, email, age);
+    }
+
+    public void deposit(Account account, double amount) throws BankingException {
+        if (amount <= 0) {
+            throw new BankingException("Deposit amount must be positive: " + amount, "INVALID_AMOUNT");
+        }
+
+        account.setBalance(account.getBalance() + amount);
+    }
+
+    public void withdraw(Account account, double amount) throws BankingException {
+        if (amount <= 0) {
+            throw new BankingException("Withdrawal amount must be positive: " + amount, "INVALID_AMOUNT");
+        }
+
+        if (amount > account.getBalance()) {
+            throw new InsufficientFundsException(amount, account.getBalance());
+        }
+
+        account.setBalance(account.getBalance() - amount);
+    }
+
+    public LoanApplication applyForLoan(String name, String email, int age, double income, double loanAmount)
+            throws BankingException {
+
+        // Validate basic data
+        if (!isValidEmail(email)) {
+            throw new InvalidAccountDataException("email", email, "Invalid email format: " + email);
+        }
+
+        // Check eligibility criteria
+        if (age < 18) {
+            throw new LoanEligibilityException("Loan application rejected: Age requirement not met", "MINIMUM_AGE_NOT_MET");
+        }
+
+        if (income < 25000) {
+            throw new LoanEligibilityException("Loan application rejected: Minimum income requirement not met", "MINIMUM_INCOME_NOT_MET");
+        }
+
+        // Loan amount cannot exceed 4x annual income
+        if (loanAmount > income * 4) {
+            throw new LoanEligibilityException("Loan application rejected: Amount exceeds income ratio", "AMOUNT_TOO_HIGH");
+        }
+
+        String applicationId = "LOAN-" + LocalDate.now().toString().replace("-", "") + "-" +
+                              String.format("%03d", loanCounter++);
+        return new LoanApplication(applicationId, name, email, loanAmount);
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return email != null && Pattern.matches(emailRegex, email);
+    }
+}
+
+// Supporting classes
+class Account {
+    private final String accountNumber;
+    private final String holderName;
+    private final String email;
+    private final int age;
+    private double balance;
+
+    public Account(String accountNumber, String holderName, String email, int age) {
+        this.accountNumber = accountNumber;
+        this.holderName = holderName;
+        this.email = email;
+        this.age = age;
+        this.balance = 0.0;
+    }
+
+    // Getters and setters
+    public String getAccountNumber() { return accountNumber; }
+    public String getHolderName() { return holderName; }
+    public String getEmail() { return email; }
+    public int getAge() { return age; }
+    public double getBalance() { return balance; }
+    public void setBalance(double balance) { this.balance = balance; }
+}
+
+class LoanApplication {
+    private final String applicationId;
+    private final String applicantName;
+    private final String email;
+    private final double amount;
+
+    public LoanApplication(String applicationId, String applicantName, String email, double amount) {
+        this.applicationId = applicationId;
+        this.applicantName = applicantName;
+        this.email = email;
+        this.amount = amount;
+    }
+
+    public String getApplicationId() { return applicationId; }
+    public String getApplicantName() { return applicantName; }
+    public String getEmail() { return email; }
+    public double getAmount() { return amount; }
+}
+```
+
+## When To Use Checked vs Unchecked Exceptions
+
+Choosing between checked and unchecked exceptions is crucial for creating maintainable and robust Java applications. This decision affects both the compiler requirements and the overall design of your error handling strategy.
+
+### Guidelines for Choosing Exception Types
+
+```java
+import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+
+public class ExceptionTypeGuidelines {
+    public static void main(String[] args) {
+        // Demonstrate when to use checked vs unchecked exceptions
+        demonstrateCheckedExceptionUsage();
+        demonstrateUncheckedExceptionUsage();
+        demonstrateDesignDecisions();
+    }
+
+    public static void demonstrateCheckedExceptionUsage() {
+        System.out.println("=== When to Use Checked Exceptions ===");
+
+        FileProcessor processor = new FileProcessor();
+
+        // Example 1: Recoverable I/O operations
+        try {
+            String content = processor.readConfigFile("config.properties");
+            System.out.println("Config loaded: " + content.length() + " characters");
+        } catch (ConfigurationException e) {
+            // Caller can recover by using default configuration
+            System.out.println("Using default config due to: " + e.getMessage());
+            // Using default config due to: Configuration file not found: config.properties
+            processor.useDefaultConfiguration();
+        }
+
+        // Example 2: Network operations that might fail
+        NetworkService service = new NetworkService();
+        try {
+            String response = service.sendRequest("https://api.example.com/data");
+            System.out.println("Response received: " + response);
+        } catch (NetworkException e) {
+            // Caller can retry or use cached data
+            System.out.println("Network failed, using cache: " + e.getMessage());
+            String cachedData = service.getCachedData();
+            System.out.println("Using cached data: " + cachedData);
+        }
+    }
+
+    public static void demonstrateUncheckedExceptionUsage() {
+        System.out.println("\n=== When to Use Unchecked Exceptions ===");
+
+        CalculationService calc = new CalculationService();
+
+        // Example 1: Programming errors (invalid arguments)
+        try {
+            double result = calc.calculateSquareRoot(-25);
+            System.out.println("Square root: " + result);
+        } catch (IllegalArgumentException e) {
+            // This represents a programming error
+            System.out.println("Programming error: " + e.getMessage());
+            // Programming error: Cannot calculate square root of negative number: -25.0
+        }
+
+        // Example 2: Precondition violations
+        List<String> items = new ArrayList<>();
+        try {
+            calc.processItems(null); // Programming error
+        } catch (IllegalArgumentException e) {
+            System.out.println("Contract violation: " + e.getMessage());
+            // Contract violation: Items list cannot be null
+        }
+
+        // Example 3: State-related errors
+        BankAccount account = new BankAccount(100.0);
+        try {
+            account.withdraw(200.0); // Invalid state operation
+        } catch (IllegalStateException e) {
+            System.out.println("Invalid operation: " + e.getMessage());
+            // Invalid operation: Insufficient funds: requested=200.0, available=100.0
+        }
+    }
+
+    public static void demonstrateDesignDecisions() {
+        System.out.println("\n=== Design Decision Examples ===");
+
+        // Good design: Use checked for recoverable conditions
+        EmailService emailService = new EmailService();
+        String[] recipients = {"valid@example.com", "invalid-email", "blocked@spam.com"};
+
+        for (String email : recipients) {
+            try {
+                emailService.sendEmail(email, "Test Subject", "Test Body");
+                System.out.println("Email sent to: " + email); // Email sent to: valid@example.com
+            } catch (EmailDeliveryException e) {
+                // Checked exception - caller can decide how to handle
+                System.out.println("Email delivery failed for " + email + ": " + e.getMessage());
+                // Email delivery failed for invalid-email: Invalid email format
+                // Email delivery failed for blocked@spam.com: Email domain is blocked
+
+                // Caller can log, retry, or notify user
+                emailService.logFailedDelivery(email, e.getMessage());
+            }
+        }
+    }
+}
+
+// Examples of good checked exception usage
+class ConfigurationException extends Exception {
+    public ConfigurationException(String message) {
+        super(message);
+    }
+
+    public ConfigurationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+
+class NetworkException extends Exception {
+    public NetworkException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+
+class EmailDeliveryException extends Exception {
+    public EmailDeliveryException(String message) {
+        super(message);
+    }
+}
+
+// Supporting classes demonstrating good exception design
+class FileProcessor {
+    // ✅ Good: Checked exception for recoverable I/O failure
+    public String readConfigFile(String filename) throws ConfigurationException {
+        try {
+            // Simulate file reading
+            if (filename.equals("config.properties")) {
+                throw new IOException("File not found");
+            }
+            return "config content";
+        } catch (IOException e) {
+            throw new ConfigurationException("Configuration file not found: " + filename, e);
+        }
+    }
+
+    public void useDefaultConfiguration() {
+        System.out.println("Default configuration applied");
+    }
+}
+
+class NetworkService {
+    // ✅ Good: Checked exception for network operations
+    public String sendRequest(String url) throws NetworkException {
+        try {
+            // Simulate network request
+            if (url.contains("example.com")) {
+                throw new IOException("Connection timeout");
+            }
+            return "response data";
+        } catch (IOException e) {
+            throw new NetworkException("Network request failed: " + url, e);
+        }
+    }
+
+    public String getCachedData() {
+        return "cached response data";
+    }
+}
+
+class CalculationService {
+    // ✅ Good: Unchecked exception for programming errors
+    public double calculateSquareRoot(double value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("Cannot calculate square root of negative number: " + value);
+        }
+        return Math.sqrt(value);
+    }
+
+    // ✅ Good: Unchecked exception for contract violations
+    public void processItems(List<String> items) {
+        if (items == null) {
+            throw new IllegalArgumentException("Items list cannot be null");
+        }
+
+        // Process items...
+        System.out.println("Processing " + items.size() + " items");
+    }
+}
+
+class BankAccount {
+    private double balance;
+
+    public BankAccount(double initialBalance) {
+        this.balance = initialBalance;
+    }
+
+    // ✅ Good: Unchecked exception for invalid state
+    public void withdraw(double amount) {
+        if (amount > balance) {
+            throw new IllegalStateException("Insufficient funds: requested=" + amount + ", available=" + balance);
+        }
+        balance -= amount;
+    }
+
+    public double getBalance() { return balance; }
+}
+
+class EmailService {
+    // ✅ Good: Checked exception for external service failures
+    public void sendEmail(String recipient, String subject, String body) throws EmailDeliveryException {
+        // Validate email format
+        if (!isValidEmail(recipient)) {
+            throw new EmailDeliveryException("Invalid email format");
+        }
+
+        // Check for blocked domains
+        if (recipient.endsWith("@spam.com")) {
+            throw new EmailDeliveryException("Email domain is blocked");
+        }
+
+        // Simulate sending email
+        System.out.println("Sending email to: " + recipient);
+    }
+
+    public void logFailedDelivery(String recipient, String reason) {
+        System.out.println("Logged failed delivery: " + recipient + " - " + reason);
+    }
+
+    private boolean isValidEmail(String email) {
+        return email != null && email.contains("@") && email.contains(".");
+    }
+}
+```
+
+## Creating Custom Exceptions
+
+Custom exceptions allow you to create domain-specific error handling that provides meaningful information and enables appropriate recovery strategies. Well-designed custom exceptions improve code maintainability and debugging.
+
+### Basic Custom Exception Design
+
+```java
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.HashMap;
+
+public class CustomExceptionDesign {
+    public static void main(String[] args) {
+        // Demonstrate custom exception design principles
+        testBasicCustomExceptions();
+        testAdvancedCustomExceptions();
+        testExceptionHierarchy();
+    }
+
+    public static void testBasicCustomExceptions() {
+        System.out.println("=== Basic Custom Exceptions ===");
+
+        UserManager userManager = new UserManager();
+
+        try {
+            User user = userManager.createUser("", "invalid-email", 16);
+        } catch (UserValidationException e) {
+            System.out.println("User creation failed:");
+            System.out.println("  Error: " + e.getMessage());
+            System.out.println("  Field: " + e.getInvalidField());
+            System.out.println("  Value: " + e.getInvalidValue());
+            System.out.println("  Timestamp: " + e.getTimestamp());
+            /*
+            User creation failed:
+              Error: Username cannot be empty
+              Field: username
+              Value:
+              Timestamp: 2024-08-04T10:30:45.123
+            */
+        }
+    }
+
+    public static void testAdvancedCustomExceptions() {
+        System.out.println("\n=== Advanced Custom Exceptions ===");
+
+        PaymentProcessor processor = new PaymentProcessor();
+
+        try {
+            processor.processPayment("CARD123", 1500.00, "USD");
+        } catch (PaymentException e) {
+            System.out.println("Payment failed:");
+            System.out.println("  Error: " + e.getMessage());
+            System.out.println("  Transaction ID: " + e.getTransactionId());
+            System.out.println("  Error Code: " + e.getErrorCode());
+            System.out.println("  Is Retryable: " + e.isRetryable());
+            System.out.println("  Additional Info: " + e.getAdditionalInfo());
+            /*
+            Payment failed:
+              Error: Payment amount exceeds daily limit
+              Transaction ID: TXN-20240804-001
+              Error Code: LIMIT_EXCEEDED
+              Is Retryable: false
+              Additional Info: {dailyLimit=1000.0, requestedAmount=1500.0, remainingLimit=1000.0}
+            */
+        }
+    }
+
+    public static void testExceptionHierarchy() {
+        System.out.println("\n=== Custom Exception Hierarchy ===");
+
+        OrderProcessor orderProcessor = new OrderProcessor();
+
+        String[] testOrders = {"ORD001", "INVALID", "ORD002"};
+
+        for (String orderId : testOrders) {
+            try {
+                orderProcessor.processOrder(orderId);
+                System.out.println("Order processed: " + orderId);
+            } catch (OrderNotFoundException e) {
+                System.out.println("Order not found: " + e.getMessage());
+                System.out.println("  Missing order: " + e.getOrderId());
+            } catch (OrderValidationException e) {
+                System.out.println("Validation error: " + e.getMessage());
+                System.out.println("  Validation rules failed: " + e.getFailedRules());
+            } catch (OrderProcessingException e) {
+                System.out.println("Processing error: " + e.getMessage());
+                System.out.println("  Error category: " + e.getErrorCategory());
+            }
+        }
+    }
+}
+
+// Basic custom exception with essential information
+class UserValidationException extends Exception {
+    private final String invalidField;
+    private final String invalidValue;
+    private final LocalDateTime timestamp;
+
+    public UserValidationException(String message, String field, String value) {
+        super(message);
+        this.invalidField = field;
+        this.invalidValue = value;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public String getInvalidField() { return invalidField; }
+    public String getInvalidValue() { return invalidValue; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+}
+
+// Advanced custom exception with rich context information
+class PaymentException extends Exception {
+    private final String transactionId;
+    private final String errorCode;
+    private final boolean retryable;
+    private final Map<String, Object> additionalInfo;
+
+    public PaymentException(String message, String transactionId, String errorCode, boolean retryable) {
+        super(message);
+        this.transactionId = transactionId;
+        this.errorCode = errorCode;
+        this.retryable = retryable;
+        this.additionalInfo = new HashMap<>();
+    }
+
+    public PaymentException(String message, String transactionId, String errorCode,
+                           boolean retryable, Map<String, Object> additionalInfo) {
+        super(message);
+        this.transactionId = transactionId;
+        this.errorCode = errorCode;
+        this.retryable = retryable;
+        this.additionalInfo = new HashMap<>(additionalInfo);
+    }
+
+    public String getTransactionId() { return transactionId; }
+    public String getErrorCode() { return errorCode; }
+    public boolean isRetryable() { return retryable; }
+    public Map<String, Object> getAdditionalInfo() { return new HashMap<>(additionalInfo); }
+
+    public void addInfo(String key, Object value) {
+        additionalInfo.put(key, value);
+    }
+}
+
+// Custom exception hierarchy for order processing
+abstract class OrderProcessingException extends Exception {
+    private final String errorCategory;
+    private final LocalDateTime occurredAt;
+
+    public OrderProcessingException(String message, String errorCategory) {
+        super(message);
+        this.errorCategory = errorCategory;
+        this.occurredAt = LocalDateTime.now();
+    }
+
+    public OrderProcessingException(String message, String errorCategory, Throwable cause) {
+        super(message, cause);
+        this.errorCategory = errorCategory;
+        this.occurredAt = LocalDateTime.now();
+    }
+
+    public String getErrorCategory() { return errorCategory; }
+    public LocalDateTime getOccurredAt() { return occurredAt; }
+}
+
+class OrderNotFoundException extends OrderProcessingException {
+    private final String orderId;
+
+    public OrderNotFoundException(String orderId) {
+        super("Order not found: " + orderId, "NOT_FOUND");
+        this.orderId = orderId;
+    }
+
+    public String getOrderId() { return orderId; }
+}
+
+class OrderValidationException extends OrderProcessingException {
+    private final java.util.List<String> failedRules;
+
+    public OrderValidationException(String message, java.util.List<String> failedRules) {
+        super(message, "VALIDATION");
+        this.failedRules = new java.util.ArrayList<>(failedRules);
+    }
+
+    public java.util.List<String> getFailedRules() { return new java.util.ArrayList<>(failedRules); }
+}
+
+// Supporting classes
+class UserManager {
+    public User createUser(String username, String email, int age) throws UserValidationException {
+        if (username == null || username.trim().isEmpty()) {
+            throw new UserValidationException("Username cannot be empty", "username", username);
+        }
+
+        if (email == null || !email.contains("@")) {
+            throw new UserValidationException("Invalid email format", "email", email);
+        }
+
+        if (age < 18) {
+            throw new UserValidationException("User must be at least 18 years old", "age", String.valueOf(age));
+        }
+
+        return new User(username, email, age);
+    }
+}
+
+class PaymentProcessor {
+    private static int transactionCounter = 1;
+
+    public void processPayment(String cardId, double amount, String currency) throws PaymentException {
+        String transactionId = "TXN-" + LocalDateTime.now().toLocalDate().toString().replace("-", "") +
+                              "-" + String.format("%03d", transactionCounter++);
+
+        // Check daily limit
+        double dailyLimit = 1000.0;
+        if (amount > dailyLimit) {
+            Map<String, Object> info = new HashMap<>();
+            info.put("dailyLimit", dailyLimit);
+            info.put("requestedAmount", amount);
+            info.put("remainingLimit", dailyLimit);
+
+            throw new PaymentException(
+                "Payment amount exceeds daily limit",
+                transactionId,
+                "LIMIT_EXCEEDED",
+                false,
+                info
+            );
+        }
+
+        // Simulate other payment validations
+        System.out.println("Payment processed: " + transactionId);
+    }
+}
+
+class OrderProcessor {
+    public void processOrder(String orderId) throws OrderProcessingException {
+        if (orderId.equals("INVALID")) {
+            java.util.List<String> failedRules = java.util.Arrays.asList(
+                "Order ID format invalid",
+                "Order ID too short"
+            );
+            throw new OrderValidationException("Order validation failed", failedRules);
+        }
+
+        if (!orderId.startsWith("ORD")) {
+            throw new OrderNotFoundException(orderId);
+        }
+
+        System.out.println("Order processing completed: " + orderId);
+    }
+}
+
+class User {
+    private final String username;
+    private final String email;
+    private final int age;
+
+    public User(String username, String email, int age) {
+        this.username = username;
+        this.email = email;
+        this.age = age;
+    }
+
+    // Getters...
+    public String getUsername() { return username; }
+    public String getEmail() { return email; }
+    public int getAge() { return age; }
+}
+```
+
+Perfect! I've successfully added the comprehensive Exception Handling section to your Java documentation. The new content includes:
+
+## What was added:
+
+### 1. **Exception Handling Fundamentals** - Introduction and common scenarios
+
+### 2. **What Is An Exception** - Basic concepts, anatomy, and types
+
+### 3. **Try-Catch Blocks** - Fundamental exception handling with practical examples
+
+### 4. **Multiple Catch Blocks** - Handling different exception types with proper ordering
+
+### 5. **Using OR Within Catch** - Multi-catch syntax with practical applications
+
+### 6. **The Exception Class** - Exception hierarchy, methods, and chaining
+
+### 7. **Finally Keyword** - Resource cleanup and guaranteed execution
+
+### 8. **Exception Hierarchy** - Complete hierarchy understanding with inheritance
+
+### 9. **Unchecked Exceptions** - RuntimeException usage and best practices
+
+### 10. **Checked Exceptions** - Compile-time exceptions and handling strategies
+
+### 11. **Throw and Throws** - Creating and declaring exceptions
+
+### 12. **Throwing Exceptions** - Custom exception creation with banking examples
+
+### 13. **When To Use Checked vs Unchecked** - Decision guidelines with practical examples
+
+### 14. **Creating Custom Exceptions** - Advanced custom exception design
+
+## Key Features:
+
+- **Result comments**: Every code example shows expected outputs
+- **Comprehensive examples**: Real-world scenarios like banking, file processing, networking
+- **Best practices**: Proper exception design and handling strategies
+- **Progressive complexity**: From basic try-catch to advanced custom exception hierarchies
+- **Practical applications**: Banking systems, user management, payment processing
+- **Performance considerations**: Resource management with try-with-resources
+- **Error recovery strategies**: How to handle and recover from various exception types
+
+The documentation now provides complete coverage of Java exception handling, from basic concepts to advanced custom exception design, maintaining the same high quality and detailed approach as the rest of your Java reference material!
 
 # Enums
 
