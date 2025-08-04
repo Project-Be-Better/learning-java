@@ -24,6 +24,13 @@
 15. [Global and Local Variables](#global-and-local-variables)
 16. [Wrapper Classes](#wrapper-classes)
 
+### Working With Files
+
+13. [Creating Files](#creating-files)
+14. [Writing To Files](#writing-to-files)
+15. [Reading From Files](#reading-from-files)
+16. [Try With Resources](#try-with-resources)
+
 ### User Input
 
 17. [Taking User Input](#taking-user-input)
@@ -1237,6 +1244,1652 @@ public class BestPractices {
         final Path path = Paths.get(filename);
         final String content = readFile(path);
         // Process content...
+    }
+}
+```
+
+# Creating Files
+
+## Introduction to File Operations
+
+Working with files is a fundamental aspect of Java programming. Java provides comprehensive APIs for creating, reading, writing, and manipulating files through various classes in the `java.io` and `java.nio.file` packages.
+
+### Why File Operations Matter
+
+File operations allow programs to:
+
+- Persist data beyond program execution
+- Read configuration files and user data
+- Generate reports and logs
+- Communicate with other systems through files
+- Store and retrieve application state
+
+## Basic File Creation
+
+### Using File Class (Legacy Approach)
+
+```java
+import java.io.File;
+import java.io.IOException;
+
+public class BasicFileCreation {
+    public static void main(String[] args) {
+        // Creating a File object (doesn't create actual file yet)
+        File file = new File("example.txt");
+
+        try {
+            // Check if file exists
+            if (file.exists()) {
+                System.out.println("File already exists: " + file.getName());
+                // File already exists: example.txt
+            } else {
+                // Create the actual file
+                boolean created = file.createNewFile();
+                if (created) {
+                    System.out.println("File created successfully: " + file.getAbsolutePath());
+                    // File created successfully: C:\path\to\your\directory\example.txt
+                } else {
+                    System.out.println("Failed to create file");
+                }
+            }
+
+            // File information
+            System.out.println("File name: " + file.getName()); // example.txt
+            System.out.println("Absolute path: " + file.getAbsolutePath());
+            System.out.println("Parent directory: " + file.getParent());
+            System.out.println("Is file: " + file.isFile()); // true
+            System.out.println("Is directory: " + file.isDirectory()); // false
+            System.out.println("Can read: " + file.canRead()); // true
+            System.out.println("Can write: " + file.canWrite()); // true
+            System.out.println("File size: " + file.length() + " bytes"); // 0 bytes
+
+        } catch (IOException e) {
+            System.out.println("Error creating file: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Using NIO.2 Files Class (Modern Approach)
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.io.IOException;
+
+public class ModernFileCreation {
+    public static void main(String[] args) {
+        // Creating Path objects
+        Path filePath = Paths.get("modern-example.txt");
+        Path directoryPath = Paths.get("data", "files"); // data/files
+        Path fileInDirectory = Paths.get("data", "files", "config.txt"); // data/files/config.txt
+
+        try {
+            // Create a simple file
+            if (!Files.exists(filePath)) {
+                Files.createFile(filePath);
+                System.out.println("File created: " + filePath.toAbsolutePath());
+                // File created: C:\path\to\your\directory\modern-example.txt
+            } else {
+                System.out.println("File already exists: " + filePath.getFileName());
+            }
+
+            // Create directory structure
+            if (!Files.exists(directoryPath)) {
+                Files.createDirectories(directoryPath); // Creates all parent directories
+                System.out.println("Directory created: " + directoryPath);
+                // Directory created: data\files
+            }
+
+            // Create file in directory
+            if (!Files.exists(fileInDirectory)) {
+                Files.createFile(fileInDirectory);
+                System.out.println("File created in directory: " + fileInDirectory);
+                // File created in directory: data\files\config.txt
+            }
+
+            // File attributes
+            System.out.println("\n=== File Information ===");
+            System.out.println("File name: " + filePath.getFileName()); // modern-example.txt
+            System.out.println("Parent: " + filePath.getParent()); // Current directory or null
+            System.out.println("Is regular file: " + Files.isRegularFile(filePath)); // true
+            System.out.println("Is directory: " + Files.isDirectory(filePath)); // false
+            System.out.println("Is readable: " + Files.isReadable(filePath)); // true
+            System.out.println("Is writable: " + Files.isWritable(filePath)); // true
+            System.out.println("File size: " + Files.size(filePath) + " bytes"); // 0 bytes
+
+        } catch (IOException e) {
+            System.out.println("Error with file operations: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Creating Temporary Files
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.io.IOException;
+
+public class TemporaryFiles {
+    public static void main(String[] args) {
+        try {
+            // Create temporary file with default settings
+            Path tempFile1 = Files.createTempFile("temp", ".txt");
+            System.out.println("Temp file 1: " + tempFile1);
+            // Temp file 1: C:\Users\username\AppData\Local\Temp\temp1234567890.txt
+
+            // Create temporary file with custom prefix and suffix
+            Path tempFile2 = Files.createTempFile("myapp-", "-data.json");
+            System.out.println("Temp file 2: " + tempFile2);
+            // Temp file 2: C:\Users\username\AppData\Local\Temp\myapp-9876543210-data.json
+
+            // Create temporary directory
+            Path tempDir = Files.createTempDirectory("temp-dir-");
+            System.out.println("Temp directory: " + tempDir);
+            // Temp directory: C:\Users\username\AppData\Local\Temp\temp-dir-1122334455
+
+            // Create file in temporary directory
+            Path fileInTempDir = tempDir.resolve("temp-config.properties");
+            Files.createFile(fileInTempDir);
+            System.out.println("File in temp dir: " + fileInTempDir);
+
+            // Temporary files are automatically deleted on JVM exit
+            // But you can also delete them manually
+            System.out.println("\n=== Cleanup ===");
+            Files.deleteIfExists(fileInTempDir);
+            Files.deleteIfExists(tempDir);
+            Files.deleteIfExists(tempFile1);
+            Files.deleteIfExists(tempFile2);
+            System.out.println("Temporary files cleaned up");
+
+        } catch (IOException e) {
+            System.out.println("Error with temporary files: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Creating Files with Different Options
+
+```java
+import java.nio.file.*;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.io.IOException;
+import java.util.Set;
+
+public class FileCreationOptions {
+    public static void main(String[] args) {
+        try {
+            // Create file with write operation (creates if doesn't exist)
+            Path file1 = Paths.get("created-with-write.txt");
+            Files.write(file1, "Hello World".getBytes(), StandardOpenOption.CREATE);
+            System.out.println("File created with write: " + file1);
+            // File created with write: created-with-write.txt
+
+            // Create file only if it doesn't exist
+            Path file2 = Paths.get("create-new-only.txt");
+            try {
+                Files.write(file2, "Content".getBytes(), StandardOpenOption.CREATE_NEW);
+                System.out.println("New file created: " + file2);
+            } catch (FileAlreadyExistsException e) {
+                System.out.println("File already exists: " + file2);
+            }
+
+            // Create file with specific permissions (Unix/Linux/Mac)
+            if (System.getProperty("os.name").toLowerCase().contains("nix") ||
+                System.getProperty("os.name").toLowerCase().contains("nux") ||
+                System.getProperty("os.name").toLowerCase().contains("mac")) {
+
+                Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rw-r--r--");
+                FileAttribute<Set<PosixFilePermission>> fileAttribute =
+                    PosixFilePermissions.asFileAttribute(permissions);
+
+                Path file3 = Paths.get("file-with-permissions.txt");
+                Files.createFile(file3, fileAttribute);
+                System.out.println("File with permissions created: " + file3);
+            } else {
+                System.out.println("Permission setting example works on Unix-like systems");
+            }
+
+            // Create multiple nested directories
+            Path nestedPath = Paths.get("level1", "level2", "level3", "deep-file.txt");
+            Files.createDirectories(nestedPath.getParent());
+            Files.createFile(nestedPath);
+            System.out.println("Nested file created: " + nestedPath);
+            // Nested file created: level1\level2\level3\deep-file.txt
+
+        } catch (IOException e) {
+            System.out.println("Error in file creation: " + e.getMessage());
+        }
+    }
+}
+```
+
+# Writing To Files
+
+## File Writing Fundamentals
+
+Writing data to files is essential for persisting information, creating logs, generating reports, and saving user data. Java provides multiple approaches for writing to files, each suitable for different use cases.
+
+### Basic File Writing with FileWriter
+
+```java
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class BasicFileWriting {
+    public static void main(String[] args) {
+        String filename = "basic-output.txt";
+
+        try {
+            // Create FileWriter (overwrites existing file)
+            FileWriter writer = new FileWriter(filename);
+
+            // Write different types of data
+            writer.write("Hello, World!\n");
+            writer.write("This is line 2\n");
+            writer.write("Number: " + 42 + "\n");
+            writer.write("Boolean: " + true + "\n");
+
+            // Important: Close the writer to flush data
+            writer.close();
+
+            System.out.println("Data written to " + filename);
+            // Data written to basic-output.txt
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Appending to Files
+
+```java
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class FileAppending {
+    public static void main(String[] args) {
+        String logFile = "application.log";
+
+        try {
+            // FileWriter with append mode (true parameter)
+            FileWriter writer = new FileWriter(logFile, true);
+
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            writer.write("[" + timestamp + "] Application started\n");
+            writer.write("[" + timestamp + "] User logged in\n");
+            writer.write("[" + timestamp + "] Processing data...\n");
+
+            writer.close();
+            System.out.println("Log entries appended to " + logFile);
+            // Log entries appended to application.log
+
+            // Append more data in a separate operation
+            FileWriter writer2 = new FileWriter(logFile, true);
+            writer2.write("[" + timestamp + "] Processing complete\n");
+            writer2.write("[" + timestamp + "] Application finished\n");
+            writer2.close();
+
+        } catch (IOException e) {
+            System.out.println("Error appending to file: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Writing with BufferedWriter (Performance Optimization)
+
+```java
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class BufferedFileWriting {
+    public static void main(String[] args) {
+        String filename = "buffered-output.txt";
+
+        try {
+            // BufferedWriter for better performance with frequent writes
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+
+            // Write multiple lines efficiently
+            writer.write("=== Student Report ===\n");
+            writer.newLine(); // Platform-independent newline
+
+            String[] students = {"Alice Johnson", "Bob Smith", "Charlie Brown", "Diana Prince"};
+            int[] scores = {95, 87, 92, 88};
+
+            for (int i = 0; i < students.length; i++) {
+                writer.write("Student: " + students[i]);
+                writer.newLine();
+                writer.write("Score: " + scores[i]);
+                writer.newLine();
+                writer.write("Grade: " + getLetterGrade(scores[i]));
+                writer.newLine();
+                writer.write("---");
+                writer.newLine();
+            }
+
+            // Calculate and write summary
+            double average = calculateAverage(scores);
+            writer.newLine();
+            writer.write("Class Average: " + String.format("%.2f", average));
+            writer.newLine();
+            writer.write("Total Students: " + students.length);
+
+            writer.close();
+            System.out.println("Student report written to " + filename);
+            // Student report written to buffered-output.txt
+
+        } catch (IOException e) {
+            System.out.println("Error writing buffered file: " + e.getMessage());
+        }
+    }
+
+    private static String getLetterGrade(int score) {
+        if (score >= 90) return "A";
+        else if (score >= 80) return "B";
+        else if (score >= 70) return "C";
+        else if (score >= 60) return "D";
+        else return "F";
+    }
+
+    private static double calculateAverage(int[] scores) {
+        int sum = 0;
+        for (int score : scores) {
+            sum += score;
+        }
+        return (double) sum / scores.length;
+    }
+}
+```
+
+### Modern File Writing with NIO.2
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+public class ModernFileWriting {
+    public static void main(String[] args) {
+        try {
+            // Method 1: Write string directly
+            Path file1 = Paths.get("nio-simple.txt");
+            String content = "Hello from NIO.2!\nThis is modern file writing.";
+            Files.writeString(file1, content);
+            System.out.println("String written to " + file1);
+            // String written to nio-simple.txt
+
+            // Method 2: Write bytes
+            Path file2 = Paths.get("nio-bytes.txt");
+            byte[] data = "Binary data example".getBytes();
+            Files.write(file2, data);
+            System.out.println("Bytes written to " + file2);
+            // Bytes written to nio-bytes.txt
+
+            // Method 3: Write lines collection
+            Path file3 = Paths.get("nio-lines.txt");
+            List<String> lines = Arrays.asList(
+                "Line 1: Introduction",
+                "Line 2: Content",
+                "Line 3: Conclusion",
+                "Line 4: End"
+            );
+            Files.write(file3, lines);
+            System.out.println("Lines written to " + file3);
+            // Lines written to nio-lines.txt
+
+            // Method 4: Write with options (append)
+            Path file4 = Paths.get("nio-append.txt");
+            Files.writeString(file4, "Initial content\n");
+            Files.writeString(file4, "Appended content\n", StandardOpenOption.APPEND);
+            Files.writeString(file4, "More appended content\n", StandardOpenOption.APPEND);
+            System.out.println("Content appended to " + file4);
+            // Content appended to nio-append.txt
+
+            // Method 5: Write with create options
+            Path file5 = Paths.get("nio-create-new.txt");
+            try {
+                Files.writeString(file5, "New file content", StandardOpenOption.CREATE_NEW);
+                System.out.println("New file created: " + file5);
+            } catch (IOException e) {
+                System.out.println("File already exists or error: " + e.getMessage());
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error in NIO file writing: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Writing Structured Data (CSV, JSON-like)
+
+```java
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class StructuredDataWriting {
+    public static void main(String[] args) {
+        // Generate sample data
+        List<Employee> employees = generateEmployeeData();
+
+        // Write CSV format
+        writeEmployeesCSV(employees, "employees.csv");
+
+        // Write custom format
+        writeEmployeesCustom(employees, "employees.txt");
+
+        // Write configuration file
+        writeConfigFile("app-config.properties");
+    }
+
+    private static List<Employee> generateEmployeeData() {
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(1, "Alice Johnson", "Developer", 75000, LocalDate.of(2020, 3, 15)));
+        employees.add(new Employee(2, "Bob Smith", "Manager", 85000, LocalDate.of(2018, 7, 22)));
+        employees.add(new Employee(3, "Charlie Brown", "Analyst", 65000, LocalDate.of(2021, 1, 10)));
+        employees.add(new Employee(4, "Diana Prince", "Designer", 70000, LocalDate.of(2019, 11, 5)));
+        return employees;
+    }
+
+    private static void writeEmployeesCSV(List<Employee> employees, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            // Write CSV header
+            writer.write("ID,Name,Position,Salary,HireDate");
+            writer.newLine();
+
+            // Write employee data
+            for (Employee emp : employees) {
+                writer.write(emp.getId() + ",");
+                writer.write("\"" + emp.getName() + "\","); // Quotes for names with spaces
+                writer.write(emp.getPosition() + ",");
+                writer.write(emp.getSalary() + ",");
+                writer.write(emp.getHireDate().toString());
+                writer.newLine();
+            }
+
+            System.out.println("CSV data written to " + filename);
+            // CSV data written to employees.csv
+
+        } catch (IOException e) {
+            System.out.println("Error writing CSV: " + e.getMessage());
+        }
+    }
+
+    private static void writeEmployeesCustom(List<Employee> employees, String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            writer.write("EMPLOYEE REPORT");
+            writer.newLine();
+            writer.write("================");
+            writer.newLine();
+            writer.newLine();
+
+            for (Employee emp : employees) {
+                writer.write("Employee ID: " + emp.getId());
+                writer.newLine();
+                writer.write("Name: " + emp.getName());
+                writer.newLine();
+                writer.write("Position: " + emp.getPosition());
+                writer.newLine();
+                writer.write("Salary: $" + String.format("%,d", emp.getSalary()));
+                writer.newLine();
+                writer.write("Hire Date: " + emp.getHireDate());
+                writer.newLine();
+                writer.write("Years of Service: " + emp.getYearsOfService());
+                writer.newLine();
+                writer.write("------------------------");
+                writer.newLine();
+                writer.newLine();
+            }
+
+            // Summary statistics
+            double avgSalary = employees.stream().mapToInt(Employee::getSalary).average().orElse(0);
+            writer.write("SUMMARY");
+            writer.newLine();
+            writer.write("Total Employees: " + employees.size());
+            writer.newLine();
+            writer.write("Average Salary: $" + String.format("%,.2f", avgSalary));
+            writer.newLine();
+
+            System.out.println("Custom format report written to " + filename);
+            // Custom format report written to employees.txt
+
+        } catch (IOException e) {
+            System.out.println("Error writing custom format: " + e.getMessage());
+        }
+    }
+
+    private static void writeConfigFile(String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            writer.write("# Application Configuration");
+            writer.newLine();
+            writer.write("# Generated on " + LocalDate.now());
+            writer.newLine();
+            writer.newLine();
+
+            writer.write("app.name=Employee Management System");
+            writer.newLine();
+            writer.write("app.version=1.0.0");
+            writer.newLine();
+            writer.write("app.debug=false");
+            writer.newLine();
+            writer.newLine();
+
+            writer.write("# Database settings");
+            writer.newLine();
+            writer.write("db.host=localhost");
+            writer.newLine();
+            writer.write("db.port=5432");
+            writer.newLine();
+            writer.write("db.name=employee_db");
+            writer.newLine();
+            writer.newLine();
+
+            writer.write("# Security settings");
+            writer.newLine();
+            writer.write("security.enabled=true");
+            writer.newLine();
+            writer.write("security.timeout=3600");
+            writer.newLine();
+
+            System.out.println("Configuration file written to " + filename);
+            // Configuration file written to app-config.properties
+
+        } catch (IOException e) {
+            System.out.println("Error writing config file: " + e.getMessage());
+        }
+    }
+
+    // Employee class for demonstration
+    static class Employee {
+        private int id;
+        private String name;
+        private String position;
+        private int salary;
+        private LocalDate hireDate;
+
+        public Employee(int id, String name, String position, int salary, LocalDate hireDate) {
+            this.id = id;
+            this.name = name;
+            this.position = position;
+            this.salary = salary;
+            this.hireDate = hireDate;
+        }
+
+        // Getters
+        public int getId() { return id; }
+        public String getName() { return name; }
+        public String getPosition() { return position; }
+        public int getSalary() { return salary; }
+        public LocalDate getHireDate() { return hireDate; }
+
+        public long getYearsOfService() {
+            return java.time.temporal.ChronoUnit.YEARS.between(hireDate, LocalDate.now());
+        }
+    }
+}
+```
+
+# Reading From Files
+
+## File Reading Fundamentals
+
+Reading data from files is crucial for loading configuration, processing data, and retrieving stored information. Java provides multiple approaches for reading files, each optimized for different scenarios and data types.
+
+### Basic File Reading with FileReader
+
+```java
+import java.io.FileReader;
+import java.io.IOException;
+
+public class BasicFileReading {
+    public static void main(String[] args) {
+        String filename = "sample-input.txt";
+
+        // First, create a sample file to read
+        createSampleFile(filename);
+
+        try {
+            // Create FileReader
+            FileReader reader = new FileReader(filename);
+
+            System.out.println("Reading file character by character:");
+            int character;
+            while ((character = reader.read()) != -1) {
+                System.out.print((char) character); // Prints each character
+            }
+
+            reader.close();
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    private static void createSampleFile(String filename) {
+        try (java.io.FileWriter writer = new java.io.FileWriter(filename)) {
+            writer.write("Hello, World!\n");
+            writer.write("This is a sample file.\n");
+            writer.write("Line 3 with numbers: 123\n");
+            writer.write("Final line.");
+        } catch (IOException e) {
+            System.out.println("Error creating sample file: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Reading with BufferedReader (Recommended)
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class BufferedFileReading {
+    public static void main(String[] args) {
+        String filename = "buffered-input.txt";
+
+        // Create sample content
+        createDetailedSampleFile(filename);
+
+        try {
+            // BufferedReader for efficient line-by-line reading
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+
+            System.out.println("Reading file line by line:");
+            String line;
+            int lineNumber = 1;
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println(lineNumber + ": " + line);
+                lineNumber++;
+            }
+            // Output:
+            // 1: Student Report
+            // 2: =============
+            // 3:
+            // 4: Alice Johnson - Score: 95 - Grade: A
+            // ... etc
+
+            reader.close();
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    private static void createDetailedSampleFile(String filename) {
+        try (java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter(filename))) {
+            writer.write("Student Report");
+            writer.newLine();
+            writer.write("=============");
+            writer.newLine();
+            writer.newLine();
+            writer.write("Alice Johnson - Score: 95 - Grade: A");
+            writer.newLine();
+            writer.write("Bob Smith - Score: 87 - Grade: B");
+            writer.newLine();
+            writer.write("Charlie Brown - Score: 92 - Grade: A");
+            writer.newLine();
+            writer.write("Diana Prince - Score: 88 - Grade: B");
+            writer.newLine();
+            writer.newLine();
+            writer.write("Class Average: 90.5");
+        } catch (IOException e) {
+            System.out.println("Error creating detailed sample: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Modern File Reading with NIO.2
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
+import java.util.List;
+
+public class ModernFileReading {
+    public static void main(String[] args) {
+        try {
+            // Create sample files for demonstration
+            createVariousSampleFiles();
+
+            // Method 1: Read entire file as string
+            Path file1 = Paths.get("nio-sample.txt");
+            String content = Files.readString(file1);
+            System.out.println("=== Entire file content ===");
+            System.out.println(content);
+            // Complete file content printed as single string
+
+            // Method 2: Read all lines as List
+            Path file2 = Paths.get("nio-lines.txt");
+            List<String> lines = Files.readAllLines(file2);
+            System.out.println("\n=== Reading as lines ===");
+            for (int i = 0; i < lines.size(); i++) {
+                System.out.println("Line " + (i + 1) + ": " + lines.get(i));
+            }
+            // Line 1: First line
+            // Line 2: Second line
+            // Line 3: Third line
+
+            // Method 3: Read as bytes
+            Path file3 = Paths.get("nio-binary.txt");
+            byte[] bytes = Files.readAllBytes(file3);
+            System.out.println("\n=== File size in bytes ===");
+            System.out.println("File size: " + bytes.length + " bytes");
+            System.out.println("First 10 characters: " + new String(bytes, 0, Math.min(10, bytes.length)));
+
+            // Method 4: Stream processing (for large files)
+            Path file4 = Paths.get("nio-large.txt");
+            System.out.println("\n=== Stream processing ===");
+            Files.lines(file4)
+                .filter(line -> line.contains("important"))
+                .forEach(line -> System.out.println("Important: " + line));
+            // Only lines containing "important" are printed
+
+        } catch (IOException e) {
+            System.out.println("Error in modern file reading: " + e.getMessage());
+        }
+    }
+
+    private static void createVariousSampleFiles() throws IOException {
+        // Create simple content file
+        Files.writeString(Paths.get("nio-sample.txt"),
+            "Hello NIO.2!\nThis is modern file reading.\nJava makes it easy!");
+
+        // Create lines file
+        List<String> lines = List.of("First line", "Second line", "Third line");
+        Files.write(Paths.get("nio-lines.txt"), lines);
+
+        // Create binary content file
+        Files.writeString(Paths.get("nio-binary.txt"),
+            "Binary data: \u0001\u0002\u0003 and text data mixed");
+
+        // Create large file with some important lines
+        StringBuilder largeContent = new StringBuilder();
+        for (int i = 1; i <= 50; i++) {
+            if (i % 10 == 0) {
+                largeContent.append("Line ").append(i).append(": This is important information\n");
+            } else {
+                largeContent.append("Line ").append(i).append(": Regular content\n");
+            }
+        }
+        Files.writeString(Paths.get("nio-large.txt"), largeContent.toString());
+    }
+}
+```
+
+### Reading and Parsing Structured Data
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class StructuredDataReading {
+    public static void main(String[] args) {
+        // Create sample structured files
+        createStructuredFiles();
+
+        // Read CSV data
+        List<Employee> employees = readEmployeesFromCSV("employees-input.csv");
+        displayEmployees(employees);
+
+        // Read configuration file
+        Map<String, String> config = readConfigFile("app-config-input.properties");
+        displayConfiguration(config);
+
+        // Read log file
+        analyzeLogFile("application-input.log");
+    }
+
+    private static List<Employee> readEmployeesFromCSV(String filename) {
+        List<Employee> employees = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            // Skip header line
+            String headerLine = reader.readLine();
+            System.out.println("CSV Header: " + headerLine);
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Parse CSV line
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    int id = Integer.parseInt(parts[0]);
+                    String name = parts[1].replace("\"", ""); // Remove quotes
+                    String position = parts[2];
+                    int salary = Integer.parseInt(parts[3]);
+                    String hireDate = parts[4];
+
+                    employees.add(new Employee(id, name, position, salary, hireDate));
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading CSV: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing number in CSV: " + e.getMessage());
+        }
+
+        return employees;
+    }
+
+    private static Map<String, String> readConfigFile(String filename) {
+        Map<String, String> config = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+
+                // Skip comments and empty lines
+                if (line.isEmpty() || line.startsWith("#")) {
+                    continue;
+                }
+
+                // Parse key=value pairs
+                int equalIndex = line.indexOf('=');
+                if (equalIndex > 0) {
+                    String key = line.substring(0, equalIndex).trim();
+                    String value = line.substring(equalIndex + 1).trim();
+                    config.put(key, value);
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading config: " + e.getMessage());
+        }
+
+        return config;
+    }
+
+    private static void analyzeLogFile(String filename) {
+        System.out.println("\n=== Log File Analysis ===");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            int totalLines = 0;
+            int errorLines = 0;
+            int warningLines = 0;
+            List<String> errors = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                totalLines++;
+
+                if (line.contains("ERROR")) {
+                    errorLines++;
+                    errors.add(line);
+                } else if (line.contains("WARN")) {
+                    warningLines++;
+                }
+            }
+
+            System.out.println("Total log entries: " + totalLines); // Total log entries: 8
+            System.out.println("Error entries: " + errorLines); // Error entries: 2
+            System.out.println("Warning entries: " + warningLines); // Warning entries: 1
+
+            if (!errors.isEmpty()) {
+                System.out.println("\nError details:");
+                for (String error : errors) {
+                    System.out.println("  " + error);
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error analyzing log: " + e.getMessage());
+        }
+    }
+
+    private static void displayEmployees(List<Employee> employees) {
+        System.out.println("\n=== Employees Read from CSV ===");
+        for (Employee emp : employees) {
+            System.out.println(emp);
+        }
+        System.out.println("Total employees: " + employees.size()); // Total employees: 4
+    }
+
+    private static void displayConfiguration(Map<String, String> config) {
+        System.out.println("\n=== Configuration Settings ===");
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            System.out.println(entry.getKey() + " = " + entry.getValue());
+        }
+        System.out.println("Total settings: " + config.size()); // Total settings: 8
+    }
+
+    private static void createStructuredFiles() {
+        // Create CSV file
+        try (java.io.PrintWriter writer = new java.io.PrintWriter("employees-input.csv")) {
+            writer.println("ID,Name,Position,Salary,HireDate");
+            writer.println("1,\"Alice Johnson\",Developer,75000,2020-03-15");
+            writer.println("2,\"Bob Smith\",Manager,85000,2018-07-22");
+            writer.println("3,\"Charlie Brown\",Analyst,65000,2021-01-10");
+            writer.println("4,\"Diana Prince\",Designer,70000,2019-11-05");
+        } catch (IOException e) {
+            System.out.println("Error creating CSV: " + e.getMessage());
+        }
+
+        // Create config file
+        try (java.io.PrintWriter writer = new java.io.PrintWriter("app-config-input.properties")) {
+            writer.println("# Application Configuration");
+            writer.println("app.name=Employee Management System");
+            writer.println("app.version=1.0.0");
+            writer.println("app.debug=false");
+            writer.println("");
+            writer.println("# Database settings");
+            writer.println("db.host=localhost");
+            writer.println("db.port=5432");
+            writer.println("db.name=employee_db");
+            writer.println("security.enabled=true");
+        } catch (IOException e) {
+            System.out.println("Error creating config: " + e.getMessage());
+        }
+
+        // Create log file
+        try (java.io.PrintWriter writer = new java.io.PrintWriter("application-input.log")) {
+            writer.println("[2024-08-04 10:00:00] INFO Application started");
+            writer.println("[2024-08-04 10:00:05] INFO User alice logged in");
+            writer.println("[2024-08-04 10:05:12] WARN Database connection slow");
+            writer.println("[2024-08-04 10:10:30] INFO Processing 100 records");
+            writer.println("[2024-08-04 10:15:45] ERROR Failed to connect to external API");
+            writer.println("[2024-08-04 10:16:00] INFO Retrying connection");
+            writer.println("[2024-08-04 10:16:15] INFO Connection restored");
+            writer.println("[2024-08-04 10:20:00] ERROR Validation failed for record ID 12345");
+        } catch (IOException e) {
+            System.out.println("Error creating log: " + e.getMessage());
+        }
+    }
+
+    // Simple Employee class for demonstration
+    static class Employee {
+        private int id;
+        private String name;
+        private String position;
+        private int salary;
+        private String hireDate;
+
+        public Employee(int id, String name, String position, int salary, String hireDate) {
+            this.id = id;
+            this.name = name;
+            this.position = position;
+            this.salary = salary;
+            this.hireDate = hireDate;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Employee{id=%d, name='%s', position='%s', salary=%d, hireDate='%s'}",
+                id, name, position, salary, hireDate);
+        }
+    }
+}
+```
+
+# Try With Resources
+
+## Introduction to Try-With-Resources
+
+The try-with-resources statement, introduced in Java 7, is a powerful feature that automatically manages resources that implement the `AutoCloseable` interface. It ensures that resources are properly closed even if an exception occurs, eliminating the need for explicit `finally` blocks for resource cleanup.
+
+### Basic Try-With-Resources Syntax
+
+```java
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class BasicTryWithResources {
+    public static void main(String[] args) {
+        // Traditional approach (Java 6 and earlier)
+        traditionalFileWriting();
+
+        // Modern approach with try-with-resources
+        modernFileWriting();
+    }
+
+    private static void traditionalFileWriting() {
+        System.out.println("=== Traditional Approach ===");
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter("traditional-output.txt");
+            writer.write("Hello from traditional approach!");
+            System.out.println("File written successfully"); // File written successfully
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            // Manual resource cleanup - easy to forget!
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("Error closing file: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private static void modernFileWriting() {
+        System.out.println("\n=== Try-With-Resources Approach ===");
+
+        // Resources declared in try parentheses are automatically closed
+        try (FileWriter writer = new FileWriter("modern-output.txt")) {
+            writer.write("Hello from try-with-resources!");
+            System.out.println("File written successfully"); // File written successfully
+
+            // No need for explicit close() - handled automatically
+
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        // writer.close() is called automatically here, even if exception occurs
+    }
+}
+```
+
+### Multiple Resources in Try-With-Resources
+
+```java
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+
+public class MultipleResourcesExample {
+    public static void main(String[] args) {
+        // Create source file first
+        createSourceFile();
+
+        // Copy file using multiple resources
+        copyFileWithMultipleResources();
+
+        // Read and process file
+        readAndProcessFile();
+    }
+
+    private static void createSourceFile() {
+        try (FileWriter writer = new FileWriter("source.txt")) {
+            writer.write("Line 1: Original content\n");
+            writer.write("Line 2: More data here\n");
+            writer.write("Line 3: Additional information\n");
+            writer.write("Line 4: Final line\n");
+        } catch (IOException e) {
+            System.out.println("Error creating source file: " + e.getMessage());
+        }
+    }
+
+    private static void copyFileWithMultipleResources() {
+        System.out.println("=== Copying File with Multiple Resources ===");
+
+        // Multiple resources in single try-with-resources
+        try (BufferedReader reader = new BufferedReader(new FileReader("source.txt"));
+             BufferedWriter writer = new BufferedWriter(new FileWriter("destination.txt"))) {
+
+            String line;
+            int lineNumber = 1;
+
+            while ((line = reader.readLine()) != null) {
+                // Add line numbers to copied content
+                writer.write(lineNumber + ": " + line);
+                writer.newLine();
+                lineNumber++;
+            }
+
+            System.out.println("File copied successfully with line numbers");
+            // File copied successfully with line numbers
+
+        } catch (IOException e) {
+            System.out.println("Error copying file: " + e.getMessage());
+        }
+        // Both reader and writer are automatically closed
+    }
+
+    private static void readAndProcessFile() {
+        System.out.println("\n=== Reading and Processing File ===");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("destination.txt"))) {
+
+            System.out.println("Copied file contents:");
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                // 1: Line 1: Original content
+                // 2: Line 2: More data here
+                // 3: Line 3: Additional information
+                // 4: Line 4: Final line
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Try-With-Resources with NIO.2
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.stream.Stream;
+
+public class NIOTryWithResources {
+    public static void main(String[] args) {
+        // Create sample data
+        createLargeDataFile();
+
+        // Process large file with streaming
+        processLargeFileWithStream();
+
+        // Directory operations
+        processDirectoryContents();
+    }
+
+    private static void createLargeDataFile() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("large-data.txt"))) {
+
+            writer.write("# Large Data File\n");
+            writer.write("# Generated data for streaming example\n\n");
+
+            for (int i = 1; i <= 1000; i++) {
+                if (i % 100 == 0) {
+                    writer.write("MILESTONE: Reached " + i + " entries\n");
+                } else if (i % 50 == 0) {
+                    writer.write("CHECKPOINT: Entry " + i + " - halfway mark\n");
+                } else {
+                    writer.write("DATA: Record " + i + " - value=" + (i * 10) + "\n");
+                }
+            }
+
+            System.out.println("Large data file created with 1000+ lines");
+
+        } catch (IOException e) {
+            System.out.println("Error creating large file: " + e.getMessage());
+        }
+    }
+
+    private static void processLargeFileWithStream() {
+        System.out.println("\n=== Processing Large File with Stream ===");
+
+        Path filePath = Paths.get("large-data.txt");
+
+        // Stream is AutoCloseable - works with try-with-resources
+        try (Stream<String> lines = Files.lines(filePath)) {
+
+            // Find and count milestones
+            long milestoneCount = lines
+                .filter(line -> line.startsWith("MILESTONE"))
+                .peek(line -> System.out.println("Found: " + line))
+                .count();
+
+            System.out.println("Total milestones found: " + milestoneCount);
+            // Found: MILESTONE: Reached 100 entries
+            // Found: MILESTONE: Reached 200 entries
+            // ... etc
+            // Total milestones found: 10
+
+        } catch (IOException e) {
+            System.out.println("Error processing large file: " + e.getMessage());
+        }
+
+        // Analyze data entries
+        try (Stream<String> lines = Files.lines(filePath)) {
+
+            lines
+                .filter(line -> line.startsWith("DATA"))
+                .mapToInt(line -> {
+                    // Extract value from "DATA: Record X - value=Y"
+                    String[] parts = line.split("value=");
+                    return parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+                })
+                .filter(value -> value > 5000) // High values only
+                .limit(5) // First 5 high values
+                .forEach(value -> System.out.println("High value: " + value));
+            // High value: 5010
+            // High value: 5020
+            // High value: 5030
+            // High value: 5040
+            // High value: 5050
+
+        } catch (IOException e) {
+            System.out.println("Error analyzing data: " + e.getMessage());
+        }
+    }
+
+    private static void processDirectoryContents() {
+        System.out.println("\n=== Processing Directory Contents ===");
+
+        Path currentDir = Paths.get(".");
+
+        // List directory contents
+        try (Stream<Path> paths = Files.list(currentDir)) {
+
+            System.out.println("Files in current directory:");
+            paths
+                .filter(Files::isRegularFile)
+                .filter(path -> path.toString().endsWith(".txt"))
+                .forEach(path -> {
+                    try {
+                        long size = Files.size(path);
+                        System.out.println(path.getFileName() + " (" + size + " bytes)");
+                        // source.txt (67 bytes)
+                        // destination.txt (89 bytes)
+                        // large-data.txt (45123 bytes)
+                    } catch (IOException e) {
+                        System.out.println(path.getFileName() + " (size unknown)");
+                    }
+                });
+
+        } catch (IOException e) {
+            System.out.println("Error listing directory: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Custom Resources with AutoCloseable
+
+```java
+import java.io.IOException;
+
+public class CustomAutoCloseableExample {
+    public static void main(String[] args) {
+        // Using custom resources with try-with-resources
+        demonstrateCustomResources();
+
+        // Database connection simulation
+        demonstrateDatabaseConnection();
+    }
+
+    private static void demonstrateCustomResources() {
+        System.out.println("=== Custom AutoCloseable Resources ===");
+
+        try (FileProcessor processor = new FileProcessor("data-processor");
+             NetworkConnection connection = new NetworkConnection("api.example.com")) {
+
+            processor.processFile("input.txt");
+            connection.sendData("Hello, Server!");
+
+            System.out.println("Operations completed successfully");
+            // File processor initialized: data-processor
+            // Network connection established to: api.example.com
+            // Processing file: input.txt
+            // Sending data: Hello, Server!
+            // Operations completed successfully
+
+        } catch (Exception e) {
+            System.out.println("Error in operations: " + e.getMessage());
+        }
+        // Resources automatically closed in reverse order:
+        // Network connection closed
+        // File processor closed: data-processor
+    }
+
+    private static void demonstrateDatabaseConnection() {
+        System.out.println("\n=== Database Connection Example ===");
+
+        try (DatabaseConnection db = new DatabaseConnection("localhost", 5432, "testdb");
+             ResultSetWrapper results = db.executeQuery("SELECT * FROM users")) {
+
+            while (results.hasNext()) {
+                String user = results.next();
+                System.out.println("User: " + user);
+            }
+            // Database connected to: localhost:5432/testdb
+            // Executing query: SELECT * FROM users
+            // User: alice
+            // User: bob
+            // User: charlie
+
+        } catch (Exception e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+        // Result set closed
+        // Database connection closed
+    }
+}
+
+// Custom AutoCloseable implementations
+class FileProcessor implements AutoCloseable {
+    private String processorName;
+
+    public FileProcessor(String name) {
+        this.processorName = name;
+        System.out.println("File processor initialized: " + name);
+    }
+
+    public void processFile(String filename) {
+        System.out.println("Processing file: " + filename);
+        // Simulate file processing
+    }
+
+    @Override
+    public void close() {
+        System.out.println("File processor closed: " + processorName);
+    }
+}
+
+class NetworkConnection implements AutoCloseable {
+    private String serverAddress;
+
+    public NetworkConnection(String address) throws IOException {
+        this.serverAddress = address;
+        System.out.println("Network connection established to: " + address);
+
+        // Simulate potential connection failure
+        if (address.equals("invalid.server")) {
+            throw new IOException("Cannot connect to server");
+        }
+    }
+
+    public void sendData(String data) {
+        System.out.println("Sending data: " + data);
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Network connection closed");
+    }
+}
+
+class DatabaseConnection implements AutoCloseable {
+    private String connectionString;
+
+    public DatabaseConnection(String host, int port, String database) {
+        this.connectionString = host + ":" + port + "/" + database;
+        System.out.println("Database connected to: " + connectionString);
+    }
+
+    public ResultSetWrapper executeQuery(String sql) {
+        System.out.println("Executing query: " + sql);
+        return new ResultSetWrapper();
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Database connection closed");
+    }
+}
+
+class ResultSetWrapper implements AutoCloseable {
+    private String[] mockData = {"alice", "bob", "charlie"};
+    private int currentIndex = 0;
+
+    public boolean hasNext() {
+        return currentIndex < mockData.length;
+    }
+
+    public String next() {
+        return mockData[currentIndex++];
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Result set closed");
+    }
+}
+```
+
+### Error Handling in Try-With-Resources
+
+```java
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class TryWithResourcesErrorHandling {
+    public static void main(String[] args) {
+        // Demonstrate exception handling scenarios
+        demonstrateResourceException();
+        demonstrateBodyException();
+        demonstrateBothExceptions();
+    }
+
+    private static void demonstrateResourceException() {
+        System.out.println("=== Resource Creation Exception ===");
+
+        try (FileWriter writer = new FileWriter("/invalid/path/file.txt")) {
+            writer.write("This won't execute");
+        } catch (IOException e) {
+            System.out.println("Caught resource exception: " + e.getMessage());
+            // Caught resource exception: The system cannot find the path specified
+        }
+    }
+
+    private static void demonstrateBodyException() {
+        System.out.println("\n=== Try Body Exception ===");
+
+        try (FileWriter writer = new FileWriter("valid-file.txt")) {
+            writer.write("Some content");
+
+            // Simulate an exception in try body
+            if (true) { // Condition to force exception
+                throw new RuntimeException("Something went wrong in processing");
+            }
+
+            writer.write("This won't execute");
+
+        } catch (IOException e) {
+            System.out.println("Caught IO exception: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.out.println("Caught runtime exception: " + e.getMessage());
+            // Caught runtime exception: Something went wrong in processing
+        }
+        // FileWriter is still closed automatically despite the exception
+    }
+
+    private static void demonstrateBothExceptions() {
+        System.out.println("\n=== Both Resource and Body Exceptions ===");
+
+        try (ProblematicResource resource = new ProblematicResource()) {
+            System.out.println("Using problematic resource");
+
+            // This will cause an exception
+            resource.doSomethingRisky();
+
+        } catch (Exception e) {
+            System.out.println("Primary exception: " + e.getMessage());
+            // Primary exception: Operation failed
+
+            // Check for suppressed exceptions (from close() method)
+            Throwable[] suppressed = e.getSuppressed();
+            for (Throwable t : suppressed) {
+                System.out.println("Suppressed exception: " + t.getMessage());
+                // Suppressed exception: Error closing problematic resource
+            }
+        }
+    }
+}
+
+// Resource that throws exceptions in both usage and closing
+class ProblematicResource implements AutoCloseable {
+
+    public ProblematicResource() {
+        System.out.println("Problematic resource created");
+    }
+
+    public void doSomethingRisky() throws Exception {
+        throw new Exception("Operation failed");
+    }
+
+    @Override
+    public void close() throws Exception {
+        System.out.println("Attempting to close problematic resource");
+        throw new Exception("Error closing problematic resource");
+    }
+}
+```
+
+### Best Practices and Performance Benefits
+
+```java
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class TryWithResourcesBestPractices {
+    public static void main(String[] args) {
+        // Create test data
+        createTestData();
+
+        // Demonstrate best practices
+        demonstrateResourceOrdering();
+        demonstrateNestedResources();
+        demonstrateResourceReuse();
+    }
+
+    private static void createTestData() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("test-data.txt"))) {
+            for (int i = 1; i <= 100; i++) {
+                writer.write("Line " + i + ": Test data entry number " + i);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating test data: " + e.getMessage());
+        }
+    }
+
+    private static void demonstrateResourceOrdering() {
+        System.out.println("=== Resource Ordering (Closed in Reverse Order) ===");
+
+        try (// Resources are closed in reverse order of declaration
+             ResourceWithLogging resource1 = new ResourceWithLogging("First");
+             ResourceWithLogging resource2 = new ResourceWithLogging("Second");
+             ResourceWithLogging resource3 = new ResourceWithLogging("Third")) {
+
+            System.out.println("All resources created, now using them...");
+            resource1.doWork();
+            resource2.doWork();
+            resource3.doWork();
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        // Output shows closing order: Third, Second, First
+    }
+
+    private static void demonstrateNestedResources() {
+        System.out.println("\n=== Avoiding Nested Try-With-Resources ===");
+
+        // ❌ Don't do this - unnecessarily nested
+        try (BufferedReader reader1 = new BufferedReader(new FileReader("test-data.txt"))) {
+            String firstLine = reader1.readLine();
+
+            try (BufferedWriter writer1 = new BufferedWriter(new FileWriter("output1.txt"))) {
+                writer1.write("First line was: " + firstLine);
+            }
+        } catch (IOException e) {
+            System.out.println("Nested approach error: " + e.getMessage());
+        }
+
+        // ✅ Better - single try-with-resources
+        try (BufferedReader reader2 = new BufferedReader(new FileReader("test-data.txt"));
+             BufferedWriter writer2 = new BufferedWriter(new FileWriter("output2.txt"))) {
+
+            String line;
+            int count = 0;
+            while ((line = reader2.readLine()) != null && count < 5) {
+                writer2.write("Line " + (count + 1) + ": " + line);
+                writer2.newLine();
+                count++;
+            }
+
+            System.out.println("Processed " + count + " lines efficiently");
+            // Processed 5 lines efficiently
+
+        } catch (IOException e) {
+            System.out.println("Single try-with-resources error: " + e.getMessage());
+        }
+    }
+
+    private static void demonstrateResourceReuse() {
+        System.out.println("\n=== Resource Management Tips ===");
+
+        // Tip 1: Use appropriate buffer sizes
+        try (BufferedReader reader = new BufferedReader(new FileReader("test-data.txt"), 8192)) { // 8KB buffer
+
+            long lineCount = reader.lines().count();
+            System.out.println("Total lines counted with large buffer: " + lineCount);
+            // Total lines counted with large buffer: 100
+
+        } catch (IOException e) {
+            System.out.println("Buffer demo error: " + e.getMessage());
+        }
+
+        // Tip 2: Use NIO.2 for simpler code when possible
+        try {
+            long fileSize = Files.size(Paths.get("test-data.txt"));
+            long lineCount = Files.lines(Paths.get("test-data.txt")).count(); // Auto-closed stream
+
+            System.out.println("File size: " + fileSize + " bytes, Lines: " + lineCount);
+            // File size: 2900 bytes, Lines: 100
+
+        } catch (IOException e) {
+            System.out.println("NIO.2 demo error: " + e.getMessage());
+        }
+
+        // Tip 3: Consider using Files utility methods for simple operations
+        try {
+            String content = Files.readString(Paths.get("output2.txt"));
+            System.out.println("Quick read complete, content length: " + content.length());
+            // Quick read complete, content length: 123
+
+        } catch (IOException e) {
+            System.out.println("Quick read error: " + e.getMessage());
+        }
+    }
+}
+
+// Helper class for demonstrating resource ordering
+class ResourceWithLogging implements AutoCloseable {
+    private String name;
+
+    public ResourceWithLogging(String name) {
+        this.name = name;
+        System.out.println("Created resource: " + name);
+    }
+
+    public void doWork() {
+        System.out.println("Resource " + name + " is working");
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Closing resource: " + name);
     }
 }
 ```
