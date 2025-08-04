@@ -61,7 +61,7 @@
 
 ### Classes And Objects
 
-36. [Intro](#intro)
+36. [Intro](#OOP)
 37. [Your First Class](#your-first-class)
 38. [Setters](#setters)
 39. [Getters](#getters)
@@ -7984,7 +7984,7 @@ public class WrapperPitfalls {
 }
 ```
 
-# Intro
+# OOP
 
 ## Introduction to Classes and Objects
 
