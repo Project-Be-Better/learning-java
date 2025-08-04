@@ -1,8 +1,5 @@
 import com.AccessModifiers.AccessModifier;
-import com.Basics.Chapter1ForLoops;
-import com.Basics.Chapter2If;
-import com.Basics.Chapter4AccessModifier;
-import com.Basics.Chapter7Enums;
+import com.Basics.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,6 +21,9 @@ public class Main {
 
         Chapter7Enums chapter7Enums = new Chapter7Enums();
         chapter7Enums.run();
+
+        Chapter8Dates chapter8Dates = new Chapter8Dates();
+        chapter8Dates.run();
 
     }
 }

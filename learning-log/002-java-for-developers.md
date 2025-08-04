@@ -39,10 +39,18 @@
 24. [Comparing Strings with .equals()](#comparing-strings-with-equals)
 25. [Useful String Static Methods](#useful-string-static-methods)
 
+### Dates
+
+26. [LocalDateTime](#localdatetime)
+27. [LocalDate and LocalTime](#localdate-and-localtime)
+28. [Creating Specific Dates](#creating-specific-dates)
+29. [Zone IDs](#zone-ids)
+30. [Other Date Classes](#other-date-classes)
+
 ### Practice and Assessment
 
-26. [Practice Problems](#practice-problems)
-27. [Code Reference](#code-reference-combined-usage-of-all-loops)
+31. [Practice Problems](#practice-problems)
+32. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
@@ -3914,6 +3922,1343 @@ public class RealWorldStringMethods {
             }
             System.out.println(String.join(",", stringRow));
         }
+    }
+}
+```
+
+# LocalDateTime
+
+## What is LocalDateTime?
+
+`LocalDateTime` is a class in Java's `java.time` package that represents a date and time without timezone information. It combines date and time into a single object and is part of the modern Java Date/Time API introduced in Java 8.
+
+### Creating LocalDateTime Objects
+
+```java
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+
+public class LocalDateTimeBasics {
+    public static void main(String[] args) {
+        // Current date and time
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("Current date and time: " + now);
+
+        // Specific date and time
+        LocalDateTime specificDateTime = LocalDateTime.of(2024, 12, 25, 14, 30, 0);
+        System.out.println("Christmas 2024 at 2:30 PM: " + specificDateTime);
+
+        // Using Month enum
+        LocalDateTime newYear = LocalDateTime.of(2025, Month.JANUARY, 1, 0, 0, 0);
+        System.out.println("New Year 2025: " + newYear);
+
+        // With nanoseconds
+        LocalDateTime precise = LocalDateTime.of(2024, 8, 15, 10, 30, 45, 123456789);
+        System.out.println("Precise time: " + precise);
+    }
+}
+```
+
+### Common Operations
+
+```java
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+public class LocalDateTimeOperations {
+    public static void main(String[] args) {
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        // Getting components
+        System.out.println("Year: " + dateTime.getYear());
+        System.out.println("Month: " + dateTime.getMonth());
+        System.out.println("Day: " + dateTime.getDayOfMonth());
+        System.out.println("Hour: " + dateTime.getHour());
+        System.out.println("Minute: " + dateTime.getMinute());
+        System.out.println("Second: " + dateTime.getSecond());
+        System.out.println("Day of week: " + dateTime.getDayOfWeek());
+        System.out.println("Day of year: " + dateTime.getDayOfYear());
+
+        // Adding time
+        LocalDateTime future = dateTime.plusDays(30)
+                                      .plusHours(2)
+                                      .plusMinutes(15);
+        System.out.println("30 days, 2 hours, 15 minutes later: " + future);
+
+        // Subtracting time
+        LocalDateTime past = dateTime.minusWeeks(2)
+                                    .minusHours(5);
+        System.out.println("2 weeks and 5 hours ago: " + past);
+
+        // Truncating
+        LocalDateTime truncated = dateTime.truncatedTo(ChronoUnit.HOURS);
+        System.out.println("Truncated to hours: " + truncated);
+    }
+}
+```
+
+### Formatting and Parsing
+
+```java
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class LocalDateTimeFormatting {
+    public static void main(String[] args) {
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        // Predefined formatters
+        System.out.println("ISO format: " + dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        // Custom formatters
+        DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        System.out.println("Custom format: " + dateTime.format(customFormatter));
+
+        DateTimeFormatter readableFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy 'at' hh:mm a");
+        System.out.println("Readable format: " + dateTime.format(readableFormatter));
+
+        // Parsing strings to LocalDateTime
+        String dateTimeString = "2024-12-25 14:30:00";
+        try {
+            LocalDateTime parsed = LocalDateTime.parse(dateTimeString, customFormatter);
+            System.out.println("Parsed date: " + parsed);
+        } catch (DateTimeParseException e) {
+            System.out.println("Failed to parse: " + e.getMessage());
+        }
+
+        // Common patterns
+        demonstrateCommonPatterns();
+    }
+
+    private static void demonstrateCommonPatterns() {
+        LocalDateTime now = LocalDateTime.now();
+
+        // Database format
+        DateTimeFormatter dbFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        System.out.println("Database format: " + now.format(dbFormat));
+
+        // Log format
+        DateTimeFormatter logFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        System.out.println("Log format: " + now.format(logFormat));
+
+        // User-friendly format
+        DateTimeFormatter userFormat = DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a");
+        System.out.println("User format: " + now.format(userFormat));
+    }
+}
+```
+
+### Practical Examples
+
+```java
+import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
+public class LocalDateTimePractical {
+    public static void main(String[] args) {
+        // Meeting scheduler
+        scheduleMeeting();
+
+        // Age calculator
+        calculateAge();
+
+        // Business hours checker
+        checkBusinessHours();
+    }
+
+    private static void scheduleMeeting() {
+        LocalDateTime meetingStart = LocalDateTime.of(2024, 8, 15, 14, 0);
+        LocalDateTime meetingEnd = meetingStart.plusHours(1).plusMinutes(30);
+
+        System.out.println("Meeting Details:");
+        System.out.println("Start: " + meetingStart.format(DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a")));
+        System.out.println("End: " + meetingEnd.format(DateTimeFormatter.ofPattern("MMM dd, yyyy h:mm a")));
+
+        Duration duration = Duration.between(meetingStart, meetingEnd);
+        System.out.println("Duration: " + duration.toMinutes() + " minutes");
+    }
+
+    private static void calculateAge() {
+        LocalDateTime birthDate = LocalDateTime.of(1995, 6, 15, 10, 30);
+        LocalDateTime now = LocalDateTime.now();
+
+        long years = ChronoUnit.YEARS.between(birthDate, now);
+        long months = ChronoUnit.MONTHS.between(birthDate, now);
+        long days = ChronoUnit.DAYS.between(birthDate, now);
+
+        System.out.println("\nAge Calculation:");
+        System.out.println("Years: " + years);
+        System.out.println("Total months: " + months);
+        System.out.println("Total days: " + days);
+    }
+
+    private static void checkBusinessHours() {
+        LocalDateTime now = LocalDateTime.now();
+        int hour = now.getHour();
+        int dayOfWeek = now.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
+
+        boolean isBusinessDay = dayOfWeek >= 1 && dayOfWeek <= 5; // Monday to Friday
+        boolean isBusinessHour = hour >= 9 && hour < 17; // 9 AM to 5 PM
+
+        System.out.println("\nBusiness Hours Check:");
+        System.out.println("Current time: " + now.format(DateTimeFormatter.ofPattern("EEEE, MMM dd h:mm a")));
+        System.out.println("Is business day: " + isBusinessDay);
+        System.out.println("Is business hour: " + isBusinessHour);
+        System.out.println("Office is open: " + (isBusinessDay && isBusinessHour));
+    }
+}
+```
+
+# LocalDate and LocalTime
+
+## LocalDate - Working with Dates Only
+
+`LocalDate` represents a date without time information (year, month, day).
+
+### LocalDate Basics
+
+```java
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.DayOfWeek;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+
+public class LocalDateExample {
+    public static void main(String[] args) {
+        // Creating LocalDate objects
+        LocalDate today = LocalDate.now();
+        LocalDate specificDate = LocalDate.of(2024, 12, 25);
+        LocalDate withMonth = LocalDate.of(2024, Month.DECEMBER, 25);
+
+        System.out.println("Today: " + today);
+        System.out.println("Christmas: " + specificDate);
+        System.out.println("Using Month enum: " + withMonth);
+
+        // Date operations
+        LocalDate nextWeek = today.plusWeeks(1);
+        LocalDate lastMonth = today.minusMonths(1);
+        LocalDate nextYear = today.plusYears(1);
+
+        System.out.println("Next week: " + nextWeek);
+        System.out.println("Last month: " + lastMonth);
+        System.out.println("Next year: " + nextYear);
+
+        // Getting date components
+        System.out.println("\nDate Components:");
+        System.out.println("Year: " + today.getYear());
+        System.out.println("Month: " + today.getMonth());
+        System.out.println("Day: " + today.getDayOfMonth());
+        System.out.println("Day of week: " + today.getDayOfWeek());
+        System.out.println("Day of year: " + today.getDayOfYear());
+        System.out.println("Is leap year: " + today.isLeapYear());
+    }
+}
+```
+
+### LocalDate Advanced Operations
+
+```java
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.ChronoUnit;
+
+public class LocalDateAdvanced {
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now();
+
+        // Temporal adjusters
+        LocalDate firstDayOfMonth = today.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate lastDayOfMonth = today.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        LocalDate firstMonday = today.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
+
+        System.out.println("First day of month: " + firstDayOfMonth);
+        System.out.println("Last day of month: " + lastDayOfMonth);
+        System.out.println("Next Monday: " + nextMonday);
+        System.out.println("First Monday of month: " + firstMonday);
+
+        // Period calculations
+        LocalDate birthDate = LocalDate.of(1995, 6, 15);
+        Period age = Period.between(birthDate, today);
+        System.out.println("\nAge: " + age.getYears() + " years, " +
+                          age.getMonths() + " months, " + age.getDays() + " days");
+
+        // Date comparisons
+        LocalDate deadline = LocalDate.of(2024, 12, 31);
+        System.out.println("\nDate Comparisons:");
+        System.out.println("Today is before deadline: " + today.isBefore(deadline));
+        System.out.println("Today is after deadline: " + today.isAfter(deadline));
+        System.out.println("Days until deadline: " + ChronoUnit.DAYS.between(today, deadline));
+    }
+}
+```
+
+## LocalTime - Working with Time Only
+
+`LocalTime` represents time without date information (hour, minute, second, nanosecond).
+
+### LocalTime Basics
+
+```java
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+public class LocalTimeExample {
+    public static void main(String[] args) {
+        // Creating LocalTime objects
+        LocalTime now = LocalTime.now();
+        LocalTime noon = LocalTime.of(12, 0);
+        LocalTime precise = LocalTime.of(14, 30, 45, 123456789);
+        LocalTime midnight = LocalTime.MIDNIGHT;
+        LocalTime maxTime = LocalTime.MAX; // 23:59:59.999999999
+
+        System.out.println("Current time: " + now);
+        System.out.println("Noon: " + noon);
+        System.out.println("Precise time: " + precise);
+        System.out.println("Midnight: " + midnight);
+        System.out.println("Max time: " + maxTime);
+
+        // Time operations
+        LocalTime later = now.plusHours(2).plusMinutes(30);
+        LocalTime earlier = now.minusHours(1).minusMinutes(15);
+
+        System.out.println("2.5 hours later: " + later);
+        System.out.println("1.25 hours earlier: " + earlier);
+
+        // Getting time components
+        System.out.println("\nTime Components:");
+        System.out.println("Hour: " + now.getHour());
+        System.out.println("Minute: " + now.getMinute());
+        System.out.println("Second: " + now.getSecond());
+        System.out.println("Nano: " + now.getNano());
+    }
+}
+```
+
+### LocalTime Practical Applications
+
+```java
+import java.time.LocalTime;
+import java.time.Duration;
+import java.time.format.DateTimeFormatter;
+
+public class LocalTimePractical {
+    public static void main(String[] args) {
+        // Work schedule
+        workScheduleExample();
+
+        // Time duration calculations
+        durationExample();
+
+        // Time formatting
+        formattingExample();
+    }
+
+    private static void workScheduleExample() {
+        LocalTime workStart = LocalTime.of(9, 0);
+        LocalTime workEnd = LocalTime.of(17, 0);
+        LocalTime lunchStart = LocalTime.of(12, 0);
+        LocalTime lunchEnd = LocalTime.of(13, 0);
+
+        Duration workDay = Duration.between(workStart, workEnd);
+        Duration lunchBreak = Duration.between(lunchStart, lunchEnd);
+        Duration actualWork = workDay.minus(lunchBreak);
+
+        System.out.println("Work Schedule:");
+        System.out.println("Start: " + workStart);
+        System.out.println("End: " + workEnd);
+        System.out.println("Total work day: " + workDay.toHours() + " hours");
+        System.out.println("Actual work time: " + actualWork.toHours() + " hours");
+    }
+
+    private static void durationExample() {
+        LocalTime start = LocalTime.of(14, 30);
+        LocalTime end = LocalTime.of(16, 45);
+
+        Duration duration = Duration.between(start, end);
+
+        System.out.println("\nDuration Example:");
+        System.out.println("Start: " + start);
+        System.out.println("End: " + end);
+        System.out.println("Duration: " + duration.toMinutes() + " minutes");
+        System.out.println("Duration: " + duration.toHours() + " hours " +
+                          (duration.toMinutes() % 60) + " minutes");
+    }
+
+    private static void formattingExample() {
+        LocalTime time = LocalTime.of(14, 30, 45);
+
+        System.out.println("\nTime Formatting:");
+        System.out.println("Default: " + time);
+        System.out.println("HH:mm: " + time.format(DateTimeFormatter.ofPattern("HH:mm")));
+        System.out.println("h:mm a: " + time.format(DateTimeFormatter.ofPattern("h:mm a")));
+        System.out.println("HH:mm:ss: " + time.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+    }
+}
+```
+
+### Combining LocalDate and LocalTime
+
+```java
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
+
+public class CombiningDateAndTime {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.of(2024, 8, 15);
+        LocalTime time = LocalTime.of(14, 30);
+
+        // Combine date and time
+        LocalDateTime dateTime1 = date.atTime(time);
+        LocalDateTime dateTime2 = time.atDate(date);
+        LocalDateTime dateTime3 = LocalDateTime.of(date, time);
+
+        System.out.println("Combined date and time:");
+        System.out.println("Method 1: " + dateTime1);
+        System.out.println("Method 2: " + dateTime2);
+        System.out.println("Method 3: " + dateTime3);
+
+        // Extract date and time from LocalDateTime
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate extractedDate = now.toLocalDate();
+        LocalTime extractedTime = now.toLocalTime();
+
+        System.out.println("\nExtracted from LocalDateTime:");
+        System.out.println("Date: " + extractedDate);
+        System.out.println("Time: " + extractedTime);
+    }
+}
+```
+
+# Creating Specific Dates
+
+## Various Ways to Create Dates
+
+Java provides multiple ways to create specific dates depending on your needs and the information you have available.
+
+### Basic Date Creation Methods
+
+```java
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
+
+public class CreatingSpecificDates {
+    public static void main(String[] args) {
+        // LocalDate creation methods
+        LocalDate date1 = LocalDate.of(2024, 8, 15);
+        LocalDate date2 = LocalDate.of(2024, Month.AUGUST, 15);
+        LocalDate date3 = LocalDate.parse("2024-08-15");
+        LocalDate date4 = LocalDate.now();
+
+        System.out.println("Basic date creation:");
+        System.out.println("Date 1: " + date1);
+        System.out.println("Date 2: " + date2);
+        System.out.println("Date 3: " + date3);
+        System.out.println("Date 4: " + date4);
+
+        // LocalDateTime creation methods
+        LocalDateTime dateTime1 = LocalDateTime.of(2024, 8, 15, 14, 30);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, Month.AUGUST, 15, 14, 30, 45);
+        LocalDateTime dateTime3 = LocalDateTime.of(date1, LocalTime.of(14, 30));
+        LocalDateTime dateTime4 = LocalDateTime.parse("2024-08-15T14:30:45");
+
+        System.out.println("\nDateTime creation:");
+        System.out.println("DateTime 1: " + dateTime1);
+        System.out.println("DateTime 2: " + dateTime2);
+        System.out.println("DateTime 3: " + dateTime3);
+        System.out.println("DateTime 4: " + dateTime4);
+    }
+}
+```
+
+### Using Temporal Classes for Partial Dates
+
+```java
+import java.time.*;
+import java.time.temporal.TemporalAdjusters;
+
+public class PartialDates {
+    public static void main(String[] args) {
+        // Year only
+        Year currentYear = Year.now();
+        Year year2024 = Year.of(2024);
+        System.out.println("Current year: " + currentYear);
+        System.out.println("Specific year: " + year2024);
+        System.out.println("Is 2024 leap year: " + year2024.isLeap());
+
+        // Year and Month
+        YearMonth currentYearMonth = YearMonth.now();
+        YearMonth december2024 = YearMonth.of(2024, Month.DECEMBER);
+        System.out.println("\nYear-Month combinations:");
+        System.out.println("Current year-month: " + currentYearMonth);
+        System.out.println("December 2024: " + december2024);
+        System.out.println("Days in December 2024: " + december2024.lengthOfMonth());
+
+        // Month and Day (for recurring events)
+        MonthDay birthday = MonthDay.of(Month.JUNE, 15);
+        MonthDay christmas = MonthDay.of(12, 25);
+        System.out.println("\nRecurring dates:");
+        System.out.println("Birthday: " + birthday);
+        System.out.println("Christmas: " + christmas);
+
+        // Convert to full date for current year
+        LocalDate birthdayThisYear = birthday.atYear(2024);
+        LocalDate christmasThisYear = christmas.atYear(2024);
+        System.out.println("Birthday in 2024: " + birthdayThisYear);
+        System.out.println("Christmas in 2024: " + christmasThisYear);
+    }
+}
+```
+
+### Creating Dates with Temporal Adjusters
+
+```java
+import java.time.LocalDate;
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.TemporalAdjuster;
+
+public class TemporalAdjusterDates {
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now();
+
+        // Standard temporal adjusters
+        LocalDate firstDayOfMonth = today.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate lastDayOfMonth = today.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate firstDayOfYear = today.with(TemporalAdjusters.firstDayOfYear());
+        LocalDate lastDayOfYear = today.with(TemporalAdjusters.lastDayOfYear());
+
+        System.out.println("Standard adjusters:");
+        System.out.println("Today: " + today);
+        System.out.println("First day of month: " + firstDayOfMonth);
+        System.out.println("Last day of month: " + lastDayOfMonth);
+        System.out.println("First day of year: " + firstDayOfYear);
+        System.out.println("Last day of year: " + lastDayOfYear);
+
+        // Day-of-week adjusters
+        LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        LocalDate previousFriday = today.with(TemporalAdjusters.previous(DayOfWeek.FRIDAY));
+        LocalDate firstMondayOfMonth = today.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
+        LocalDate lastFridayOfMonth = today.with(TemporalAdjusters.lastInMonth(DayOfWeek.FRIDAY));
+
+        System.out.println("\nDay-of-week adjusters:");
+        System.out.println("Next Monday: " + nextMonday);
+        System.out.println("Previous Friday: " + previousFriday);
+        System.out.println("First Monday of month: " + firstMondayOfMonth);
+        System.out.println("Last Friday of month: " + lastFridayOfMonth);
+
+        // Custom temporal adjuster
+        TemporalAdjuster nextWorkday = temporal -> {
+            LocalDate date = LocalDate.from(temporal);
+            DayOfWeek dayOfWeek = date.getDayOfWeek();
+
+            switch (dayOfWeek) {
+                case FRIDAY:
+                    return date.plusDays(3); // Skip weekend
+                case SATURDAY:
+                    return date.plusDays(2); // Skip Sunday
+                default:
+                    return date.plusDays(1); // Next day
+            }
+        };
+
+        LocalDate nextWorkdayDate = today.with(nextWorkday);
+        System.out.println("\nCustom adjuster:");
+        System.out.println("Next workday: " + nextWorkdayDate);
+    }
+}
+```
+
+### Parsing Dates from Strings
+
+```java
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class ParsingDates {
+    public static void main(String[] args) {
+        // Standard ISO format parsing
+        LocalDate isoDate = LocalDate.parse("2024-08-15");
+        LocalDateTime isoDateTime = LocalDateTime.parse("2024-08-15T14:30:45");
+
+        System.out.println("ISO parsing:");
+        System.out.println("Date: " + isoDate);
+        System.out.println("DateTime: " + isoDateTime);
+
+        // Custom format parsing
+        DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate customDate = LocalDate.parse("15/08/2024", customFormatter);
+        System.out.println("\nCustom format: " + customDate);
+
+        // Multiple format support
+        String[] dateStrings = {
+            "2024-08-15",
+            "15/08/2024",
+            "Aug 15, 2024",
+            "15-Aug-2024"
+        };
+
+        DateTimeFormatter[] formatters = {
+            DateTimeFormatter.ISO_LOCAL_DATE,
+            DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+            DateTimeFormatter.ofPattern("MMM dd, yyyy"),
+            DateTimeFormatter.ofPattern("dd-MMM-yyyy")
+        };
+
+        System.out.println("\nMultiple format parsing:");
+        for (int i = 0; i < dateStrings.length; i++) {
+            try {
+                LocalDate parsed = LocalDate.parse(dateStrings[i], formatters[i]);
+                System.out.println(dateStrings[i] + " -> " + parsed);
+            } catch (DateTimeParseException e) {
+                System.out.println("Failed to parse: " + dateStrings[i]);
+            }
+        }
+
+        // Safe parsing method
+        System.out.println("\nSafe parsing:");
+        LocalDate safeDate = safeParse("15/08/2024", "dd/MM/yyyy");
+        if (safeDate != null) {
+            System.out.println("Safely parsed: " + safeDate);
+        }
+    }
+
+    private static LocalDate safeParse(String dateString, String pattern) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+            return LocalDate.parse(dateString, formatter);
+        } catch (DateTimeParseException e) {
+            System.out.println("Error parsing date: " + e.getMessage());
+            return null;
+        }
+    }
+}
+```
+
+### Business Date Creation Examples
+
+```java
+import java.time.LocalDate;
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
+
+public class BusinessDates {
+    public static void main(String[] args) {
+        // Quarter dates
+        createQuarterDates();
+
+        // Payment due dates
+        createPaymentDates();
+
+        // Holiday calculations
+        calculateHolidays();
+    }
+
+    private static void createQuarterDates() {
+        int year = 2024;
+        LocalDate q1Start = LocalDate.of(year, 1, 1);
+        LocalDate q2Start = LocalDate.of(year, 4, 1);
+        LocalDate q3Start = LocalDate.of(year, 7, 1);
+        LocalDate q4Start = LocalDate.of(year, 10, 1);
+
+        System.out.println("Quarter dates for " + year + ":");
+        System.out.println("Q1: " + q1Start);
+        System.out.println("Q2: " + q2Start);
+        System.out.println("Q3: " + q3Start);
+        System.out.println("Q4: " + q4Start);
+    }
+
+    private static void createPaymentDates() {
+        LocalDate invoiceDate = LocalDate.now();
+        LocalDate paymentDue = invoiceDate.plusDays(30);
+
+        // If due date falls on weekend, move to next Monday
+        if (paymentDue.getDayOfWeek() == DayOfWeek.SATURDAY) {
+            paymentDue = paymentDue.plusDays(2);
+        } else if (paymentDue.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            paymentDue = paymentDue.plusDays(1);
+        }
+
+        System.out.println("\nPayment dates:");
+        System.out.println("Invoice date: " + invoiceDate);
+        System.out.println("Payment due: " + paymentDue);
+    }
+
+    private static void calculateHolidays() {
+        int year = 2024;
+
+        // Fixed holidays
+        LocalDate newYear = LocalDate.of(year, 1, 1);
+        LocalDate christmas = LocalDate.of(year, 12, 25);
+
+        // Variable holidays (US examples)
+        LocalDate presidentsDay = LocalDate.of(year, 2, 1)
+                .with(TemporalAdjusters.dayOfWeekInMonth(3, DayOfWeek.MONDAY));
+        LocalDate laborDay = LocalDate.of(year, 9, 1)
+                .with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
+        LocalDate thanksgiving = LocalDate.of(year, 11, 1)
+                .with(TemporalAdjusters.dayOfWeekInMonth(4, DayOfWeek.THURSDAY));
+
+        System.out.println("\nHolidays for " + year + ":");
+        System.out.println("New Year: " + newYear);
+        System.out.println("Presidents Day: " + presidentsDay);
+        System.out.println("Labor Day: " + laborDay);
+        System.out.println("Thanksgiving: " + thanksgiving);
+        System.out.println("Christmas: " + christmas);
+    }
+}
+```
+
+# Zone IDs
+
+## Understanding Time Zones
+
+Time zones are essential when working with dates and times across different geographical locations. Java provides robust support for time zones through the `ZoneId` class and related APIs.
+
+### Basic Zone ID Operations
+
+```java
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Set;
+
+public class ZoneIdBasics {
+    public static void main(String[] args) {
+        // System default zone
+        ZoneId systemDefault = ZoneId.systemDefault();
+        System.out.println("System default zone: " + systemDefault);
+
+        // Creating specific zones
+        ZoneId utc = ZoneId.of("UTC");
+        ZoneId newYork = ZoneId.of("America/New_York");
+        ZoneId tokyo = ZoneId.of("Asia/Tokyo");
+        ZoneId london = ZoneId.of("Europe/London");
+
+        System.out.println("UTC: " + utc);
+        System.out.println("New York: " + newYork);
+        System.out.println("Tokyo: " + tokyo);
+        System.out.println("London: " + london);
+
+        // Zone offsets
+        ZoneOffset fixedOffset = ZoneOffset.of("+05:30"); // India Standard Time
+        ZoneOffset utcOffset = ZoneOffset.UTC;
+
+        System.out.println("Fixed offset: " + fixedOffset);
+        System.out.println("UTC offset: " + utcOffset);
+
+        // Getting all available zones (first 10)
+        Set<String> allZones = ZoneId.getAvailableZoneIds();
+        System.out.println("\nFirst 10 available zones:");
+        allZones.stream().sorted().limit(10).forEach(System.out::println);
+
+        System.out.println("Total zones available: " + allZones.size());
+    }
+}
+```
+
+### Working with ZonedDateTime
+
+```java
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+
+public class ZonedDateTimeExample {
+    public static void main(String[] args) {
+        // Current time in different zones
+        ZonedDateTime utcNow = ZonedDateTime.now(ZoneId.of("UTC"));
+        ZonedDateTime nyNow = ZonedDateTime.now(ZoneId.of("America/New_York"));
+        ZonedDateTime tokyoNow = ZonedDateTime.now(ZoneId.of("Asia/Tokyo"));
+        ZonedDateTime systemNow = ZonedDateTime.now();
+
+        System.out.println("Current time in different zones:");
+        System.out.println("UTC: " + utcNow);
+        System.out.println("New York: " + nyNow);
+        System.out.println("Tokyo: " + tokyoNow);
+        System.out.println("System: " + systemNow);
+
+        // Creating specific zoned date time
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 8, 15, 14, 30);
+        ZonedDateTime zonedInNY = localDateTime.atZone(ZoneId.of("America/New_York"));
+        ZonedDateTime zonedInTokyo = localDateTime.atZone(ZoneId.of("Asia/Tokyo"));
+
+        System.out.println("\nSame local time in different zones:");
+        System.out.println("New York: " + zonedInNY);
+        System.out.println("Tokyo: " + zonedInTokyo);
+
+        // Converting between zones
+        ZonedDateTime meetingTimeNY = ZonedDateTime.of(2024, 8, 15, 14, 0, 0, 0,
+                                                      ZoneId.of("America/New_York"));
+        ZonedDateTime meetingTimeTokyo = meetingTimeNY.withZoneSameInstant(ZoneId.of("Asia/Tokyo"));
+        ZonedDateTime meetingTimeLondon = meetingTimeNY.withZoneSameInstant(ZoneId.of("Europe/London"));
+
+        System.out.println("\nMeeting time conversions:");
+        System.out.println("New York: " + meetingTimeNY.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z")));
+        System.out.println("Tokyo: " + meetingTimeTokyo.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z")));
+        System.out.println("London: " + meetingTimeLondon.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z")));
+    }
+}
+```
+
+### Time Zone Conversions and Calculations
+
+```java
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+public class TimeZoneConversions {
+    public static void main(String[] args) {
+        // Flight schedule example
+        flightScheduleExample();
+
+        // Business hours across time zones
+        businessHoursExample();
+
+        // Daylight saving time handling
+        daylightSavingExample();
+    }
+
+    private static void flightScheduleExample() {
+        // Flight from New York to Tokyo
+        ZonedDateTime departureNY = ZonedDateTime.of(2024, 8, 15, 10, 30, 0, 0,
+                                                    ZoneId.of("America/New_York"));
+
+        // Flight duration: 14 hours
+        ZonedDateTime arrivalNYTime = departureNY.plusHours(14);
+        ZonedDateTime arrivalTokyoTime = arrivalNYTime.withZoneSameInstant(ZoneId.of("Asia/Tokyo"));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z");
+
+        System.out.println("Flight Schedule:");
+        System.out.println("Departure (NY): " + departureNY.format(formatter));
+        System.out.println("Arrival (NY time): " + arrivalNYTime.format(formatter));
+        System.out.println("Arrival (Tokyo time): " + arrivalTokyoTime.format(formatter));
+
+        Duration flightDuration = Duration.between(departureNY, arrivalNYTime);
+        System.out.println("Flight duration: " + flightDuration.toHours() + " hours");
+    }
+
+    private static void businessHoursExample() {
+        // Check if it's business hours in different cities
+        ZonedDateTime currentTime = ZonedDateTime.now();
+
+        String[] cities = {"America/New_York", "Europe/London", "Asia/Tokyo", "Australia/Sydney"};
+
+        System.out.println("\nBusiness hours check:");
+        for (String city : cities) {
+            ZonedDateTime cityTime = currentTime.withZoneSameInstant(ZoneId.of(city));
+            boolean isBusinessHours = isBusinessHours(cityTime);
+
+            System.out.printf("%-20s: %s (%s)%n",
+                            city.substring(city.lastIndexOf('/') + 1),
+                            cityTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                            isBusinessHours ? "Open" : "Closed");
+        }
+    }
+
+    private static boolean isBusinessHours(ZonedDateTime time) {
+        int hour = time.getHour();
+        DayOfWeek dayOfWeek = time.getDayOfWeek();
+
+        boolean isWeekday = dayOfWeek.getValue() >= 1 && dayOfWeek.getValue() <= 5;
+        boolean isWorkingHour = hour >= 9 && hour < 17;
+
+        return isWeekday && isWorkingHour;
+    }
+
+    private static void daylightSavingExample() {
+        // Daylight saving transition in New York (Spring forward)
+        ZoneId newYork = ZoneId.of("America/New_York");
+
+        // Before DST transition (Standard Time)
+        ZonedDateTime beforeDST = ZonedDateTime.of(2024, 3, 10, 1, 30, 0, 0, newYork);
+
+        // After DST transition (Daylight Time)
+        ZonedDateTime afterDST = ZonedDateTime.of(2024, 3, 10, 3, 30, 0, 0, newYork);
+
+        System.out.println("\nDaylight Saving Time Example:");
+        System.out.println("Before DST: " + beforeDST);
+        System.out.println("After DST: " + afterDST);
+        System.out.println("Zone rules: " + newYork.getRules());
+
+        // The hour from 2:00 to 3:00 AM doesn't exist on this day
+        try {
+            ZonedDateTime nonExistent = ZonedDateTime.of(2024, 3, 10, 2, 30, 0, 0, newYork);
+            System.out.println("This shouldn't print: " + nonExistent);
+        } catch (DateTimeException e) {
+            System.out.println("2:30 AM doesn't exist on this day: " + e.getMessage());
+        }
+    }
+}
+```
+
+### Working with Zone Offsets
+
+```java
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+
+public class ZoneOffsetExample {
+    public static void main(String[] args) {
+        // Creating zone offsets
+        ZoneOffset plus5_30 = ZoneOffset.of("+05:30"); // India
+        ZoneOffset minus5 = ZoneOffset.of("-05:00");    // EST
+        ZoneOffset utc = ZoneOffset.UTC;
+
+        System.out.println("Zone offsets:");
+        System.out.println("India: " + plus5_30);
+        System.out.println("EST: " + minus5);
+        System.out.println("UTC: " + utc);
+
+        // Creating OffsetDateTime
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 8, 15, 14, 30);
+        OffsetDateTime utcTime = localDateTime.atOffset(utc);
+        OffsetDateTime indiaTime = localDateTime.atOffset(plus5_30);
+        OffsetDateTime estTime = localDateTime.atOffset(minus5);
+
+        System.out.println("\nSame local time with different offsets:");
+        System.out.println("UTC: " + utcTime);
+        System.out.println("India: " + indiaTime);
+        System.out.println("EST: " + estTime);
+
+        // Converting to same instant
+        Instant instant = utcTime.toInstant();
+        OffsetDateTime indiaEquivalent = instant.atOffset(plus5_30);
+        OffsetDateTime estEquivalent = instant.atOffset(minus5);
+
+        System.out.println("\nSame instant in different offsets:");
+        System.out.println("UTC: " + utcTime);
+        System.out.println("India equivalent: " + indiaEquivalent);
+        System.out.println("EST equivalent: " + estEquivalent);
+
+        // Time zone vs offset difference
+        demonstrateZoneVsOffset();
+    }
+
+    private static void demonstrateZoneVsOffset() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 7, 15, 14, 30);
+
+        // Using zone (handles DST automatically)
+        ZonedDateTime nyZoned = dateTime.atZone(ZoneId.of("America/New_York"));
+
+        // Using fixed offset (doesn't handle DST)
+        OffsetDateTime nyOffset = dateTime.atOffset(ZoneOffset.of("-04:00")); // EDT
+
+        System.out.println("\nZone vs Offset in summer:");
+        System.out.println("Zoned (auto DST): " + nyZoned);
+        System.out.println("Offset (fixed): " + nyOffset);
+
+        // In winter, EST is -05:00
+        LocalDateTime winterDateTime = LocalDateTime.of(2024, 1, 15, 14, 30);
+        ZonedDateTime nyWinterZoned = winterDateTime.atZone(ZoneId.of("America/New_York"));
+
+        System.out.println("\nWinter time (zone auto-adjusts):");
+        System.out.println("Winter zoned: " + nyWinterZoned);
+    }
+}
+```
+
+# Other Date Classes
+
+## Legacy Date Classes (Pre-Java 8)
+
+While Java 8+ introduced the modern date-time API, it's important to understand legacy classes for maintaining older code and integration with legacy systems.
+
+### Date Class
+
+```java
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+
+public class LegacyDateExample {
+    public static void main(String[] args) {
+        // Creating Date objects
+        Date now = new Date();
+        Date specificDate = new Date(124, 7, 15); // Year 2024 (124 years since 1900), Month 7 (August, 0-based)
+        Date epochTime = new Date(0); // January 1, 1970
+
+        System.out.println("Legacy Date examples:");
+        System.out.println("Current date: " + now);
+        System.out.println("Specific date: " + specificDate);
+        System.out.println("Epoch time: " + epochTime);
+
+        // Date formatting with SimpleDateFormat
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat readableFormatter = new SimpleDateFormat("MMMM dd, yyyy 'at' hh:mm a");
+
+        System.out.println("\nFormatted dates:");
+        System.out.println("Standard format: " + formatter.format(now));
+        System.out.println("Readable format: " + readableFormatter.format(now));
+
+        // Parsing dates
+        try {
+            Date parsed = formatter.parse("2024-08-15 14:30:00");
+            System.out.println("Parsed date: " + parsed);
+        } catch (ParseException e) {
+            System.out.println("Failed to parse date: " + e.getMessage());
+        }
+
+        // Date operations (limited)
+        Date future = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000L)); // Add 7 days
+        System.out.println("One week later: " + formatter.format(future));
+    }
+}
+```
+
+### Calendar Class
+
+```java
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.text.SimpleDateFormat;
+
+public class CalendarExample {
+    public static void main(String[] args) {
+        // Creating Calendar instances
+        Calendar now = Calendar.getInstance();
+        Calendar specificCal = new GregorianCalendar(2024, Calendar.AUGUST, 15, 14, 30);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss EEEE");
+
+        System.out.println("Calendar examples:");
+        System.out.println("Current: " + formatter.format(now.getTime()));
+        System.out.println("Specific: " + formatter.format(specificCal.getTime()));
+
+        // Getting calendar fields
+        System.out.println("\nCalendar fields:");
+        System.out.println("Year: " + now.get(Calendar.YEAR));
+        System.out.println("Month: " + (now.get(Calendar.MONTH) + 1)); // 0-based, so add 1
+        System.out.println("Day: " + now.get(Calendar.DAY_OF_MONTH));
+        System.out.println("Hour: " + now.get(Calendar.HOUR_OF_DAY));
+        System.out.println("Minute: " + now.get(Calendar.MINUTE));
+        System.out.println("Day of week: " + now.get(Calendar.DAY_OF_WEEK));
+
+        // Calendar operations
+        Calendar future = (Calendar) now.clone();
+        future.add(Calendar.DAY_OF_MONTH, 30);
+        future.add(Calendar.HOUR_OF_DAY, 2);
+
+        System.out.println("\nAfter adding 30 days and 2 hours:");
+        System.out.println(formatter.format(future.getTime()));
+
+        // Setting specific fields
+        Calendar custom = Calendar.getInstance();
+        custom.set(Calendar.YEAR, 2024);
+        custom.set(Calendar.MONTH, Calendar.DECEMBER);
+        custom.set(Calendar.DAY_OF_MONTH, 25);
+        custom.set(Calendar.HOUR_OF_DAY, 0);
+        custom.set(Calendar.MINUTE, 0);
+        custom.set(Calendar.SECOND, 0);
+
+        System.out.println("Christmas 2024: " + formatter.format(custom.getTime()));
+    }
+}
+```
+
+### Converting Between Legacy and Modern APIs
+
+```java
+import java.time.*;
+import java.util.Date;
+import java.util.Calendar;
+
+public class DateConversions {
+    public static void main(String[] args) {
+        // Modern to Legacy conversions
+        LocalDateTime modernDateTime = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+
+        // LocalDateTime to Date (via Instant)
+        Date dateFromLocal = Date.from(modernDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        // ZonedDateTime to Date
+        Date dateFromZoned = Date.from(zonedDateTime.toInstant());
+
+        System.out.println("Modern to Legacy:");
+        System.out.println("Modern DateTime: " + modernDateTime);
+        System.out.println("Converted to Date: " + dateFromLocal);
+        System.out.println("Zoned to Date: " + dateFromZoned);
+
+        // Legacy to Modern conversions
+        Date legacyDate = new Date();
+
+        // Date to LocalDateTime
+        LocalDateTime localFromDate = legacyDate.toInstant()
+                                                .atZone(ZoneId.systemDefault())
+                                                .toLocalDateTime();
+
+        // Date to ZonedDateTime
+        ZonedDateTime zonedFromDate = legacyDate.toInstant()
+                                               .atZone(ZoneId.systemDefault());
+
+        // Date to Instant
+        Instant instantFromDate = legacyDate.toInstant();
+
+        System.out.println("\nLegacy to Modern:");
+        System.out.println("Legacy Date: " + legacyDate);
+        System.out.println("To LocalDateTime: " + localFromDate);
+        System.out.println("To ZonedDateTime: " + zonedFromDate);
+        System.out.println("To Instant: " + instantFromDate);
+
+        // Calendar conversions
+        Calendar calendar = Calendar.getInstance();
+        ZonedDateTime zonedFromCalendar = calendar.toInstant()
+                                                 .atZone(calendar.getTimeZone().toZoneId());
+
+        System.out.println("\nCalendar conversion:");
+        System.out.println("Calendar: " + calendar.getTime());
+        System.out.println("To ZonedDateTime: " + zonedFromCalendar);
+    }
+}
+```
+
+## Specialized Date Classes
+
+### Instant Class
+
+```java
+import java.time.Instant;
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
+public class InstantExample {
+    public static void main(String[] args) {
+        // Creating Instant objects
+        Instant now = Instant.now();
+        Instant epoch = Instant.EPOCH; // 1970-01-01T00:00:00Z
+        Instant fromMillis = Instant.ofEpochMilli(System.currentTimeMillis());
+        Instant fromSeconds = Instant.ofEpochSecond(1692115800L); // Unix timestamp
+
+        System.out.println("Instant examples:");
+        System.out.println("Now: " + now);
+        System.out.println("Epoch: " + epoch);
+        System.out.println("From millis: " + fromMillis);
+        System.out.println("From seconds: " + fromSeconds);
+
+        // Instant operations
+        Instant later = now.plusSeconds(3600); // Add 1 hour
+        Instant earlier = now.minusSeconds(1800); // Subtract 30 minutes
+
+        System.out.println("\nInstant operations:");
+        System.out.println("1 hour later: " + later);
+        System.out.println("30 minutes earlier: " + earlier);
+
+        // Duration between instants
+        Duration duration = Duration.between(earlier, later);
+        System.out.println("Duration: " + duration.toMinutes() + " minutes");
+
+        // Converting to other types
+        LocalDateTime localDateTime = now.atZone(ZoneId.systemDefault()).toLocalDateTime();
+        ZonedDateTime zonedDateTime = now.atZone(ZoneId.of("UTC"));
+
+        System.out.println("\nConversions:");
+        System.out.println("To LocalDateTime: " + localDateTime);
+        System.out.println("To ZonedDateTime: " + zonedDateTime);
+
+        // Machine-readable vs human-readable
+        System.out.println("\nTimestamp representations:");
+        System.out.println("Epoch seconds: " + now.getEpochSecond());
+        System.out.println("Epoch millis: " + now.toEpochMilli());
+        System.out.println("ISO string: " + now.toString());
+    }
+}
+```
+
+### Period and Duration Classes
+
+```java
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+
+public class PeriodDurationExample {
+    public static void main(String[] args) {
+        // Period - date-based amount of time
+        Period oneMonth = Period.ofMonths(1);
+        Period twoWeeks = Period.ofWeeks(2);
+        Period complex = Period.of(1, 6, 15); // 1 year, 6 months, 15 days
+
+        System.out.println("Period examples:");
+        System.out.println("One month: " + oneMonth);
+        System.out.println("Two weeks: " + twoWeeks);
+        System.out.println("Complex period: " + complex);
+
+        // Duration - time-based amount of time
+        Duration oneHour = Duration.ofHours(1);
+        Duration thirtyMinutes = Duration.ofMinutes(30);
+        Duration precise = Duration.of(90, ChronoUnit.SECONDS);
+
+        System.out.println("\nDuration examples:");
+        System.out.println("One hour: " + oneHour);
+        System.out.println("Thirty minutes: " + thirtyMinutes);
+        System.out.println("90 seconds: " + precise);
+
+        // Using Period with dates
+        LocalDate today = LocalDate.now();
+        LocalDate futureDate = today.plus(complex);
+        LocalDate pastDate = today.minus(oneMonth);
+
+        System.out.println("\nUsing Period with dates:");
+        System.out.println("Today: " + today);
+        System.out.println("Future date: " + futureDate);
+        System.out.println("Past date: " + pastDate);
+
+        // Using Duration with time
+        LocalTime currentTime = LocalTime.now();
+        LocalTime laterTime = currentTime.plus(oneHour);
+        LocalTime earlierTime = currentTime.minus(thirtyMinutes);
+
+        System.out.println("\nUsing Duration with time:");
+        System.out.println("Current time: " + currentTime);
+        System.out.println("Later time: " + laterTime);
+        System.out.println("Earlier time: " + earlierTime);
+
+        // Calculating periods and durations
+        LocalDate birthday = LocalDate.of(1995, 6, 15);
+        Period age = Period.between(birthday, today);
+        System.out.println("\nAge calculation:");
+        System.out.println("Age: " + age.getYears() + " years, " +
+                          age.getMonths() + " months, " + age.getDays() + " days");
+
+        LocalDateTime start = LocalDateTime.of(2024, 8, 15, 9, 0);
+        LocalDateTime end = LocalDateTime.of(2024, 8, 15, 17, 30);
+        Duration workDay = Duration.between(start, end);
+        System.out.println("\nWork day duration:");
+        System.out.println("Duration: " + workDay.toHours() + " hours " +
+                          (workDay.toMinutes() % 60) + " minutes");
+    }
+}
+```
+
+### Practical Date Application
+
+```java
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DateApplicationExample {
+    public static void main(String[] args) {
+        // Event scheduling system
+        EventScheduler scheduler = new EventScheduler();
+
+        // Add some events
+        scheduler.addEvent("Team Meeting", LocalDateTime.of(2024, 8, 15, 10, 0));
+        scheduler.addEvent("Project Deadline", LocalDateTime.of(2024, 8, 20, 17, 0));
+        scheduler.addEvent("Conference Call", LocalDateTime.of(2024, 8, 16, 14, 30));
+
+        // Display upcoming events
+        scheduler.displayUpcomingEvents();
+
+        // Age calculator
+        AgeCalculator.calculateAge(LocalDate.of(1995, 6, 15));
+
+        // Business day calculator
+        BusinessDayCalculator.calculateBusinessDays(
+            LocalDate.of(2024, 8, 15),
+            LocalDate.of(2024, 8, 30)
+        );
+    }
+}
+
+class EventScheduler {
+    private List<Event> events = new ArrayList<>();
+
+    public void addEvent(String name, LocalDateTime dateTime) {
+        events.add(new Event(name, dateTime));
+    }
+
+    public void displayUpcomingEvents() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy 'at' h:mm a");
+
+        System.out.println("Upcoming Events:");
+        events.stream()
+              .filter(event -> event.getDateTime().isAfter(now))
+              .sorted((e1, e2) -> e1.getDateTime().compareTo(e2.getDateTime()))
+              .forEach(event -> {
+                  long daysUntil = ChronoUnit.DAYS.between(now.toLocalDate(),
+                                                          event.getDateTime().toLocalDate());
+                  System.out.printf("%-20s: %s (%d days from now)%n",
+                                   event.getName(),
+                                   event.getDateTime().format(formatter),
+                                   daysUntil);
+              });
+    }
+
+    private static class Event {
+        private String name;
+        private LocalDateTime dateTime;
+
+        public Event(String name, LocalDateTime dateTime) {
+            this.name = name;
+            this.dateTime = dateTime;
+        }
+
+        public String getName() { return name; }
+        public LocalDateTime getDateTime() { return dateTime; }
+    }
+}
+
+class AgeCalculator {
+    public static void calculateAge(LocalDate birthDate) {
+        LocalDate today = LocalDate.now();
+        Period age = Period.between(birthDate, today);
+        long totalDays = ChronoUnit.DAYS.between(birthDate, today);
+
+        System.out.println("\nAge Calculation:");
+        System.out.println("Birth date: " + birthDate);
+        System.out.println("Age: " + age.getYears() + " years, " +
+                          age.getMonths() + " months, " + age.getDays() + " days");
+        System.out.println("Total days lived: " + totalDays);
+
+        // Calculate next birthday
+        LocalDate nextBirthday = birthDate.withYear(today.getYear());
+        if (nextBirthday.isBefore(today) || nextBirthday.equals(today)) {
+            nextBirthday = nextBirthday.plusYears(1);
+        }
+        long daysUntilBirthday = ChronoUnit.DAYS.between(today, nextBirthday);
+        System.out.println("Days until next birthday: " + daysUntilBirthday);
+    }
+}
+
+class BusinessDayCalculator {
+    public static void calculateBusinessDays(LocalDate startDate, LocalDate endDate) {
+        long totalDays = ChronoUnit.DAYS.between(startDate, endDate);
+        long businessDays = 0;
+
+        LocalDate current = startDate;
+        while (!current.isAfter(endDate)) {
+            DayOfWeek dayOfWeek = current.getDayOfWeek();
+            if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
+                businessDays++;
+            }
+            current = current.plusDays(1);
+        }
+
+        System.out.println("\nBusiness Day Calculation:");
+        System.out.println("Start date: " + startDate);
+        System.out.println("End date: " + endDate);
+        System.out.println("Total days: " + totalDays);
+        System.out.println("Business days: " + businessDays);
+        System.out.println("Weekend days: " + (totalDays - businessDays));
     }
 }
 ```
