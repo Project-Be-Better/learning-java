@@ -109,10 +109,21 @@
 68. [BigDecimal](#bigdecimal)
 69. [Exploring BigDecimal Methods](#exploring-bigdecimal-methods)
 
+### Organizing Code
+
+70. [Introduction to Code Organization](#introduction-to-code-organization)
+71. [Packages](#packages)
+72. [Models](#models)
+73. [Service Classes](#service-classes)
+74. [Data Access Object (DAO)](#data-access-object-dao)
+75. [Connecting DAO and Service](#connecting-dao-and-service)
+76. [N-Tier Architecture](#n-tier-architecture)
+77. [Utility Classes](#utility-classes)
+
 ### Practice and Assessment
 
-70. [Practice Problems](#practice-problems)
-71. [Code Reference](#code-reference-combined-usage-of-all-loops)
+78. [Practice Problems](#practice-problems)
+79. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
