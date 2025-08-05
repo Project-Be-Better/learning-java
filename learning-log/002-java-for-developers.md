@@ -19198,6 +19198,776 @@ class FinancialCalculator {
 }
 ```
 
+# Introduction to Code Organization
+
+## Why Code Organization Matters
+
+As Java applications grow in complexity, proper code organization becomes crucial for maintainability, scalability, and team collaboration. Well-organized code follows established patterns and separates concerns to create clean, readable, and maintainable applications.
+
+### Benefits of Good Code Organization
+
+- **Maintainability**: Easy to find, understand, and modify code
+- **Scalability**: Structure supports growth and new features
+- **Team Collaboration**: Clear patterns help multiple developers work together
+- **Testability**: Separated concerns make unit testing easier
+- **Reusability**: Organized components can be reused across projects
+
+### Key Principles
+
+1. **Separation of Concerns**: Each class should have a single responsibility
+2. **Layer Separation**: Business logic, data access, and presentation should be separate
+3. **Package Organization**: Related classes grouped logically
+4. **Consistent Naming**: Clear, descriptive names for classes and packages
+
+# Packages
+
+## Understanding Java Packages
+
+Packages in Java are namespaces that organize related classes and interfaces. They provide a way to group related functionality and avoid naming conflicts.
+
+### Package Structure Example
+
+```java
+com.company.projectname.
+├── model/          // Data classes (POJOs, entities)
+├── service/        // Business logic
+├── dao/           // Data Access Objects
+├── util/          // Utility classes
+├── controller/    // Controllers (for web apps)
+└── exception/     // Custom exceptions
+```
+
+### Package Declaration and Usage
+
+```java
+// File: com/company/ecommerce/model/Product.java
+package com.company.ecommerce.model;
+
+public class Product {
+    private String id;
+    private String name;
+    private double price;
+
+    // constructors, getters, setters
+}
+```
+
+```java
+// File: com/company/ecommerce/service/ProductService.java
+package com.company.ecommerce.service;
+
+import com.company.ecommerce.model.Product;
+import com.company.ecommerce.dao.ProductDAO;
+
+public class ProductService {
+    private ProductDAO productDAO;
+
+    public Product findProduct(String id) {
+        return productDAO.findById(id);
+    }
+}
+```
+
+### Best Practices for Packages
+
+- Use reverse domain naming: `com.companyname.projectname`
+- Keep package names lowercase
+- Group related functionality together
+- Avoid deep nesting (generally 3-4 levels max)
+- Use meaningful package names that describe the content
+
+# Models
+
+## What are Models (Data Classes)?
+
+Models, also known as POJOs (Plain Old Java Objects) or entities, represent the data structure of your application. They encapsulate the properties and behavior of real-world entities.
+
+### Characteristics of Good Models
+
+- **Encapsulation**: Private fields with public getters/setters
+- **Immutability**: Consider making fields final when appropriate
+- **Validation**: Basic validation in setters
+- **Meaningful Names**: Clear, descriptive class and field names
+
+### Example: E-commerce Models
+
+```java
+// User model
+package com.ecommerce.model;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class User {
+    private String id;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private LocalDateTime createdAt;
+    private List<Order> orders;
+
+    // Constructors
+    public User() {}
+
+    public User(String email, String firstName, String lastName) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters and setters with validation
+    public void setEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("Invalid email");
+        }
+        this.email = email;
+    }
+
+    // Other getters/setters...
+}
+```
+
+```java
+// Product model
+public class Product {
+    private String id;
+    private String name;
+    private String description;
+    private double price;
+    private int stockQuantity;
+    private Category category;
+
+    // Constructor with validation
+    public Product(String name, double price, int stockQuantity) {
+        setName(name);
+        setPrice(price);
+        setStockQuantity(stockQuantity);
+    }
+
+    public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+        this.price = price;
+    }
+
+    // Business method
+    public boolean isInStock() {
+        return stockQuantity > 0;
+    }
+}
+```
+
+### Model Design Patterns
+
+- **Value Objects**: Immutable objects representing values
+- **Entities**: Objects with identity (usually have ID field)
+- **DTOs**: Data Transfer Objects for moving data between layers
+
+# Service Classes
+
+## Understanding Service Classes
+
+Service classes contain the business logic of your application. They orchestrate operations between different components and implement the core functionality.
+
+### Service Class Responsibilities
+
+- **Business Logic**: Core application rules and workflows
+- **Transaction Management**: Coordinate multiple operations
+- **Validation**: Business rule validation
+- **Coordination**: Orchestrate calls to DAOs and other services
+
+### Example: E-commerce Service Classes
+
+```java
+package com.ecommerce.service;
+
+import com.ecommerce.model.*;
+import com.ecommerce.dao.*;
+import java.util.List;
+
+public class OrderService {
+    private OrderDAO orderDAO;
+    private ProductDAO productDAO;
+    private UserDAO userDAO;
+    private PaymentService paymentService;
+    private InventoryService inventoryService;
+
+    // Constructor injection
+    public OrderService(OrderDAO orderDAO, ProductDAO productDAO,
+                       UserDAO userDAO, PaymentService paymentService,
+                       InventoryService inventoryService) {
+        this.orderDAO = orderDAO;
+        this.productDAO = productDAO;
+        this.userDAO = userDAO;
+        this.paymentService = paymentService;
+        this.inventoryService = inventoryService;
+    }
+
+    // Business logic method
+    public Order createOrder(String userId, List<OrderItem> items) {
+        // 1. Validate user exists
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            throw new UserNotFoundException("User not found: " + userId);
+        }
+
+        // 2. Validate products and availability
+        for (OrderItem item : items) {
+            Product product = productDAO.findById(item.getProductId());
+            if (product == null) {
+                throw new ProductNotFoundException("Product not found: " + item.getProductId());
+            }
+
+            if (!inventoryService.isAvailable(product.getId(), item.getQuantity())) {
+                throw new InsufficientStockException("Not enough stock for: " + product.getName());
+            }
+        }
+
+        // 3. Calculate total
+        double total = calculateOrderTotal(items);
+
+        // 4. Create order
+        Order order = new Order(userId, items, total);
+
+        // 5. Reserve inventory
+        inventoryService.reserveItems(items);
+
+        // 6. Save order
+        return orderDAO.save(order);
+    }
+
+    private double calculateOrderTotal(List<OrderItem> items) {
+        return items.stream()
+                   .mapToDouble(item -> {
+                       Product product = productDAO.findById(item.getProductId());
+                       return product.getPrice() * item.getQuantity();
+                   })
+                   .sum();
+    }
+}
+```
+
+### Service Layer Best Practices
+
+- **Single Responsibility**: Each service handles one domain area
+- **Dependency Injection**: Accept dependencies through constructor
+- **Exception Handling**: Throw meaningful business exceptions
+- **Transaction Boundaries**: Define clear transaction scopes
+
+# Data Access Object (DAO)
+
+## Understanding the DAO Pattern
+
+The Data Access Object (DAO) pattern provides an abstract interface to the database or any data storage mechanism. It separates data access logic from business logic.
+
+### DAO Pattern Benefits
+
+- **Separation of Concerns**: Business logic separate from data access
+- **Database Independence**: Easy to switch database implementations
+- **Testability**: Mock DAOs for unit testing
+- **Centralized Data Access**: All database operations in one place
+
+### DAO Interface and Implementation
+
+```java
+// Generic DAO interface
+package com.ecommerce.dao;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface GenericDAO<T, ID> {
+    T save(T entity);
+    T update(T entity);
+    void delete(ID id);
+    Optional<T> findById(ID id);
+    List<T> findAll();
+    boolean existsById(ID id);
+}
+```
+
+```java
+// Product DAO interface
+public interface ProductDAO extends GenericDAO<Product, String> {
+    List<Product> findByCategory(String categoryId);
+    List<Product> findByPriceRange(double minPrice, double maxPrice);
+    List<Product> findByNameContaining(String searchTerm);
+    List<Product> findInStock();
+}
+```
+
+```java
+// Product DAO implementation
+package com.ecommerce.dao.impl;
+
+import com.ecommerce.dao.ProductDAO;
+import com.ecommerce.model.Product;
+import java.sql.*;
+import java.util.*;
+
+public class ProductDAOImpl implements ProductDAO {
+    private Connection connection;
+
+    public ProductDAOImpl(Connection connection) {
+        this.connection = connection;
+    }
+
+    @Override
+    public Product save(Product product) {
+        String sql = "INSERT INTO products (id, name, description, price, stock_quantity, category_id) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, product.getId());
+            stmt.setString(2, product.getName());
+            stmt.setString(3, product.getDescription());
+            stmt.setDouble(4, product.getPrice());
+            stmt.setInt(5, product.getStockQuantity());
+            stmt.setString(6, product.getCategory().getId());
+
+            stmt.executeUpdate();
+            return product;
+        } catch (SQLException e) {
+            throw new DataAccessException("Error saving product", e);
+        }
+    }
+
+    @Override
+    public Optional<Product> findById(String id) {
+        String sql = "SELECT * FROM products WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return Optional.of(mapResultSetToProduct(rs));
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new DataAccessException("Error finding product by id", e);
+        }
+    }
+
+    @Override
+    public List<Product> findByCategory(String categoryId) {
+        String sql = "SELECT * FROM products WHERE category_id = ?";
+        List<Product> products = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, categoryId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                products.add(mapResultSetToProduct(rs));
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error finding products by category", e);
+        }
+
+        return products;
+    }
+
+    private Product mapResultSetToProduct(ResultSet rs) throws SQLException {
+        // Map database row to Product object
+        Product product = new Product();
+        product.setId(rs.getString("id"));
+        product.setName(rs.getString("name"));
+        product.setDescription(rs.getString("description"));
+        product.setPrice(rs.getDouble("price"));
+        product.setStockQuantity(rs.getInt("stock_quantity"));
+        // Set category...
+        return product;
+    }
+}
+```
+
+# Connecting DAO and Service
+
+## Dependency Injection and Service-DAO Integration
+
+Services depend on DAOs to access data. This relationship should be managed through dependency injection to maintain loose coupling.
+
+### Constructor Injection Pattern
+
+```java
+package com.ecommerce.service;
+
+public class UserService {
+    private final UserDAO userDAO;
+    private final EmailService emailService;
+
+    // Constructor injection - dependencies passed in
+    public UserService(UserDAO userDAO, EmailService emailService) {
+        this.userDAO = userDAO;
+        this.emailService = emailService;
+    }
+
+    public User createUser(String email, String firstName, String lastName) {
+        // Business validation
+        if (userDAO.existsByEmail(email)) {
+            throw new UserAlreadyExistsException("User with email already exists: " + email);
+        }
+
+        // Create user
+        User user = new User(email, firstName, lastName);
+
+        // Save to database
+        User savedUser = userDAO.save(user);
+
+        // Send welcome email
+        emailService.sendWelcomeEmail(savedUser);
+
+        return savedUser;
+    }
+}
+```
+
+### Factory Pattern for DAO Creation
+
+```java
+package com.ecommerce.factory;
+
+public class DAOFactory {
+    private Connection connection;
+
+    public DAOFactory(Connection connection) {
+        this.connection = connection;
+    }
+
+    public UserDAO createUserDAO() {
+        return new UserDAOImpl(connection);
+    }
+
+    public ProductDAO createProductDAO() {
+        return new ProductDAOImpl(connection);
+    }
+
+    public OrderDAO createOrderDAO() {
+        return new OrderDAOImpl(connection);
+    }
+}
+```
+
+### Service Factory
+
+```java
+public class ServiceFactory {
+    private DAOFactory daoFactory;
+
+    public ServiceFactory(DAOFactory daoFactory) {
+        this.daoFactory = daoFactory;
+    }
+
+    public UserService createUserService() {
+        return new UserService(
+            daoFactory.createUserDAO(),
+            createEmailService()
+        );
+    }
+
+    public OrderService createOrderService() {
+        return new OrderService(
+            daoFactory.createOrderDAO(),
+            daoFactory.createProductDAO(),
+            daoFactory.createUserDAO(),
+            createPaymentService(),
+            createInventoryService()
+        );
+    }
+}
+```
+
+# N-Tier Architecture
+
+## Understanding N-Tier Architecture
+
+N-Tier (or Multi-Tier) architecture separates an application into distinct layers, each with specific responsibilities. This promotes maintainability, scalability, and testability.
+
+### Common Tiers in Java Applications
+
+#### 1. Presentation Tier (UI Layer)
+
+- **Responsibility**: User interface, input validation, display logic
+- **Components**: Controllers, JSPs, HTML/CSS, JavaScript
+- **Example**: Web controllers, REST endpoints
+
+#### 2. Business/Service Tier
+
+- **Responsibility**: Business logic, workflow orchestration
+- **Components**: Service classes, business rules
+- **Example**: OrderService, UserService, PaymentService
+
+#### 3. Data Access Tier
+
+- **Responsibility**: Database interaction, data persistence
+- **Components**: DAOs, repositories, database connections
+- **Example**: ProductDAO, UserDAO, database drivers
+
+#### 4. Database Tier
+
+- **Responsibility**: Data storage and retrieval
+- **Components**: Database server, stored procedures
+- **Example**: MySQL, PostgreSQL, MongoDB
+
+### Example: E-commerce Application Architecture
+
+```java
+// 1. Presentation Layer - Controller
+package com.ecommerce.controller;
+
+public class ProductController {
+    private ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
+    // Handle HTTP requests
+    public String getProduct(String productId) {
+        try {
+            Product product = productService.findProduct(productId);
+            return convertToJSON(product);
+        } catch (ProductNotFoundException e) {
+            return errorResponse("Product not found");
+        }
+    }
+}
+
+// 2. Business Layer - Service
+package com.ecommerce.service;
+
+public class ProductService {
+    private ProductDAO productDAO;
+    private CategoryDAO categoryDAO;
+
+    public Product findProduct(String id) {
+        Product product = productDAO.findById(id)
+            .orElseThrow(() -> new ProductNotFoundException("Product not found: " + id));
+
+        // Business logic: Load category details
+        Category category = categoryDAO.findById(product.getCategoryId())
+            .orElse(new Category("Unknown", "Unknown Category"));
+        product.setCategory(category);
+
+        return product;
+    }
+}
+
+// 3. Data Access Layer - DAO
+package com.ecommerce.dao;
+
+public class ProductDAOImpl implements ProductDAO {
+    private Connection connection;
+
+    public Optional<Product> findById(String id) {
+        // Database interaction code
+        String sql = "SELECT * FROM products WHERE id = ?";
+        // Implementation details...
+    }
+}
+```
+
+### Benefits of N-Tier Architecture
+
+- **Separation of Concerns**: Each layer has a specific purpose
+- **Maintainability**: Changes in one layer don't affect others
+- **Testability**: Each layer can be tested independently
+- **Scalability**: Layers can be scaled independently
+- **Team Development**: Different teams can work on different layers
+
+### Architecture Flow Example
+
+```
+User Request → Controller → Service → DAO → Database
+            ↓           ↓        ↓      ↓
+         Validation  Business  Data   Storage
+                     Logic   Access
+```
+
+# Utility Classes
+
+## Understanding Utility Classes
+
+Utility classes contain static methods that provide common functionality used across the application. They help eliminate code duplication and provide reusable helper methods.
+
+### Characteristics of Good Utility Classes
+
+- **Static Methods**: All methods should be static
+- **No State**: Should not maintain instance variables
+- **Final Class**: Prevent inheritance with `final` keyword
+- **Private Constructor**: Prevent instantiation
+- **Single Purpose**: Each utility class should focus on one area
+
+### Example: Common Utility Classes
+
+```java
+// String utilities
+package com.ecommerce.util;
+
+public final class StringUtils {
+
+    // Private constructor prevents instantiation
+    private StringUtils() {
+        throw new AssertionError("Utility class cannot be instantiated");
+    }
+
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+
+    public static boolean isValidEmail(String email) {
+        if (isNullOrEmpty(email)) return false;
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    }
+
+    public static String capitalize(String str) {
+        if (isNullOrEmpty(str)) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
+
+    public static String maskCreditCard(String cardNumber) {
+        if (isNullOrEmpty(cardNumber) || cardNumber.length() < 4) {
+            return cardNumber;
+        }
+        return "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
+    }
+}
+```
+
+```java
+// Date utilities
+public final class DateUtils {
+
+    private DateUtils() {}
+
+    public static LocalDateTime now() {
+        return LocalDateTime.now();
+    }
+
+    public static String formatForDisplay(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+        return dateTime.format(formatter);
+    }
+
+    public static boolean isBusinessDay(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
+    }
+
+    public static long daysBetween(LocalDate start, LocalDate end) {
+        return ChronoUnit.DAYS.between(start, end);
+    }
+}
+```
+
+```java
+// Validation utilities
+public final class ValidationUtils {
+
+    private ValidationUtils() {}
+
+    public static void requireNonNull(Object obj, String message) {
+        if (obj == null) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void requirePositive(double value, String fieldName) {
+        if (value <= 0) {
+            throw new IllegalArgumentException(fieldName + " must be positive");
+        }
+    }
+
+    public static boolean isValidPhoneNumber(String phone) {
+        if (StringUtils.isNullOrEmpty(phone)) return false;
+        return phone.matches("^\\+?[1-9]\\d{1,14}$");
+    }
+
+    public static boolean isValidPassword(String password) {
+        if (StringUtils.isNullOrEmpty(password)) return false;
+
+        // At least 8 characters, one uppercase, one lowercase, one digit
+        return password.length() >= 8 &&
+               password.matches(".*[A-Z].*") &&
+               password.matches(".*[a-z].*") &&
+               password.matches(".*\\d.*");
+    }
+}
+```
+
+```java
+// File utilities
+public final class FileUtils {
+
+    private FileUtils() {}
+
+    public static String readFileAsString(String filePath) throws IOException {
+        return Files.readString(Paths.get(filePath));
+    }
+
+    public static void writeStringToFile(String content, String filePath) throws IOException {
+        Files.writeString(Paths.get(filePath), content);
+    }
+
+    public static String getFileExtension(String fileName) {
+        if (StringUtils.isNullOrEmpty(fileName)) return "";
+
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex == -1) return "";
+
+        return fileName.substring(lastDotIndex + 1).toLowerCase();
+    }
+
+    public static boolean isImageFile(String fileName) {
+        String extension = getFileExtension(fileName);
+        return Arrays.asList("jpg", "jpeg", "png", "gif", "bmp").contains(extension);
+    }
+}
+```
+
+### Usage Examples
+
+```java
+// Using utility classes in service layer
+public class UserService {
+    private UserDAO userDAO;
+
+    public User createUser(String email, String firstName, String lastName, String phone) {
+        // Validation using utilities
+        ValidationUtils.requireNonNull(email, "Email cannot be null");
+        ValidationUtils.requireNonNull(firstName, "First name cannot be null");
+
+        if (!StringUtils.isValidEmail(email)) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+
+        if (!ValidationUtils.isValidPhoneNumber(phone)) {
+            throw new IllegalArgumentException("Invalid phone number");
+        }
+
+        // Create user with formatted data
+        User user = new User();
+        user.setEmail(email.toLowerCase().trim());
+        user.setFirstName(StringUtils.capitalize(firstName));
+        user.setLastName(StringUtils.capitalize(lastName));
+        user.setPhone(phone);
+        user.setCreatedAt(DateUtils.now());
+
+        return userDAO.save(user);
+    }
+}
+```
+
+### Best Practices for Utility Classes
+
+1. **Keep methods pure**: No side effects, same input = same output
+2. **Comprehensive documentation**: Clear JavaDoc for each method
+3. **Null safety**: Handle null inputs gracefully
+4. **Performance**: Consider caching for expensive operations
+5. **Testing**: Write thorough unit tests for all utility methods
+
 ## Practice Problems
 
 1. Print all even numbers from 1 to 100 using a `for` loop
