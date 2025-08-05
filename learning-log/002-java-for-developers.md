@@ -18,11 +18,15 @@
 9. [Type Inference with `var`](#type-inference-with-var)
 10. [Return Keyword and Void Methods](#return-keyword-and-void-methods)
 11. [Final Keyword](#final-keyword)
-12. [Enums](#enums)
-13. [Enum Methods](#enum-methods)
-14. [Implicit and Explicit Type Casting](#implicit-and-explicit-type-casting)
-15. [Global and Local Variables](#global-and-local-variables)
-16. [Wrapper Classes](#wrapper-classes)
+12. [Static Keyword](#static-keyword)
+13. [Static Initialization Block](#static-initialization-block)
+14. [Instance Block Initializer](#instance-block-initializer)
+15. [Static Import](#static-import)
+16. [Enums](#enums)
+17. [Enum Methods](#enum-methods)
+18. [Implicit and Explicit Type Casting](#implicit-and-explicit-type-casting)
+19. [Global and Local Variables](#global-and-local-variables)
+20. [Wrapper Classes](#wrapper-classes)
 
 ### Working With Files
 
@@ -7158,6 +7162,1514 @@ Perfect! I've successfully added the comprehensive Exception Handling section to
 - **Error recovery strategies**: How to handle and recover from various exception types
 
 The documentation now provides complete coverage of Java exception handling, from basic concepts to advanced custom exception design, maintaining the same high quality and detailed approach as the rest of your Java reference material!
+
+# Static Keyword
+
+## What is the `static` Keyword?
+
+The `static` keyword in Java is used to create class-level members that belong to the class itself rather than to any specific instance. Static members can be accessed without creating an object of the class.
+
+### Understanding Static vs Instance
+
+```java
+public class StaticBasics {
+    // Static variables (class variables)
+    private static int staticCounter = 0;
+    private static final String COMPANY_NAME = "TechCorp";
+
+    // Instance variables
+    private int instanceId;
+    private String name;
+
+    // Static methods
+    public static void displayCompanyInfo() {
+        System.out.println("Company: " + COMPANY_NAME);
+        System.out.println("Total objects created: " + staticCounter);
+        // System.out.println(name); // ❌ Cannot access instance variable from static method
+    }
+
+    // Instance methods
+    public void displayInstanceInfo() {
+        System.out.println("Instance ID: " + instanceId);
+        System.out.println("Name: " + name);
+        System.out.println("Company: " + COMPANY_NAME); // ✅ Can access static from instance
+        System.out.println("Total objects: " + staticCounter); // ✅ Can access static from instance
+    }
+
+    // Constructor
+    public StaticBasics(String name) {
+        this.name = name;
+        this.instanceId = ++staticCounter; // Increment static counter
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Static vs Instance Demo ===");
+
+        // Access static members without creating objects
+        StaticBasics.displayCompanyInfo();
+        // Company: TechCorp
+        // Total objects created: 0
+
+        // Create instances
+        StaticBasics obj1 = new StaticBasics("Alice");
+        StaticBasics obj2 = new StaticBasics("Bob");
+        StaticBasics obj3 = new StaticBasics("Charlie");
+
+        // Access static method through class (preferred)
+        StaticBasics.displayCompanyInfo();
+        // Company: TechCorp
+        // Total objects created: 3
+
+        // Access static method through instance (works but not recommended)
+        obj1.displayCompanyInfo();
+
+        // Instance methods require object
+        obj1.displayInstanceInfo();
+        // Instance ID: 1
+        // Name: Alice
+        // Company: TechCorp
+        // Total objects: 3
+
+        obj2.displayInstanceInfo();
+        // Instance ID: 2
+        // Name: Bob
+        // Company: TechCorp
+        // Total objects: 3
+    }
+}
+```
+
+### Static Variables (Class Variables)
+
+```java
+public class StaticVariablesDemo {
+    // Static variables are shared among all instances
+    private static int totalStudents = 0;
+    private static final String SCHOOL_NAME = "Java Academy";
+    private static double averageGrade = 0.0;
+
+    // Instance variables are unique to each object
+    private int studentId;
+    private String name;
+    private double grade;
+
+    public StaticVariablesDemo(String name, double grade) {
+        this.name = name;
+        this.grade = grade;
+        this.studentId = ++totalStudents; // Each student gets unique ID
+        updateAverageGrade();
+    }
+
+    // Static method to calculate average
+    private static void updateAverageGrade() {
+        // In real application, you'd need to track all grades
+        // This is simplified for demonstration
+        System.out.println("Updating average grade calculation...");
+    }
+
+    // Static getter methods
+    public static int getTotalStudents() {
+        return totalStudents;
+    }
+
+    public static String getSchoolName() {
+        return SCHOOL_NAME;
+    }
+
+    public static double getAverageGrade() {
+        return averageGrade;
+    }
+
+    // Instance methods
+    public String getName() { return name; }
+    public int getStudentId() { return studentId; }
+    public double getGrade() { return grade; }
+
+    public void displayInfo() {
+        System.out.println("Student ID: " + studentId);
+        System.out.println("Name: " + name);
+        System.out.println("Grade: " + grade);
+        System.out.println("School: " + SCHOOL_NAME);
+        System.out.println("Total students: " + totalStudents);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Static Variables Demo ===");
+
+        System.out.println("Initial total students: " + StaticVariablesDemo.getTotalStudents()); // 0
+        System.out.println("School: " + StaticVariablesDemo.getSchoolName()); // Java Academy
+
+        // Create students
+        StaticVariablesDemo student1 = new StaticVariablesDemo("Alice", 85.5);
+        StaticVariablesDemo student2 = new StaticVariablesDemo("Bob", 92.0);
+        StaticVariablesDemo student3 = new StaticVariablesDemo("Charlie", 78.5);
+
+        System.out.println("\nAfter creating students:");
+        System.out.println("Total students: " + StaticVariablesDemo.getTotalStudents()); // 3
+
+        System.out.println("\nStudent information:");
+        student1.displayInfo();
+        student2.displayInfo();
+        student3.displayInfo();
+    }
+}
+```
+
+### Static Methods
+
+```java
+public class StaticMethodsDemo {
+    private static final double PI = 3.14159;
+    private String instanceVariable = "Instance data";
+
+    // Static utility methods
+    public static double calculateCircleArea(double radius) {
+        return PI * radius * radius;
+    }
+
+    public static double calculateCircleCircumference(double radius) {
+        return 2 * PI * radius;
+    }
+
+    public static boolean isPrime(int number) {
+        if (number < 2) return false;
+        for (int i = 2; i <= Math.sqrt(number); i++) {
+            if (number % i == 0) return false;
+        }
+        return true;
+    }
+
+    public static int factorial(int n) {
+        if (n <= 1) return 1;
+        return n * factorial(n - 1);
+    }
+
+    // Static method accessing other static members
+    public static void displayMathInfo() {
+        System.out.println("PI value: " + PI);
+        System.out.println("Circle area (radius 5): " + calculateCircleArea(5));
+        System.out.println("Circle circumference (radius 5): " + calculateCircleCircumference(5));
+
+        // System.out.println(instanceVariable); // ❌ Cannot access instance variable
+    }
+
+    // Instance method can access both static and instance members
+    public void displayAllInfo() {
+        System.out.println("Instance variable: " + instanceVariable);
+        System.out.println("Static PI: " + PI);
+        System.out.println("Calling static method: " + calculateCircleArea(3));
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Static Methods Demo ===");
+
+        // Call static methods without creating objects
+        System.out.println("Circle area (radius 10): " + calculateCircleArea(10)); // 314.159
+        System.out.println("5! = " + factorial(5)); // 120
+        System.out.println("Is 17 prime? " + isPrime(17)); // true
+        System.out.println("Is 15 prime? " + isPrime(15)); // false
+
+        displayMathInfo();
+
+        // For instance method, need to create object
+        StaticMethodsDemo demo = new StaticMethodsDemo();
+        demo.displayAllInfo();
+    }
+}
+```
+
+## When To Use Static
+
+Understanding when to use static members is crucial for good Java design. Here are the key scenarios and best practices.
+
+### 1. Utility Methods and Helper Functions
+
+```java
+public class MathUtils {
+    // Utility methods should be static
+    public static double max(double a, double b) {
+        return a > b ? a : b;
+    }
+
+    public static double min(double a, double b) {
+        return a < b ? a : b;
+    }
+
+    public static double average(double... numbers) {
+        if (numbers.length == 0) return 0;
+        double sum = 0;
+        for (double num : numbers) {
+            sum += num;
+        }
+        return sum / numbers.length;
+    }
+
+    public static boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+
+    public static int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
+
+public class StringUtils {
+    // String utility methods
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
+
+    public static boolean isNullOrBlank(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+
+    public static String reverse(String str) {
+        if (str == null) return null;
+        return new StringBuilder(str).reverse().toString();
+    }
+
+    public static int countWords(String str) {
+        if (isNullOrBlank(str)) return 0;
+        return str.trim().split("\\s+").length;
+    }
+}
+```
+
+### 2. Constants and Configuration Values
+
+```java
+public class AppConstants {
+    // Application-wide constants
+    public static final String APP_NAME = "My Java Application";
+    public static final String VERSION = "1.0.0";
+    public static final int MAX_RETRY_ATTEMPTS = 3;
+    public static final double TAX_RATE = 0.08;
+
+    // Database configuration
+    public static final String DEFAULT_DB_URL = "jdbc:mysql://localhost:3306/myapp";
+    public static final int CONNECTION_TIMEOUT = 30000;
+    public static final int MAX_CONNECTIONS = 100;
+
+    // File paths
+    public static final String LOG_FILE_PATH = "logs/application.log";
+    public static final String CONFIG_FILE_PATH = "config/app.properties";
+
+    // Regular expressions
+    public static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+    public static final String PHONE_REGEX = "^\\+?[1-9]\\d{1,14}$";
+}
+
+public class HttpStatus {
+    // HTTP status codes as static constants
+    public static final int OK = 200;
+    public static final int CREATED = 201;
+    public static final int BAD_REQUEST = 400;
+    public static final int UNAUTHORIZED = 401;
+    public static final int FORBIDDEN = 403;
+    public static final int NOT_FOUND = 404;
+    public static final int INTERNAL_SERVER_ERROR = 500;
+
+    // Method to get status message
+    public static String getStatusMessage(int code) {
+        switch (code) {
+            case OK: return "OK";
+            case CREATED: return "Created";
+            case BAD_REQUEST: return "Bad Request";
+            case UNAUTHORIZED: return "Unauthorized";
+            case FORBIDDEN: return "Forbidden";
+            case NOT_FOUND: return "Not Found";
+            case INTERNAL_SERVER_ERROR: return "Internal Server Error";
+            default: return "Unknown Status";
+        }
+    }
+}
+```
+
+### 3. Factory Methods and Object Creation
+
+```java
+// Factory pattern using static methods
+public class DatabaseConnection {
+    private String url;
+    private String username;
+    private String password;
+
+    private DatabaseConnection(String url, String username, String password) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+    }
+
+    // Static factory methods
+    public static DatabaseConnection createMySQLConnection(String host, int port, String database) {
+        String url = String.format("jdbc:mysql://%s:%d/%s", host, port, database);
+        return new DatabaseConnection(url, "root", "password");
+    }
+
+    public static DatabaseConnection createPostgreSQLConnection(String host, int port, String database) {
+        String url = String.format("jdbc:postgresql://%s:%d/%s", host, port, database);
+        return new DatabaseConnection(url, "postgres", "password");
+    }
+
+    public static DatabaseConnection createTestConnection() {
+        return new DatabaseConnection("jdbc:h2:mem:testdb", "sa", "");
+    }
+
+    public void connect() {
+        System.out.println("Connecting to: " + url);
+        System.out.println("Username: " + username);
+    }
+
+    public String getUrl() { return url; }
+}
+
+// Singleton pattern using static
+public class Logger {
+    private static Logger instance;
+    private String logLevel = "INFO";
+
+    private Logger() {
+        // Private constructor prevents instantiation
+    }
+
+    public static Logger getInstance() {
+        if (instance == null) {
+            instance = new Logger();
+        }
+        return instance;
+    }
+
+    public static void info(String message) {
+        getInstance().log("INFO", message);
+    }
+
+    public static void error(String message) {
+        getInstance().log("ERROR", message);
+    }
+
+    public static void debug(String message) {
+        getInstance().log("DEBUG", message);
+    }
+
+    private void log(String level, String message) {
+        System.out.println(String.format("[%s] %s", level, message));
+    }
+}
+```
+
+### 4. Counter and Statistics Tracking
+
+```java
+public class WebsiteStats {
+    private static int totalVisitors = 0;
+    private static int currentOnlineUsers = 0;
+    private static int totalPageViews = 0;
+
+    // Static methods to track statistics
+    public static void recordVisitor() {
+        totalVisitors++;
+        currentOnlineUsers++;
+    }
+
+    public static void recordPageView() {
+        totalPageViews++;
+    }
+
+    public static void userLoggedOut() {
+        if (currentOnlineUsers > 0) {
+            currentOnlineUsers--;
+        }
+    }
+
+    // Static getters for statistics
+    public static int getTotalVisitors() { return totalVisitors; }
+    public static int getCurrentOnlineUsers() { return currentOnlineUsers; }
+    public static int getTotalPageViews() { return totalPageViews; }
+
+    public static void displayStats() {
+        System.out.println("=== Website Statistics ===");
+        System.out.println("Total Visitors: " + totalVisitors);
+        System.out.println("Currently Online: " + currentOnlineUsers);
+        System.out.println("Total Page Views: " + totalPageViews);
+        System.out.println("Average Pages per Visitor: " +
+                          (totalVisitors > 0 ? (double)totalPageViews / totalVisitors : 0));
+    }
+}
+```
+
+### 5. When NOT to Use Static
+
+```java
+public class StaticAntiPatterns {
+    // ❌ BAD: Don't make everything static just to avoid creating objects
+    public static class BadUserService {
+        private static List<String> users = new ArrayList<>(); // Shared state is problematic
+
+        public static void addUser(String user) {
+            users.add(user); // Not thread-safe, hard to test
+        }
+
+        public static List<String> getUsers() {
+            return users; // Exposes mutable state
+        }
+    }
+
+    // ✅ GOOD: Use instance methods for stateful operations
+    public static class GoodUserService {
+        private List<String> users = new ArrayList<>();
+
+        public void addUser(String user) {
+            users.add(user);
+        }
+
+        public List<String> getUsers() {
+            return new ArrayList<>(users); // Return defensive copy
+        }
+    }
+
+    // ❌ BAD: Static methods that depend on instance state
+    public static class BadCalculator {
+        private double lastResult;
+
+        // This doesn't make sense - static method trying to use instance variable
+        // public static double getLastResult() {
+        //     return lastResult; // ❌ Won't compile
+        // }
+    }
+
+    // ✅ GOOD: Separate static utilities from stateful operations
+    public static class Calculator {
+        private double lastResult;
+
+        // Instance method for stateful operation
+        public double calculate(double a, double b, String operation) {
+            lastResult = performCalculation(a, b, operation);
+            return lastResult;
+        }
+
+        public double getLastResult() {
+            return lastResult;
+        }
+
+        // Static utility method - pure function
+        public static double performCalculation(double a, double b, String operation) {
+            switch (operation) {
+                case "+": return a + b;
+                case "-": return a - b;
+                case "*": return a * b;
+                case "/": return b != 0 ? a / b : Double.NaN;
+                default: throw new IllegalArgumentException("Unknown operation: " + operation);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Good vs Bad Static Usage ===");
+
+        // Using utility method (good)
+        double result = Calculator.performCalculation(10, 5, "+");
+        System.out.println("Static calculation: " + result); // 15.0
+
+        // Using instance for stateful operations (good)
+        Calculator calc = new Calculator();
+        calc.calculate(10, 5, "*");
+        System.out.println("Last result: " + calc.getLastResult()); // 50.0
+    }
+}
+```
+
+# Static Initialization Block
+
+## Understanding Static Initialization Blocks
+
+Static initialization blocks are special code blocks that execute when a class is first loaded by the JVM. They run before any static methods are called and before any objects of the class are created.
+
+### Basic Static Initialization Block
+
+```java
+public class StaticInitializationDemo {
+    // Static variables
+    private static final String APPLICATION_NAME;
+    private static final String VERSION;
+    private static int initializationCounter = 0;
+    private static long startupTime;
+
+    // Static initialization block - runs when class is first loaded
+    static {
+        System.out.println("Static initialization block executing...");
+
+        APPLICATION_NAME = "Java Learning App";
+        VERSION = "1.0.0";
+        startupTime = System.currentTimeMillis();
+        initializationCounter++;
+
+        System.out.println("Application initialized: " + APPLICATION_NAME + " v" + VERSION);
+        System.out.println("Startup time: " + startupTime);
+    }
+
+    // Multiple static blocks are allowed and execute in order
+    static {
+        System.out.println("Second static block executing...");
+        System.out.println("Initialization counter: " + initializationCounter);
+    }
+
+    // Static method
+    public static void displayInfo() {
+        System.out.println("App: " + APPLICATION_NAME);
+        System.out.println("Version: " + VERSION);
+        System.out.println("Initialized " + initializationCounter + " times");
+    }
+
+    // Constructor
+    public StaticInitializationDemo() {
+        System.out.println("Constructor called - object created");
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Static Initialization Block Demo ===");
+        System.out.println("Main method started");
+
+        // Static block has already executed by now
+        StaticInitializationDemo.displayInfo();
+
+        // Creating objects - static block won't run again
+        System.out.println("\nCreating objects:");
+        StaticInitializationDemo obj1 = new StaticInitializationDemo();
+        StaticInitializationDemo obj2 = new StaticInitializationDemo();
+
+        // Static block executes only once, no matter how many objects are created
+        StaticInitializationDemo.displayInfo();
+    }
+}
+```
+
+### Complex Static Initialization
+
+```java
+import java.util.*;
+import java.io.*;
+
+public class ConfigurationManager {
+    // Static collections and configuration
+    private static final Map<String, String> CONFIG_PROPERTIES = new HashMap<>();
+    private static final List<String> SUPPORTED_LANGUAGES = new ArrayList<>();
+    private static final Set<String> ADMIN_USERS = new HashSet<>();
+    private static boolean configurationLoaded = false;
+    private static String configurationSource;
+
+    // Complex static initialization block
+    static {
+        System.out.println("Loading application configuration...");
+
+        try {
+            // Initialize supported languages
+            SUPPORTED_LANGUAGES.add("English");
+            SUPPORTED_LANGUAGES.add("Spanish");
+            SUPPORTED_LANGUAGES.add("French");
+            SUPPORTED_LANGUAGES.add("German");
+            SUPPORTED_LANGUAGES.add("Japanese");
+
+            // Initialize admin users
+            ADMIN_USERS.add("admin");
+            ADMIN_USERS.add("superuser");
+            ADMIN_USERS.add("root");
+
+            // Load configuration from properties (simulated)
+            loadConfiguration();
+
+            // Set default values if not loaded
+            setDefaultConfiguration();
+
+            configurationLoaded = true;
+            configurationSource = "Static initialization";
+
+            System.out.println("Configuration loaded successfully!");
+            System.out.println("Supported languages: " + SUPPORTED_LANGUAGES.size());
+            System.out.println("Admin users configured: " + ADMIN_USERS.size());
+            System.out.println("Configuration properties: " + CONFIG_PROPERTIES.size());
+
+        } catch (Exception e) {
+            System.err.println("Error during static initialization: " + e.getMessage());
+            configurationLoaded = false;
+        }
+    }
+
+    // Helper method for static initialization
+    private static void loadConfiguration() {
+        // Simulate loading from properties file
+        CONFIG_PROPERTIES.put("app.name", "My Application");
+        CONFIG_PROPERTIES.put("app.version", "2.0.0");
+        CONFIG_PROPERTIES.put("database.url", "jdbc:mysql://localhost:3306/myapp");
+        CONFIG_PROPERTIES.put("max.connections", "100");
+        CONFIG_PROPERTIES.put("timeout.seconds", "30");
+        CONFIG_PROPERTIES.put("debug.enabled", "false");
+    }
+
+    private static void setDefaultConfiguration() {
+        // Set defaults if not already configured
+        CONFIG_PROPERTIES.putIfAbsent("language", "English");
+        CONFIG_PROPERTIES.putIfAbsent("theme", "light");
+        CONFIG_PROPERTIES.putIfAbsent("auto.save", "true");
+    }
+
+    // Static methods to access configuration
+    public static String getProperty(String key) {
+        return CONFIG_PROPERTIES.get(key);
+    }
+
+    public static String getProperty(String key, String defaultValue) {
+        return CONFIG_PROPERTIES.getOrDefault(key, defaultValue);
+    }
+
+    public static boolean isAdmin(String username) {
+        return ADMIN_USERS.contains(username);
+    }
+
+    public static boolean isLanguageSupported(String language) {
+        return SUPPORTED_LANGUAGES.contains(language);
+    }
+
+    public static List<String> getSupportedLanguages() {
+        return new ArrayList<>(SUPPORTED_LANGUAGES);
+    }
+
+    public static boolean isConfigurationLoaded() {
+        return configurationLoaded;
+    }
+
+    public static void displayConfiguration() {
+        System.out.println("\n=== Configuration Status ===");
+        System.out.println("Loaded: " + configurationLoaded);
+        System.out.println("Source: " + configurationSource);
+        System.out.println("\n=== Properties ===");
+        CONFIG_PROPERTIES.forEach((key, value) ->
+            System.out.println(key + " = " + value));
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Configuration Manager Demo ===");
+
+        // Access configuration (static block already executed)
+        System.out.println("App Name: " + getProperty("app.name"));
+        System.out.println("Version: " + getProperty("app.version"));
+        System.out.println("Debug enabled: " + getProperty("debug.enabled", "false"));
+
+        // Test admin check
+        System.out.println("Is 'admin' an admin? " + isAdmin("admin"));
+        System.out.println("Is 'user' an admin? " + isAdmin("user"));
+
+        // Test language support
+        System.out.println("Is Spanish supported? " + isLanguageSupported("Spanish"));
+        System.out.println("Is Chinese supported? " + isLanguageSupported("Chinese"));
+
+        displayConfiguration();
+    }
+}
+```
+
+### Static Block Execution Order
+
+```java
+public class StaticExecutionOrder {
+    // Static variables are initialized in order of declaration
+    private static String first = initializeFirst();
+    private static String second = initializeSecond();
+
+    // Static block executes after static variable initialization
+    static {
+        System.out.println("Static block 1 executing");
+        System.out.println("First: " + first);
+        System.out.println("Second: " + second);
+    }
+
+    private static String third = initializeThird();
+
+    // Another static block
+    static {
+        System.out.println("Static block 2 executing");
+        System.out.println("Third: " + third);
+    }
+
+    // Static variable initialization methods
+    private static String initializeFirst() {
+        System.out.println("Initializing first variable");
+        return "FIRST";
+    }
+
+    private static String initializeSecond() {
+        System.out.println("Initializing second variable");
+        return "SECOND";
+    }
+
+    private static String initializeThird() {
+        System.out.println("Initializing third variable");
+        return "THIRD";
+    }
+
+    // Constructor
+    public StaticExecutionOrder() {
+        System.out.println("Constructor executing");
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Static Execution Order Demo ===");
+        System.out.println("Main method started");
+
+        System.out.println("\nCreating first object:");
+        StaticExecutionOrder obj1 = new StaticExecutionOrder();
+
+        System.out.println("\nCreating second object:");
+        StaticExecutionOrder obj2 = new StaticExecutionOrder();
+    }
+}
+```
+
+# Instance Block Initializer
+
+## Understanding Instance Initialization Blocks
+
+Instance initialization blocks (also called instance initializers) are code blocks that execute every time an object is created, before the constructor runs. They're useful for common initialization code shared across multiple constructors.
+
+### Basic Instance Initialization Block
+
+```java
+public class InstanceInitializerDemo {
+    // Instance variables
+    private String name;
+    private int id;
+    private long creationTime;
+    private static int objectCount = 0;
+
+    // Instance initialization block - runs before every constructor
+    {
+        System.out.println("Instance initialization block executing...");
+        creationTime = System.currentTimeMillis();
+        objectCount++;
+        System.out.println("Object #" + objectCount + " being created");
+        System.out.println("Creation time: " + creationTime);
+    }
+
+    // Another instance block - they execute in order
+    {
+        System.out.println("Second instance block executing...");
+        // Common validation or setup code can go here
+        if (objectCount > 10) {
+            System.out.println("Warning: Many objects created!");
+        }
+    }
+
+    // Default constructor
+    public InstanceInitializerDemo() {
+        System.out.println("Default constructor executing");
+        this.name = "Unknown";
+        this.id = objectCount;
+    }
+
+    // Parameterized constructor
+    public InstanceInitializerDemo(String name) {
+        System.out.println("Parameterized constructor executing");
+        this.name = name;
+        this.id = objectCount;
+    }
+
+    // Another constructor
+    public InstanceInitializerDemo(String name, int customId) {
+        System.out.println("Custom constructor executing");
+        this.name = name;
+        this.id = customId;
+    }
+
+    public void displayInfo() {
+        System.out.println("Name: " + name + ", ID: " + id + ", Created: " + creationTime);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Instance Initialization Block Demo ===");
+
+        System.out.println("\n--- Creating object with default constructor ---");
+        InstanceInitializerDemo obj1 = new InstanceInitializerDemo();
+        obj1.displayInfo();
+
+        System.out.println("\n--- Creating object with parameterized constructor ---");
+        InstanceInitializerDemo obj2 = new InstanceInitializerDemo("Alice");
+        obj2.displayInfo();
+
+        System.out.println("\n--- Creating object with custom constructor ---");
+        InstanceInitializerDemo obj3 = new InstanceInitializerDemo("Bob", 100);
+        obj3.displayInfo();
+    }
+}
+```
+
+### Complex Instance Initialization Example
+
+```java
+import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class DatabaseConnection {
+    // Instance variables
+    private String connectionId;
+    private String databaseUrl;
+    private String username;
+    private LocalDateTime connectionTime;
+    private Map<String, String> connectionProperties;
+    private List<String> executionLog;
+    private boolean isConnected;
+
+    // Static tracking
+    private static int totalConnections = 0;
+    private static List<String> allConnectionIds = new ArrayList<>();
+
+    // Instance initialization block - common setup for all constructors
+    {
+        System.out.println("=== Connection Initialization Block ===");
+
+        // Generate unique connection ID
+        connectionId = "CONN_" + System.currentTimeMillis() + "_" + (++totalConnections);
+        allConnectionIds.add(connectionId);
+
+        // Initialize connection time
+        connectionTime = LocalDateTime.now();
+
+        // Initialize collections
+        connectionProperties = new HashMap<>();
+        executionLog = new ArrayList<>();
+
+        // Set default properties
+        connectionProperties.put("timeout", "30000");
+        connectionProperties.put("autoReconnect", "true");
+        connectionProperties.put("charset", "UTF-8");
+        connectionProperties.put("pool.minSize", "5");
+        connectionProperties.put("pool.maxSize", "20");
+
+        // Log initialization
+        executionLog.add("Connection initialized at " +
+                        connectionTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        executionLog.add("Connection ID assigned: " + connectionId);
+
+        System.out.println("Connection ID: " + connectionId);
+        System.out.println("Initialization time: " + connectionTime);
+        System.out.println("Default properties loaded: " + connectionProperties.size());
+    }
+
+    // Another instance block for validation
+    {
+        System.out.println("=== Connection Validation Block ===");
+
+        // Validate system resources
+        long freeMemory = Runtime.getRuntime().freeMemory();
+        if (freeMemory < 1000000) { // Less than 1MB
+            System.out.println("Warning: Low memory available");
+            executionLog.add("Warning: Low memory during initialization");
+        }
+
+        // Check total connections
+        if (totalConnections > 50) {
+            System.out.println("Warning: High number of connections created");
+            executionLog.add("Warning: Connection count exceeded threshold");
+        }
+
+        System.out.println("Validation complete");
+    }
+
+    // Default constructor - local database
+    public DatabaseConnection() {
+        System.out.println("=== Default Constructor ===");
+        this.databaseUrl = "jdbc:h2:mem:localdb";
+        this.username = "sa";
+        finishInitialization();
+    }
+
+    // MySQL constructor
+    public DatabaseConnection(String host, int port, String database, String username, String password) {
+        System.out.println("=== MySQL Constructor ===");
+        this.databaseUrl = String.format("jdbc:mysql://%s:%d/%s", host, port, database);
+        this.username = username;
+
+        // MySQL specific properties
+        connectionProperties.put("serverTimezone", "UTC");
+        connectionProperties.put("useSSL", "false");
+        connectionProperties.put("allowPublicKeyRetrieval", "true");
+
+        finishInitialization();
+    }
+
+    // PostgreSQL constructor
+    public DatabaseConnection(String host, String database, String username) {
+        System.out.println("=== PostgreSQL Constructor ===");
+        this.databaseUrl = String.format("jdbc:postgresql://%s:5432/%s", host, database);
+        this.username = username;
+
+        // PostgreSQL specific properties
+        connectionProperties.put("ssl", "false");
+        connectionProperties.put("loggerLevel", "INFO");
+
+        finishInitialization();
+    }
+
+    // Common initialization completion
+    private void finishInitialization() {
+        executionLog.add("Constructor completed for: " + username);
+        executionLog.add("Database URL set: " + databaseUrl);
+        isConnected = false; // Not actually connected yet
+
+        System.out.println("Database URL: " + databaseUrl);
+        System.out.println("Username: " + username);
+        System.out.println("Ready to connect");
+    }
+
+    // Method to simulate connection
+    public void connect() {
+        if (!isConnected) {
+            System.out.println("Connecting to database...");
+            isConnected = true;
+            executionLog.add("Connected at " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
+        } else {
+            System.out.println("Already connected");
+        }
+    }
+
+    public void disconnect() {
+        if (isConnected) {
+            System.out.println("Disconnecting...");
+            isConnected = false;
+            executionLog.add("Disconnected at " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
+        }
+    }
+
+    // Getters
+    public String getConnectionId() { return connectionId; }
+    public String getDatabaseUrl() { return databaseUrl; }
+    public String getUsername() { return username; }
+    public boolean isConnected() { return isConnected; }
+    public static int getTotalConnections() { return totalConnections; }
+
+    public void displayConnectionInfo() {
+        System.out.println("\n=== Connection Information ===");
+        System.out.println("ID: " + connectionId);
+        System.out.println("URL: " + databaseUrl);
+        System.out.println("User: " + username);
+        System.out.println("Connected: " + isConnected);
+        System.out.println("Created: " + connectionTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        System.out.println("\nProperties:");
+        connectionProperties.forEach((key, value) ->
+            System.out.println("  " + key + " = " + value));
+
+        System.out.println("\nExecution Log:");
+        executionLog.forEach(entry -> System.out.println("  " + entry));
+    }
+
+    public static void displayGlobalStats() {
+        System.out.println("\n=== Global Connection Statistics ===");
+        System.out.println("Total connections created: " + totalConnections);
+        System.out.println("All connection IDs: " + allConnectionIds);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Instance Initialization Demo ===");
+
+        System.out.println("\n1. Creating default connection:");
+        DatabaseConnection conn1 = new DatabaseConnection();
+        conn1.connect();
+        conn1.displayConnectionInfo();
+
+        System.out.println("\n2. Creating MySQL connection:");
+        DatabaseConnection conn2 = new DatabaseConnection("localhost", 3306, "myapp", "root", "password");
+        conn2.connect();
+        conn2.displayConnectionInfo();
+
+        System.out.println("\n3. Creating PostgreSQL connection:");
+        DatabaseConnection conn3 = new DatabaseConnection("localhost", "testdb", "postgres");
+        conn3.displayConnectionInfo();
+
+        DatabaseConnection.displayGlobalStats();
+    }
+}
+```
+
+### Instance vs Static vs Constructor Execution Order
+
+```java
+public class ExecutionOrderDemo {
+    // Static variables
+    private static String staticVar = initStaticVar();
+
+    // Instance variables
+    private String instanceVar = initInstanceVar();
+
+    // Static block
+    static {
+        System.out.println("3. Static initialization block");
+    }
+
+    // Instance block
+    {
+        System.out.println("5. Instance initialization block 1");
+    }
+
+    // Another instance block
+    {
+        System.out.println("6. Instance initialization block 2");
+        instanceVar = instanceVar + " (modified in block)";
+    }
+
+    // Static variable initializer
+    private static String initStaticVar() {
+        System.out.println("2. Static variable initializer");
+        return "STATIC_VALUE";
+    }
+
+    // Instance variable initializer
+    private String initInstanceVar() {
+        System.out.println("4. Instance variable initializer");
+        return "INSTANCE_VALUE";
+    }
+
+    // Constructor
+    public ExecutionOrderDemo() {
+        System.out.println("7. Constructor executing");
+        System.out.println("   Static var: " + staticVar);
+        System.out.println("   Instance var: " + instanceVar);
+    }
+
+    public ExecutionOrderDemo(String message) {
+        System.out.println("7. Parameterized constructor executing: " + message);
+        System.out.println("   Static var: " + staticVar);
+        System.out.println("   Instance var: " + instanceVar);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("1. Main method started");
+
+        System.out.println("\n--- Creating first object ---");
+        ExecutionOrderDemo obj1 = new ExecutionOrderDemo();
+
+        System.out.println("\n--- Creating second object ---");
+        ExecutionOrderDemo obj2 = new ExecutionOrderDemo("Hello");
+    }
+}
+```
+
+# Static Import
+
+## Understanding Static Import
+
+Static import allows you to access static members of a class directly without qualifying them with the class name. This can make code more readable when frequently using static methods or constants from utility classes.
+
+### Basic Static Import Syntax
+
+```java
+// Regular imports
+import java.util.List;
+import java.util.ArrayList;
+
+// Static imports - import specific static members
+import static java.lang.Math.PI;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.pow;
+import static java.lang.System.out;
+
+// Static import all static members from a class
+import static java.lang.Math.*;
+
+public class StaticImportBasics {
+    public static void main(String[] args) {
+        System.out.println("=== Static Import Demo ===");
+
+        // Without static import - need class qualification
+        double area1 = java.lang.Math.PI * java.lang.Math.pow(5, 2);
+        System.out.println("Area without static import: " + area1);
+
+        // With static import - direct access to static members
+        double area2 = PI * pow(5, 2);
+        out.println("Area with static import: " + area2); // Using statically imported 'out'
+
+        // Other math operations using static imports
+        double hypotenuse = sqrt(pow(3, 2) + pow(4, 2));
+        out.println("Hypotenuse: " + hypotenuse); // 5.0
+
+        // Using multiple static imports
+        double volume = (4.0 / 3.0) * PI * pow(3, 3);
+        out.println("Sphere volume (radius 3): " + volume);
+    }
+}
+```
+
+### Static Import with Utility Classes
+
+```java
+// Custom utility class
+public class MathUtils {
+    public static final double GOLDEN_RATIO = 1.618033988749;
+    public static final double EULER_NUMBER = 2.718281828459;
+
+    public static double average(double... numbers) {
+        if (numbers.length == 0) return 0;
+        double sum = 0;
+        for (double num : numbers) {
+            sum += num;
+        }
+        return sum / numbers.length;
+    }
+
+    public static double max(double... numbers) {
+        if (numbers.length == 0) return Double.NaN;
+        double maximum = numbers[0];
+        for (double num : numbers) {
+            if (num > maximum) maximum = num;
+        }
+        return maximum;
+    }
+
+    public static double min(double... numbers) {
+        if (numbers.length == 0) return Double.NaN;
+        double minimum = numbers[0];
+        for (double num : numbers) {
+            if (num < minimum) minimum = num;
+        }
+        return minimum;
+    }
+
+    public static boolean isPrime(int number) {
+        if (number < 2) return false;
+        for (int i = 2; i <= Math.sqrt(number); i++) {
+            if (number % i == 0) return false;
+        }
+        return true;
+    }
+
+    public static int factorial(int n) {
+        if (n <= 1) return 1;
+        return n * factorial(n - 1);
+    }
+}
+
+// Using static imports with custom utility class
+import static MathUtils.*;
+import static java.lang.System.out;
+
+public class CustomStaticImportDemo {
+    public static void main(String[] args) {
+        out.println("=== Custom Static Import Demo ===");
+
+        // Using static imported constants
+        out.println("Golden Ratio: " + GOLDEN_RATIO);
+        out.println("Euler's Number: " + EULER_NUMBER);
+
+        // Using static imported methods
+        double[] scores = {85.5, 92.0, 78.5, 96.0, 88.5};
+
+        out.println("\nScores: " + java.util.Arrays.toString(scores));
+        out.println("Average: " + average(scores));
+        out.println("Maximum: " + max(scores));
+        out.println("Minimum: " + min(scores));
+
+        // Mathematical operations
+        out.println("\nFactorial calculations:");
+        for (int i = 1; i <= 5; i++) {
+            out.println(i + "! = " + factorial(i));
+        }
+
+        // Prime number checking
+        out.println("\nPrime number check:");
+        int[] numbers = {2, 3, 4, 5, 15, 17, 25, 29};
+        for (int num : numbers) {
+            out.println(num + " is prime: " + isPrime(num));
+        }
+    }
+}
+```
+
+### Static Import with Collections and Arrays
+
+```java
+import static java.util.Collections.*;
+import static java.util.Arrays.*;
+import static java.lang.System.out;
+
+import java.util.*;
+
+public class CollectionsStaticImport {
+    public static void main(String[] args) {
+        out.println("=== Collections Static Import Demo ===");
+
+        // Create and manipulate lists using static imports
+        List<Integer> numbers = new ArrayList<>();
+        addAll(numbers, 5, 2, 8, 1, 9, 3);
+        out.println("Original list: " + numbers);
+
+        // Sort using static import
+        sort(numbers);
+        out.println("Sorted list: " + numbers);
+
+        // Reverse using static import
+        reverse(numbers);
+        out.println("Reversed list: " + numbers);
+
+        // Shuffle using static import
+        shuffle(numbers);
+        out.println("Shuffled list: " + numbers);
+
+        // Binary search using static import
+        sort(numbers); // Need to sort first
+        int index = binarySearch(numbers, 5);
+        out.println("Index of 5: " + index);
+
+        // Min and max using static import
+        out.println("Min: " + min(numbers));
+        out.println("Max: " + max(numbers));
+
+        // Working with arrays using static imports
+        int[] array = {10, 5, 8, 3, 7, 1};
+        out.println("\nOriginal array: " + toString(array));
+
+        sort(array); // Arrays.sort statically imported
+        out.println("Sorted array: " + toString(array));
+
+        // Binary search on array
+        int arrayIndex = binarySearch(array, 7);
+        out.println("Index of 7 in array: " + arrayIndex);
+
+        // Fill array
+        int[] filledArray = new int[5];
+        fill(filledArray, 42);
+        out.println("Filled array: " + toString(filledArray));
+
+        // Copy array
+        int[] copiedArray = copyOf(array, array.length);
+        out.println("Copied array: " + toString(copiedArray));
+    }
+}
+```
+
+### Static Import Best Practices and Pitfalls
+
+```java
+// Example of good and bad static import usage
+
+// StringUtils.java - Utility class
+public class StringUtils {
+    public static boolean isEmpty(String str) {
+        return str == null || str.length() == 0;
+    }
+
+    public static boolean isBlank(String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
+    public static String reverse(String str) {
+        if (isEmpty(str)) return str;
+        return new StringBuilder(str).reverse().toString();
+    }
+
+    public static String capitalize(String str) {
+        if (isEmpty(str)) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
+
+    public static int count(String str, char ch) {
+        if (isEmpty(str)) return 0;
+        int count = 0;
+        for (char c : str.toCharArray()) {
+            if (c == ch) count++;
+        }
+        return count;
+    }
+}
+
+// Good static import usage
+import static StringUtils.isEmpty;
+import static StringUtils.isBlank;
+import static java.lang.System.out;
+
+public class GoodStaticImportExample {
+    public static void main(String[] args) {
+        out.println("=== Good Static Import Practices ===");
+
+        String[] testStrings = {"", "  ", "Hello", null, "Java Programming"};
+
+        for (String str : testStrings) {
+            out.println("String: '" + str + "'");
+            out.println("  isEmpty: " + isEmpty(str));
+            out.println("  isBlank: " + isBlank(str));
+            out.println();
+        }
+    }
+}
+
+// Problematic static import usage
+import static StringUtils.*; // ❌ Importing all static members
+import static java.lang.Math.*; // ❌ Too broad, potential conflicts
+import static java.lang.System.*; // ❌ Very broad import
+
+public class ProblematicStaticImportExample {
+    public static void main(String[] args) {
+        // ❌ Problems with broad static imports:
+
+        // 1. Namespace pollution - unclear where methods come from
+        out.println("Using out - but from where?");
+
+        // 2. Potential naming conflicts
+        // If multiple classes have same static method names
+
+        // 3. Reduced readability - hard to know method origins
+        String text = "hello world";
+        out.println("Reversed: " + reverse(text)); // Which reverse method?
+        out.println("Capitalized: " + capitalize(text)); // From which class?
+
+        // 4. IDE confusion and harder maintenance
+        double result = pow(2, 3); // Math.pow but not obvious
+        out.println("Power result: " + result);
+    }
+}
+
+// Better approach - selective static imports
+import static StringUtils.isEmpty;
+import static StringUtils.capitalize;
+import static java.lang.Math.pow;
+import static java.lang.Math.PI;
+import static java.lang.System.out;
+
+public class BetterStaticImportExample {
+    public static void main(String[] args) {
+        out.println("=== Better Static Import Practices ===");
+
+        // ✅ Clear and selective imports
+        String text = "hello world";
+
+        if (!isEmpty(text)) {
+            out.println("Original: " + text);
+            out.println("Capitalized: " + capitalize(text));
+        }
+
+        // ✅ Mathematical calculations with clear static imports
+        double circleArea = PI * pow(5, 2);
+        out.println("Circle area (radius 5): " + circleArea);
+
+        // ✅ When in doubt, use class qualification for clarity
+        String reversed = StringUtils.reverse(text); // Explicit for clarity
+        out.println("Reversed: " + reversed);
+    }
+}
+```
+
+### Static Import with Enums
+
+```java
+// Priority enum
+public enum Priority {
+    LOW(1), MEDIUM(2), HIGH(3), CRITICAL(4);
+
+    private final int level;
+
+    Priority(int level) {
+        this.level = level;
+    }
+
+    public int getLevel() { return level; }
+
+    public static Priority fromLevel(int level) {
+        for (Priority p : values()) {
+            if (p.level == level) return p;
+        }
+        throw new IllegalArgumentException("Invalid priority level: " + level);
+    }
+}
+
+// Task class using Priority
+public class Task {
+    private String title;
+    private Priority priority;
+
+    public Task(String title, Priority priority) {
+        this.title = title;
+        this.priority = priority;
+    }
+
+    public String getTitle() { return title; }
+    public Priority getPriority() { return priority; }
+
+    @Override
+    public String toString() {
+        return String.format("Task{title='%s', priority=%s}", title, priority);
+    }
+}
+
+// Using static import with enums
+import static Priority.*;
+import static java.lang.System.out;
+import java.util.*;
+
+public class EnumStaticImportDemo {
+    public static void main(String[] args) {
+        out.println("=== Enum Static Import Demo ===");
+
+        // Create tasks using statically imported enum constants
+        List<Task> tasks = Arrays.asList(
+            new Task("Fix bug in login", HIGH),           // Instead of Priority.HIGH
+            new Task("Update documentation", LOW),        // Instead of Priority.LOW
+            new Task("Security audit", CRITICAL),         // Instead of Priority.CRITICAL
+            new Task("Code review", MEDIUM),              // Instead of Priority.MEDIUM
+            new Task("Database backup", HIGH)             // Instead of Priority.HIGH
+        );
+
+        out.println("All tasks:");
+        tasks.forEach(out::println);
+
+        // Filter high priority tasks
+        out.println("\nHigh priority tasks:");
+        tasks.stream()
+             .filter(task -> task.getPriority() == HIGH) // Using statically imported HIGH
+             .forEach(out::println);
+
+        // Filter critical tasks
+        out.println("\nCritical tasks:");
+        tasks.stream()
+             .filter(task -> task.getPriority() == CRITICAL) // Using statically imported CRITICAL
+             .forEach(out::println);
+
+        // Sort by priority level
+        out.println("\nTasks sorted by priority:");
+        tasks.stream()
+             .sorted(Comparator.comparing(task -> task.getPriority().getLevel()))
+             .forEach(out::println);
+    }
+}
+```
+
+## Static Import Summary
+
+### ✅ When to Use Static Import:
+
+- Frequently used mathematical constants (`Math.PI`, `Math.E`)
+- Common utility methods (`Math.sqrt`, `Math.pow`)
+- System output (`System.out`)
+- Enum constants when heavily used
+- Well-known static methods from utility classes
+
+### ❌ When to Avoid Static Import:
+
+- Importing all static members (`import static Class.*`)
+- When it reduces code readability
+- When method origin becomes unclear
+- When there are potential naming conflicts
+- For rarely used static members
+
+### 🏆 Best Practices:
+
+1. **Be selective** - Import only frequently used static members
+2. **Maintain clarity** - Don't sacrifice readability for brevity
+3. **Avoid conflicts** - Be careful with common method names
+4. **Use judiciously** - Static import should enhance, not complicate code
+5. **Document when necessary** - Add comments if static import usage might be unclear
 
 # Enums
 
