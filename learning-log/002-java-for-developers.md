@@ -120,10 +120,22 @@
 76. [N-Tier Architecture](#n-tier-architecture)
 77. [Utility Classes](#utility-classes)
 
+### Lists and Arrays
+
+78. [Introduction to Collections](#introduction-to-collections)
+79. [Arrays Fundamentals](#arrays-fundamentals)
+80. [ArrayList Fundamentals](#arraylist-fundamentals)
+81. [LinkedList Fundamentals](#linkedlist-fundamentals)
+82. [Arrays vs Lists Comparison](#arrays-vs-lists-comparison)
+83. [Performance Considerations](#performance-considerations)
+84. [When to Use Arrays](#when-to-use-arrays)
+85. [When to Use Lists](#when-to-use-lists)
+86. [Practical Examples and Best Practices](#practical-examples-and-best-practices)
+
 ### Practice and Assessment
 
-78. [Practice Problems](#practice-problems)
-79. [Code Reference](#code-reference-combined-usage-of-all-loops)
+87. [Practice Problems](#practice-problems)
+88. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
