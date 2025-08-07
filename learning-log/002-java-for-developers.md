@@ -132,10 +132,17 @@
 85. [When to Use Lists](#when-to-use-lists)
 86. [Practical Examples and Best Practices](#practical-examples-and-best-practices)
 
+### Null Pointer and Optionals
+
+87. [Null Pointer Exception](#null-pointer-exception)
+88. [The Wrong Way of Dealing With Null](#the-wrong-way-of-dealing-with-null)
+89. [Optionals](#optionals)
+90. [Optional Best Practices](#optional-best-practices)
+
 ### Practice and Assessment
 
-87. [Practice Problems](#practice-problems)
-88. [Code Reference](#code-reference-combined-usage-of-all-loops)
+91. [Practice Problems](#practice-problems)
+92. [Code Reference](#code-reference-combined-usage-of-all-loops)
 
 ---
 
