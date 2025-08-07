@@ -7,6 +7,7 @@ A comprehensive collection of Java learning materials, from fundamentals to Spri
 This repository contains structured learning materials covering:
 
 ### 1. Java Fundamentals
+
 - Basic syntax and commands
 - Variables, data types, and memory management
 - Object-oriented programming concepts
@@ -14,12 +15,14 @@ This repository contains structured learning materials covering:
 - Collections and advanced topics
 
 ### 2. Java for Developers
+
 - Advanced programming concepts
 - Best practices and design patterns
 - Working with databases and APIs
 - Modern Java features and frameworks
 
 ### 3. Spring Boot for Beginners
+
 - Introduction to Spring Framework and Spring Boot
 - Inversion of Control (IoC) and Dependency Injection
 - Spring Application Context and Bean management
@@ -28,7 +31,9 @@ This repository contains structured learning materials covering:
 ## 📖 Learning Materials
 
 ### [001 - Java Fundamentals](./learning-log/001-java-fundamentals.md)
+
 Comprehensive guide covering essential Java concepts:
+
 - Basic commands and file extensions
 - Understanding the `main` method
 - Variables, data types, and memory management
@@ -36,7 +41,9 @@ Comprehensive guide covering essential Java concepts:
 - Practical code examples and exercises
 
 ### [002 - Java for Developers](./learning-log/002-java-for-developers.md)
+
 Advanced Java development topics:
+
 - Control flow (loops, conditionals)
 - Exception handling and file operations
 - Object-oriented programming
@@ -44,7 +51,9 @@ Advanced Java development topics:
 - Modern Java features and best practices
 
 ### [003 - Spring Boot for Beginners](./learning-log/003-spring-boot-for-beginners.md)
+
 Spring Framework and Spring Boot essentials:
+
 - **Spring vs Spring Boot**: Understanding the differences and when to use each
 - **Inversion of Control (IoC)**: Dependency injection patterns and benefits
 - **Application Context**: Managing beans and application lifecycle
@@ -53,12 +62,14 @@ Spring Framework and Spring Boot essentials:
 ## 🚀 Getting Started
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/Project-Be-Better/learning-java.git
    cd learning-java
    ```
 
 2. **Start with fundamentals**:
+
    - Begin with [Java Fundamentals](./learning-log/001-java-fundamentals.md)
    - Practice with the provided code examples
    - Move to [Java for Developers](./learning-log/002-java-for-developers.md) for advanced topics
@@ -71,18 +82,21 @@ Spring Framework and Spring Boot essentials:
 ## 🎯 Key Learning Objectives
 
 ### Java Fundamentals
+
 - ✅ Master basic Java syntax and concepts
 - ✅ Understand memory management (Stack vs Heap)
 - ✅ Practice with variables, strings, and data types
 - ✅ Learn exception handling and file operations
 
 ### Advanced Java Development
+
 - ✅ Object-oriented programming principles
 - ✅ Collections and data structures
 - ✅ Modern Java features (var, optionals)
 - ✅ Best practices and code organization
 
 ### Spring Boot Essentials
+
 - 🔄 **Currently Learning**: Spring vs Spring Boot differences
 - 🔄 **In Progress**: Inversion of Control and Dependency Injection
 - 📋 **Next**: Spring IoC Application Context
@@ -90,14 +104,14 @@ Spring Framework and Spring Boot essentials:
 
 ## 📝 Progress Tracking
 
-| Topic | Status | Notes |
-|-------|--------|-------|
-| Java Fundamentals | ✅ Complete | Comprehensive coverage of core concepts |
-| Java for Developers | ✅ Complete | Advanced topics and best practices |
-| Spring vs Spring Boot | ✅ Complete | Understanding framework differences |
-| IoC and Dependency Injection | 🔄 In Progress | Core Spring concepts |
-| Application Context | 📋 Planned | Bean lifecycle management |
-| Spring Beans | 📋 Planned | Configuration and management |
+| Topic                        | Status         | Notes                                   |
+| ---------------------------- | -------------- | --------------------------------------- |
+| Java Fundamentals            | ✅ Complete    | Comprehensive coverage of core concepts |
+| Java for Developers          | ✅ Complete    | Advanced topics and best practices      |
+| Spring vs Spring Boot        | ✅ Complete    | Understanding framework differences     |
+| IoC and Dependency Injection | 🔄 In Progress | Core Spring concepts                    |
+| Application Context          | 📋 Planned     | Bean lifecycle management               |
+| Spring Beans                 | 📋 Planned     | Configuration and management            |
 
 ## 🛠️ Development Environment
 
@@ -123,4 +137,4 @@ This project is for educational purposes. Feel free to use and modify the conten
 
 **Happy Learning! 🎉**
 
-*Keep coding, keep learning, and keep growing as a Java developer.*
+_Keep coding, keep learning, and keep growing as a Java developer._
