@@ -309,13 +309,6 @@ netstat -ano | findstr :8080
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Support
-
-For questions or issues:
-
-- Create an issue in the repository
-- Contact: [your-email@example.com]
-
 ## 📚 Learning Resources
 
 - [Spring Boot Documentation](https://spring.io/projects/spring-boot)
