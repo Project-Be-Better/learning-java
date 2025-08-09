@@ -34,6 +34,16 @@ public class BookController {
         }
     };
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Long id,@RequestBody Book bookDetails) {
+        try {
+            Book updatedBook = bookService.updateBook(id,bookDetails);
+            return ResponseEntity.ok(updatedBook);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    };
+
     @PostMapping
     public ResponseEntity<Book> createBook(@RequestBody Book book) {
         Book createdBook = bookService.createBook(book);
