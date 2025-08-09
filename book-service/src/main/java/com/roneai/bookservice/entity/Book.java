@@ -8,7 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "books")
+@Table(name = "books", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "isbn"),
+        @UniqueConstraint(columnNames = {"title", "author"})
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
