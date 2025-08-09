@@ -5,11 +5,7 @@ import com.roneai.bookservice.service.BookService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +22,16 @@ public class BookController {
     public ResponseEntity<List<Book>> getAllBooks() {
         List<Book> books = bookService.getAllBooks();
         return ResponseEntity.ok(books);
+    };
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+        try {
+            Book book = bookService.getBookById(id);
+            return ResponseEntity.ok(book);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     };
 
     @PostMapping
