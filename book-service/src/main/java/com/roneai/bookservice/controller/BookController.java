@@ -3,12 +3,13 @@ package com.roneai.bookservice.controller;
 import com.roneai.bookservice.entity.Book;
 import com.roneai.bookservice.service.BookService;
 
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/books")
@@ -45,6 +46,16 @@ public class BookController {
     public Long getTotalBookCount() {
         long totalBookCount = bookService.getTotalBooksCount();
         return totalBookCount;
+    }
+
+    // ! This need to be removed
+    @GetMapping(value = "/ping", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .cacheControl(CacheControl.noStore())
+                .header("X-App-Name", "BookService")
+                .body("pong");
     }
 
     @PutMapping("/{id}")
