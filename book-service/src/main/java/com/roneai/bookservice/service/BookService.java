@@ -31,7 +31,7 @@ public class BookService {
                 .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
     };
 
-    public Book updateBook(Long id,Book bookDetails) {
+    public Book updateBookById(Long id, Book bookDetails) {
         if (id == null) {
             throw new IllegalArgumentException("Book ID cannot be null");
         }
@@ -39,8 +39,7 @@ public class BookService {
             throw new IllegalArgumentException("Book Details ID cannot be null");
         }
 
-
-        Book existingBook =  bookRepository.findById(id)
+        Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
 
         Book updatedBook = new Book(
@@ -49,10 +48,31 @@ public class BookService {
                 bookDetails.getAuthor(),
                 bookDetails.getIsbn(),
                 bookDetails.getDescription(),
-                bookDetails.getPrice()
-        );
+                bookDetails.getPrice());
         return bookRepository.save(updatedBook);
     };
 
+    public void deleteBookById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Book ID cannot be null");
+        }
 
+        if (!bookRepository.existsById(id)) {
+            throw new RuntimeException("Book not found with id: " + id);
+        }
+
+        bookRepository.deleteById(id);
+    };
+
+    public boolean existsById(Long id) {
+        if (id == null) {
+            return false;
+        }
+
+        return bookRepository.existsById(id);
+    };
+
+    public long getTotalBooksCount() {
+        return bookRepository.count();
+    };
 }

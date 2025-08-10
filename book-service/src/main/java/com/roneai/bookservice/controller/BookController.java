@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/books")
@@ -34,10 +35,22 @@ public class BookController {
         }
     };
 
+    @GetMapping("/{id}/exists")
+    public ResponseEntity<Boolean> bookExists(@PathVariable Long id) {
+        boolean isExists = bookService.existsById(id);
+        return ResponseEntity.ok(isExists);
+    }
+
+    @GetMapping("/count")
+    public Long getTotalBookCount() {
+        long totalBookCount = bookService.getTotalBooksCount();
+        return totalBookCount;
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable Long id,@RequestBody Book bookDetails) {
+    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
         try {
-            Book updatedBook = bookService.updateBook(id,bookDetails);
+            Book updatedBook = bookService.updateBookById(id, bookDetails);
             return ResponseEntity.ok(updatedBook);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -49,4 +62,17 @@ public class BookController {
         Book createdBook = bookService.createBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBook);
     };
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBookById(@PathVariable Long id) {
+        try {
+            bookService.deleteBookById(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    };
+
 }
