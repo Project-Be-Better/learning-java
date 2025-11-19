@@ -1,19 +1,15 @@
 package org.xploretown;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.xploretown.abstractClasses.AnimalKingdom;
+import org.xploretown.generics.Box;
+import org.xploretown.generics.Container;
 
-/**
- * Hello world!
- *
- */
-public class App 
+public class App
 {
-
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
-        GenericsPractice genericsPractice = new GenericsPractice();
-        genericsPractice.printToConsole();
-
+        Box.execute();
+        Container.execute();
+        AnimalKingdom.execute();
     }
 }
