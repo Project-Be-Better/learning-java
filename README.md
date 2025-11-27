@@ -106,21 +106,5 @@ Spring Framework and Spring Boot essentials:
 - **Build Tool**: Maven or Gradle
 - **Spring Boot Version**: 2.7+ or 3.x
 
-## 🤝 Contributing
-
-This is a personal learning repository, but suggestions and improvements are welcome:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your improvements
-4. Submit a pull request
-
-## 📄 License
-
-This project is for educational purposes. Feel free to use and modify the content for your own learning journey.
-
----
-
-**Happy Learning! 🎉**
 
 *Keep coding, keep learning, and keep growing as a Java developer.*
